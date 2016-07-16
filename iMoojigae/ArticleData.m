@@ -30,6 +30,7 @@
 @synthesize m_strEditableContent;
 @synthesize m_strLink;
 @synthesize m_arrayItems;
+@synthesize m_dicAttach;
 @synthesize target;
 @synthesize selector;
 
@@ -39,6 +40,7 @@
 	m_isLogin = FALSE;
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
+	m_dicAttach = [[NSMutableDictionary alloc] init];
 	m_receiveData = [[NSMutableData alloc] init];
 	
 	[self fetchItems2];
@@ -126,8 +128,30 @@
 	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
 	
 	NSString *strAttach = [Utils findStringWith:m_strHtml from:@"<!-- 업로드 파일 정보  수정본 Edit By Yang -->" to:@"<!-- 평가 -->"];
-	strAttach = [NSString stringWithFormat:@"<div class='attach'>%@</div>", strAttach];
+	strAttach = [NSString stringWithFormat:@"<div class='attach'><table>%@</table></div>", strAttach];
+
+	// 첨부파일 목록 만들기. 다운로드할 때 저잫할 파일이름을 획득하기 위한 방법
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<font class=smallgray>)(.|\\n)*?(</font>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
 	
+	NSArray *matches = [regex matchesInString:strAttach
+									  options:0
+										range:NSMakeRange(0, [strAttach length])];
+	for (NSTextCheckingResult *match in matches) {
+		NSRange matchRange = [match range];
+		NSString *matchStr = [strAttach substringWithRange:matchRange];
+		
+		NSString *n = [Utils findStringRegex:matchStr regex:@"(?<=&c=).*?(?=&)"];
+		NSString *f = [Utils findStringRegex:matchStr regex:@"(?<=_self\\'\\)>).*?(?=</font>)"];
+
+		[m_dicAttach setValue:f forKey:n];
+	}
+	
+	// Attach 가 가로로 표시되는데 이 부분을 세로로 표시되게끔 수정
+	//	strAttach = [strAttach stringByReplacingOccurrencesOfString:@"</font>\n" withString:@"</font>\n</td></tr><tr><td align=right class=cContent>"];
+	strAttach = [Utils replaceStringRegex:strAttach regex:@"</font>\r" replace:@"</font>\n</td></tr><tr><td align=right class=cContent>"];
+//	strAttach = [Utils replaceStringRegex:strAttach regex:@"</font>\r" replace:@"</font>\r</ br>"];
+
 	NSString *strProfile = [Utils findStringWith:m_strHtml from:@"<!-- 별점수 -->" to:@"<!-- 관련글 -->"];
 	
 	strProfile = [Utils findStringRegex:strProfile regex:@"(?<=<td class=cContent>).*?(?=</td>)"];

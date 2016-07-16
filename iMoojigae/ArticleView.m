@@ -22,6 +22,7 @@
 	CGRect m_rectScreen;
 	
 	NSMutableArray *m_arrayItems;
+	NSDictionary *m_dicAttach;
 	long m_lContentHeight;
 	float m_fTitleHeight;
 	
@@ -430,14 +431,16 @@
 
 -(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
 	
-	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+//	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		
 		NSURL *url = request.URL;
 		NSString *urlString = url.absoluteString;
 		
 		NSLog(@"request = %@", urlString);
-		NSString *fileName = [Utils findStringRegex:urlString regex:@"(?<=&c=).*?(?=&)"];
-		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		NSString *key = [Utils findStringRegex:urlString regex:@"(?<=&c=).*?(?=&)"];
+		NSString *fileName = [m_dicAttach valueForKey:key];
+//	URLEncoding 되어 있지 않음.
+//		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		
 		if ([fileName hasSuffix:@".hwp"] || [fileName hasSuffix:@".pdf"]) {
 			NSData	*tempData = [NSData dataWithContentsOfURL:url];
@@ -459,7 +462,7 @@
 			
 		}
 		
-	}
+//	}
 	return YES;
 }
 
@@ -490,13 +493,15 @@
 		[self presentViewController:alert animated:YES completion:nil];
 	} else {
 		htmlString = m_articleData.m_strContent;
-		m_arrayItems = m_articleData.m_arrayItems;
 		m_strEditableContent = m_articleData.m_strEditableContent;
 		m_strEditableTitle = m_articleData.m_strTitle;
 		m_strTitle = m_articleData.m_strTitle;
 		m_strName = m_articleData.m_strName;
 		m_strDate = m_articleData.m_strDate;
 		m_strHit = m_articleData.m_strHit;
+		
+		m_arrayItems = [m_articleData.m_arrayItems copy];
+		m_dicAttach = [m_articleData.m_dicAttach copy];
 		
 		NSLog(@"htmlString = [%@]", htmlString);
 		
@@ -506,7 +511,6 @@
 		m_webView.scrollView.bounces = NO;
 		[m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
 
-		m_arrayItems = [NSMutableArray arrayWithArray:m_articleData.m_arrayItems];
 		[self.tbView reloadData];
 	}
 }

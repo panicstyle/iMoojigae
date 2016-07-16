@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSString *m_strEditableContent;
 @property (strong, nonatomic) NSString *m_strLink;
 @property (strong, nonatomic) NSMutableArray *m_arrayItems;
+@property (strong, nonatomic) NSMutableDictionary *m_dicAttach;
 @property id target;
 @property SEL selector;
 

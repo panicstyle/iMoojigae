@@ -64,6 +64,29 @@
 	return strResult;
 }
 
++ (NSString *)getMatchWithRegex:(NSString *)content regex:(NSString *)strRegex
+{
+	if (content == Nil) {
+		return @"";
+	}
+	
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strRegex options:NSRegularExpressionDotMatchesLineSeparators error:&error];
+	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:content options:0 range:NSMakeRange(0, [content length])];
+	
+	NSString *strResult;
+	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
+		strResult = [content substringWithRange:rangeOfFirstMatch];
+	} else {
+		strResult = @"";
+	}
+	
+	return strResult;
+
+	
+}
+
+
 + (NSString *)replaceStringRegex:(NSString *)content regex:(NSString *)strRegex replace:(NSString *)strReplace
 {
 	NSError *error = NULL;

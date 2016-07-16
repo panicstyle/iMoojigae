@@ -22,6 +22,7 @@
 	CGRect m_rectScreen;
 	
 	NSMutableArray *m_arrayItems;
+	NSDictionary *m_dicAttach;
 	long m_lContentHeight;
 	float m_fTitleHeight;
 	
@@ -430,20 +431,38 @@
 
 -(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
 	
-	NSURL *url = request.URL;
-	NSString *urlString = url.absoluteString;
-
-	NSLog(@"request = %@", urlString);
-/*
-	//Check if special link
-	if ( [ urlString isEqualToString: @"MYLocation://GoThere" ] ) {
-		//Here present the new view controller
-		MyViewController *controller = [[MyViewController alloc] init];
-		[self presentViewController:controller animated:YES];
+//	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		
-		return NO;
-	}
-*/
+		NSURL *url = request.URL;
+		NSString *urlString = url.absoluteString;
+		
+		NSLog(@"request = %@", urlString);
+		NSString *key = [Utils findStringRegex:urlString regex:@"(?<=&c=).*?(?=&)"];
+		NSString *fileName = [m_dicAttach valueForKey:key];
+//	URLEncoding 되어 있지 않음.
+//		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		
+		if ([fileName hasSuffix:@".hwp"] || [fileName hasSuffix:@".pdf"]) {
+			NSData	*tempData = [NSData dataWithContentsOfURL:url];
+			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
+			NSString *documentDirectory = [paths objectAtIndex:0];
+			NSString *filePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			BOOL isWrite = [tempData writeToFile:filePath atomically:YES];
+			NSString *tempFilePath;
+			
+			if (isWrite) {
+				tempFilePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			}
+			NSURL *resultURL = [NSURL fileURLWithPath:tempFilePath];
+			
+			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
+			self.doic.delegate = self;
+			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
+		} else {
+			
+		}
+		
+//	}
 	return YES;
 }
 
@@ -474,13 +493,15 @@
 		[self presentViewController:alert animated:YES completion:nil];
 	} else {
 		htmlString = m_articleData.m_strContent;
-		m_arrayItems = m_articleData.m_arrayItems;
 		m_strEditableContent = m_articleData.m_strEditableContent;
 		m_strEditableTitle = m_articleData.m_strTitle;
 		m_strTitle = m_articleData.m_strTitle;
 		m_strName = m_articleData.m_strName;
 		m_strDate = m_articleData.m_strDate;
 		m_strHit = m_articleData.m_strHit;
+		
+		m_arrayItems = [m_articleData.m_arrayItems copy];
+		m_dicAttach = [m_articleData.m_dicAttach copy];
 		
 		NSLog(@"htmlString = [%@]", htmlString);
 		
@@ -490,7 +511,6 @@
 		m_webView.scrollView.bounces = NO;
 		[m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
 
-		m_arrayItems = [NSMutableArray arrayWithArray:m_articleData.m_arrayItems];
 		[self.tbView reloadData];
 	}
 }

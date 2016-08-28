@@ -54,7 +54,7 @@
 	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
 	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
 	
-	NSData *body = [[NSData alloc] initWithData:[@"" dataUsingEncoding:0x80000000 + kCFStringEncodingEUC_KR]];
+	NSData *body = [[NSData alloc] initWithData:[@"" dataUsingEncoding:g_encodingOption]];
 	
 	[request setHTTPBody:body];
 	
@@ -80,7 +80,7 @@
 	NSLog(@"ListView receiveData Size = [%lu]", (unsigned long)[m_receiveData length]);
 	
 	NSString *str = [[NSString alloc] initWithData:m_receiveData
-										  encoding:0x80000000 + kCFStringEncodingEUC_KR];
+										  encoding:g_encodingOption];
 	
 	if ([Utils numberOfMatches:str regex:@"<td><font style=font-size:12pt></td><b>시스템 메세지입니다</b></font><br>접근이 차단되었습니다<br>"] > 0) {
 		[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];

@@ -14,6 +14,7 @@
 #import "LoginToService.h"
 #import "env.h"
 #import "MainData.h"
+#import "EncodingOption.h"
 
 @interface MainView ()
 {
@@ -28,6 +29,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	
+	// 서버에서 encoding.info 파일을 읽어서 encoding option을 설정한다.
+	// 기존 euc-kr 이였던 서버를 utf-8 로 변경하는 과정중에 앱에서 이를 자동으로 처리하기 위해 필요한 옵션
+	EncodingOption *encodingOption = [[EncodingOption alloc] init];
+	[encodingOption GetEncodingOption];
 
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;

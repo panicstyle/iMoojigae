@@ -53,16 +53,16 @@
     [request setHTTPMethod:@"POST"];
     [request addValue:@"http://121.134.211.159/MLogin.do" forHTTPHeaderField:@"Referer"];
  
-	NSString *uid = [userid stringByAddingPercentEscapesUsingEncoding:0x80000000 + kCFStringEncodingEUC_KR ];
-    NSString *upwd = [userpwd stringByAddingPercentEscapesUsingEncoding:0x80000000 + kCFStringEncodingEUC_KR];
+	NSString *uid = [userid stringByAddingPercentEscapesUsingEncoding:g_encodingOption ];
+    NSString *upwd = [userpwd stringByAddingPercentEscapesUsingEncoding:g_encodingOption];
     
     NSMutableData *body = [NSMutableData data];
-    [body appendData:[[NSString stringWithFormat:@"userId=%@&userPw=%@&boardId=&boardNo=&page=1&categoryId=-1&returnURI=&returnBoardNo=&beforeCommand=&command=LOGIN", uid, upwd]  dataUsingEncoding:0x80000000 + kCFStringEncodingEUC_KR]];
+    [body appendData:[[NSString stringWithFormat:@"userId=%@&userPw=%@&boardId=&boardNo=&page=1&categoryId=-1&returnURI=&returnBoardNo=&beforeCommand=&command=LOGIN", uid, upwd]  dataUsingEncoding:g_encodingOption]];
  
     [request setHTTPBody:body];
  
     NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    NSString *returnString = [[NSString alloc] initWithData:returnData encoding:0x80000000 + kCFStringEncodingEUC_KR];
+    NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
     
     NSLog(@"returnString = [%@]", returnString);
     

@@ -36,4 +36,6 @@
 #define RESULT_AUTH_FAIL	1
 #define RESULT_LOGIN_FAIL	2
 
+extern NSStringEncoding g_encodingOption;
+
 #endif

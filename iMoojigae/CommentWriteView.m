@@ -278,13 +278,13 @@
     
     NSLog(@"bodyString = [%@]", bodyString);
     
-    [body appendData:[bodyString dataUsingEncoding:0x80000000 + kCFStringEncodingEUC_KR]];
+    [body appendData:[bodyString dataUsingEncoding:g_encodingOption]];
     
     [request setHTTPBody:body];
     
     NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
 
-    NSString *returnString = [[NSString alloc] initWithData:returnData encoding:0x80000000 + kCFStringEncodingEUC_KR];
+    NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
     
     NSLog(@"returnString = [%@]", returnString);
     

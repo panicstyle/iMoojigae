@@ -17,6 +17,30 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
+	
+	// Register for Remote Notifications
+	BOOL pushEnable = NO;
+	if ([[UIApplication sharedApplication] respondsToSelector:@selector(isRegisteredForRemoteNotifications)]) {
+		pushEnable = [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
+	} else {
+		UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+		pushEnable = types & UIRemoteNotificationTypeAlert;
+	}
+	
+	// 푸시 아이디를 달라고 폰에다가 요청하는 함수
+//	UIApplication *application = [UIApplication sharedApplication];
+	if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)]) {
+		NSLog(@"upper ios8");
+		// iOS 8 Notifications
+		[application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+		[application registerForRemoteNotifications];
+	} else {
+		NSLog(@"down ios8");
+		// iOS < 8 Notifications
+		[application registerForRemoteNotificationTypes:
+		 (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
+	}
+
 	return YES;
 }
 
@@ -40,6 +64,16 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+	NSLog(@"Did Register for Remote Notifications with Device Token (%@)", deviceToken);
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+	NSLog(@"Did Fail to Register for Remote Notifications");
+	NSLog(@"%@, %@", error, error.localizedDescription);
+	
 }
 
 @end

@@ -35,6 +35,7 @@
 		EC938BC41C90534E006BEF9E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = EC938BC31C90534E006BEF9E /* Utils.m */; };
 		ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC846AD1C91588000CF47DA /* CommentWriteView.m */; };
 		ECC846B11C915F3700CF47DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC846AF1C915F3700CF47DA /* Main.storyboard */; };
+		ECFBFF331D72DBC3004B1BFB /* EncodingOption.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFBFF321D72DBC3004B1BFB /* EncodingOption.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +112,8 @@
 		ECC846AC1C91588000CF47DA /* CommentWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentWriteView.h; sourceTree = "<group>"; };
 		ECC846AD1C91588000CF47DA /* CommentWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentWriteView.m; sourceTree = "<group>"; };
 		ECC846B01C915F3700CF47DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		ECFBFF311D72DBC3004B1BFB /* EncodingOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncodingOption.h; sourceTree = "<group>"; };
+		ECFBFF321D72DBC3004B1BFB /* EncodingOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EncodingOption.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +214,8 @@
 				EC717E951C87C68800C1888B /* Supporting Files */,
 				EC938BC21C90534E006BEF9E /* Utils.h */,
 				EC938BC31C90534E006BEF9E /* Utils.m */,
+				ECFBFF311D72DBC3004B1BFB /* EncodingOption.h */,
+				ECFBFF321D72DBC3004B1BFB /* EncodingOption.m */,
 			);
 			path = iMoojigae;
 			sourceTree = "<group>";
@@ -385,6 +390,7 @@
 				ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */,
 				EC717F721C8ACD6E00C1888B /* ArticleWriteView.m in Sources */,
 				EC717F2D1C882F3E00C1888B /* SetInfoStorage.m in Sources */,
+				ECFBFF331D72DBC3004B1BFB /* EncodingOption.m in Sources */,
 				EC717E9A1C87C68800C1888B /* AppDelegate.m in Sources */,
 				EC3AA62F1C990865006BFE5B /* MainData.m in Sources */,
 				EC717F2C1C882F3E00C1888B /* SetInfo.m in Sources */,

@@ -52,7 +52,7 @@
 	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
 	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
 	
-	NSData *body = [[NSData alloc] initWithData:[@"" dataUsingEncoding:0x80000000 + kCFStringEncodingEUC_KR]];
+	NSData *body = [[NSData alloc] initWithData:[@"" dataUsingEncoding:g_encodingOption]];
 	
 	[request setHTTPBody:body];
 	
@@ -83,7 +83,7 @@
 	}
 	
 	NSString *str = [[NSString alloc] initWithData:m_receiveData
-										  encoding:0x80000000 + kCFStringEncodingEUC_KR];
+										  encoding:g_encodingOption];
 	
 	// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
 	NSError *error = NULL;

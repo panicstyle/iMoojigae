@@ -265,13 +265,13 @@
 	
 	NSLog(@"bodyString = [%@]", bodyString);
 	
-	NSData *body = [[NSData alloc] initWithData:[bodyString dataUsingEncoding:0x80000000 + kCFStringEncodingEUC_KR]];
+	NSData *body = [[NSData alloc] initWithData:[bodyString dataUsingEncoding:g_encodingOption]];
 	
 	[request setHTTPBody:body];
 	
 	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-	//        NSString *returnString = [[[NSString alloc] initWithData:returnData encoding:0x80000000 + kCFStringEncodingEUC_KR] autorelease];
-	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:0x80000000 + kCFStringEncodingEUC_KR];
+	//        NSString *returnString = [[[NSString alloc] initWithData:returnData encoding:g_encodingOption] autorelease];
+	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
 	
 	NSLog(@"returnString = [%@]", returnString);
 	

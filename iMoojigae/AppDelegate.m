@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "Utils.h"
+#import "LoginToService.h"
 
 @interface AppDelegate ()
 
@@ -14,9 +16,12 @@
 
 @implementation AppDelegate
 
+@synthesize strDevice;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
+//	[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+//	[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	
 	// Register for Remote Notifications
 	BOOL pushEnable = NO;
@@ -68,6 +73,15 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 	NSLog(@"Did Register for Remote Notifications with Device Token (%@)", deviceToken);
+	strDevice = [[[[deviceToken description]
+							stringByReplacingOccurrencesOfString:@"<"withString:@""]
+						   stringByReplacingOccurrencesOfString:@">" withString:@""]
+						  stringByReplacingOccurrencesOfString: @" " withString: @""];
+	NSLog(@"converted device Device Token (%@)", strDevice);
+	
+	LoginToService *login = [[LoginToService alloc] init];
+	[login PushRegister];
+
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
@@ -75,5 +89,19 @@
 	NSLog(@"%@, %@", error, error.localizedDescription);
 	
 }
-
+/*
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo  {
+	NSLog(@"remote notification: %@",[userInfo description]);
+	
+	if (userInfo) {
+		NSLog(@"%@",userInfo);
+		
+		if ([userInfo objectForKey:@"aps"]) {
+			if([[userInfo objectForKey:@"aps"] objectForKey:@"badge"]) {
+				[UIApplication sharedApplication].applicationIconBadgeNumber = [[[userInfo objectForKey:@"aps"] objectForKey: @"badge"] intValue];
+			}
+		}
+	}
+}
+*/
 @end

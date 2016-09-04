@@ -14,13 +14,20 @@
 #define USE_LOG
 //#define TEST_MODE
 
-#ifdef USE_LOG
+#ifdef DEBUG
 #define NSLog( s, ... ) NSLog(@"%s(%d) %@", __FUNCTION__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__])
 #else
 #define NSLog( s, ... )
 #endif
 
-#define WWW_SERVER  @"http://www.moojigae.or.kr"
+#ifdef DEBUG
+	#define WWW_SERVER  @"http://www.moojigae.or.kr"
+	#define PUSH_SERVER  @"http://192.168.0.97:8080"
+#else
+	#define WWW_SERVER  @"http://www.moojigae.or.kr"
+	#define PUSH_SERVER  @"http://www.moojigae.or.kr"
+#endif
+
 #define BOARD_LIST    @"/board-list.do?boardId="
 #define kSampleAdUnitID @"ca-app-pub-9032980304073628/9510593996"
 #define AdPubID @"a1513842aba33a7"

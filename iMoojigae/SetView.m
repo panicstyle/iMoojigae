@@ -15,6 +15,7 @@
 
 @synthesize idField;
 @synthesize pwdField;
+@synthesize switchPush;
 @synthesize target;
 @synthesize selector;
 
@@ -33,6 +34,11 @@
 	
 	idField.text = storage.userid;
 	pwdField.text = storage.userpwd;
+	if (storage.switchPush == nil) {
+		[switchPush setOn:true];
+	} else {
+		[switchPush setOn:[storage.switchPush intValue]];
+	}
     
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
 											   initWithTitle:@"완료" 
@@ -51,6 +57,7 @@
 	SetStorage *storage = [[SetStorage alloc] init];
 	storage.userid = idField.text;
 	storage.userpwd = pwdField.text;
+	storage.switchPush = [NSNumber numberWithBool:switchPush.on];
 	[NSKeyedArchiver archiveRootObject:storage toFile:myPath];
 	
 	LoginToService *login = [[LoginToService alloc] init];

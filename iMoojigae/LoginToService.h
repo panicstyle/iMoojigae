@@ -15,10 +15,12 @@
 //    HTTPRequest *httpRequest;
 	NSString *userid;
     NSString *userpwd;
+	NSNumber *switchPush;
 }
 - (BOOL)LoginToService;
 - (void)Logout;
 - (void)GetMain;
+- (void)PushRegister;
 //- (void)setDelegate:(id)aTarget selector:(SEL)aSelector;
 //- (void)didReceiveFinished:(NSString *)result;
 

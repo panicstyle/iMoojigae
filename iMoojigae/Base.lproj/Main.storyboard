@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="PfV-XL-rbF">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="PfV-XL-rbF">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -290,6 +290,23 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lci-ID-qPX">
+                                <rect key="frame" x="531" y="158" width="51" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31" id="5ZC-RJ-0gM"/>
+                                    <constraint firstAttribute="width" constant="49" id="V6N-aL-4Q8"/>
+                                </constraints>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="새글 알림 받기" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hJN-1y-Ht8">
+                                <rect key="frame" x="20" y="163" width="98" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="98" id="Ktd-nw-Dwa"/>
+                                    <constraint firstAttribute="height" constant="21" id="tVd-mY-v3o"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -298,8 +315,12 @@
                             <constraint firstItem="4mx-m9-RZR" firstAttribute="trailing" secondItem="i4V-kS-Ski" secondAttribute="trailingMargin" id="4pa-oR-fd2"/>
                             <constraint firstItem="4mx-m9-RZR" firstAttribute="top" secondItem="HRa-vo-njJ" secondAttribute="bottom" constant="14" id="4xK-f1-0uQ"/>
                             <constraint firstItem="HRa-vo-njJ" firstAttribute="trailing" secondItem="i4V-kS-Ski" secondAttribute="trailingMargin" id="9tk-kP-lhb"/>
+                            <constraint firstItem="Lci-ID-qPX" firstAttribute="trailing" secondItem="i4V-kS-Ski" secondAttribute="trailingMargin" id="CZ6-xw-dmk"/>
+                            <constraint firstItem="hJN-1y-Ht8" firstAttribute="leading" secondItem="i4V-kS-Ski" secondAttribute="leadingMargin" id="JMo-UM-Cpc"/>
+                            <constraint firstItem="hJN-1y-Ht8" firstAttribute="top" secondItem="JfG-Ps-xK4" secondAttribute="bottom" constant="18" id="PJn-1m-pY8"/>
                             <constraint firstItem="fAc-cZ-aLs" firstAttribute="leading" secondItem="i4V-kS-Ski" secondAttribute="leadingMargin" id="REt-HZ-cwx"/>
                             <constraint firstItem="fAc-cZ-aLs" firstAttribute="top" secondItem="Qcb-kV-tkB" secondAttribute="bottom" constant="16" id="YMU-GH-B4k"/>
+                            <constraint firstItem="Lci-ID-qPX" firstAttribute="top" secondItem="4mx-m9-RZR" secondAttribute="bottom" constant="8" id="clf-wD-vRl"/>
                             <constraint firstItem="JfG-Ps-xK4" firstAttribute="leading" secondItem="i4V-kS-Ski" secondAttribute="leadingMargin" id="fmf-wb-vhU"/>
                             <constraint firstItem="HRa-vo-njJ" firstAttribute="leading" secondItem="fAc-cZ-aLs" secondAttribute="trailing" constant="8" id="o4L-Hq-Ijg"/>
                             <constraint firstItem="JfG-Ps-xK4" firstAttribute="top" secondItem="fAc-cZ-aLs" secondAttribute="bottom" constant="23" id="vmf-EE-QZO"/>
@@ -309,6 +330,7 @@
                     <connections>
                         <outlet property="idField" destination="HRa-vo-njJ" id="BQa-9W-Wpx"/>
                         <outlet property="pwdField" destination="4mx-m9-RZR" id="19h-Pa-CMi"/>
+                        <outlet property="switchPush" destination="Lci-ID-qPX" id="eGP-hP-62K"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w4L-Cb-twW" userLabel="First Responder" sceneMemberID="firstResponder"/>

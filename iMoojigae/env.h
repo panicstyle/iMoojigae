@@ -22,7 +22,7 @@
 
 #ifdef DEBUG
 	#define WWW_SERVER  @"http://www.moojigae.or.kr"
-	#define PUSH_SERVER  @"http://192.168.0.97:8080"
+	#define PUSH_SERVER  @"http://www.moojigae.or.kr"
 #else
 	#define WWW_SERVER  @"http://www.moojigae.or.kr"
 	#define PUSH_SERVER  @"http://www.moojigae.or.kr"

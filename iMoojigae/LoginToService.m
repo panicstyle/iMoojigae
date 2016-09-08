@@ -94,7 +94,7 @@
 	AppDelegate *getVar = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 	NSString *tokenDevice = getVar.strDevice;
 	NSString *userId = getVar.strUserId;
-	NSNumber *swtichPush = getVar.switchPush;
+	NSNumber *nPushYN = getVar.switchPush;
 	NSString *strPushYN = @"Y";
 
 	if (tokenDevice == nil || userId == nil) {
@@ -102,7 +102,7 @@
 		return;
 	}
 	
-	if ([switchPush boolValue] == true) {
+	if ([nPushYN boolValue] == true) {
 		strPushYN = @"Y";
 	} else {
 		strPushYN = @"N";

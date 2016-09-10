@@ -79,6 +79,8 @@
 		BOOL result = [m_login LoginToService];
 		
 		if (result) {
+			[m_login PushRegister];
+			
 			[m_mainData fetchItems];
 		} else {
 			UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"

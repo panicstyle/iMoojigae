@@ -64,6 +64,10 @@
 	BOOL result = [login LoginToService];
 	
 	if (result) {
+		
+		// Push 정보 업데이트
+		[login PushRegisterUpdate];
+
 		[target performSelector:selector withObject:[NSNumber numberWithBool:YES] afterDelay:0];
 	} else {
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"

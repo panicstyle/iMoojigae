@@ -500,8 +500,8 @@
 		m_strDate = m_articleData.m_strDate;
 		m_strHit = m_articleData.m_strHit;
 		
-		m_arrayItems = [m_articleData.m_arrayItems copy];
-		m_dicAttach = [m_articleData.m_dicAttach copy];
+		m_arrayItems = m_articleData.m_arrayItems;
+		m_dicAttach = m_articleData.m_dicAttach;
 		
 		NSLog(@"htmlString = [%@]", htmlString);
 		
@@ -679,7 +679,9 @@
     }
     
     NSLog(@"delete article success");
-    [target performSelector:selector withObject:nil afterDelay:0];
+	if (target != nil) {
+		[target performSelector:selector withObject:nil afterDelay:0];
+	}
     [[self navigationController] popViewControllerAnimated:YES];
 }
 

@@ -9,18 +9,23 @@
 #import "AppDelegate.h"
 #import "Utils.h"
 #import "LoginToService.h"
+#import "ArticleView.h"
 
 @interface AppDelegate ()
-
+{
+	NSDictionary *dUserInfo; //To storage the push data
+}
 @end
 
 @implementation AppDelegate
 
 @synthesize strDevice;
+@synthesize strUserId;
+@synthesize switchPush;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
-//	[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+	[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
 //	[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	
 	// Register for Remote Notifications
@@ -63,10 +68,6 @@
 	// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
-
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
@@ -89,19 +90,57 @@
 	NSLog(@"%@, %@", error, error.localizedDescription);
 	
 }
-/*
+
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo  {
 	NSLog(@"remote notification: %@",[userInfo description]);
 	
 	if (userInfo) {
 		NSLog(@"%@",userInfo);
+		dUserInfo = userInfo;
+	}
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+	NSLog(@"applicationDidBecomeActive");
+	//Data from the push.
+	if (dUserInfo != nil)
+	{
+		//Do whatever you need
+		NSLog(@"applicationDidBecomeActive with UserInfo");
 		
-		if ([userInfo objectForKey:@"aps"]) {
-			if([[userInfo objectForKey:@"aps"] objectForKey:@"badge"]) {
-				[UIApplication sharedApplication].applicationIconBadgeNumber = [[[userInfo objectForKey:@"aps"] objectForKey: @"badge"] intValue];
-			}
+		NSString *strLink;
+		if ([dUserInfo objectForKey:@"link"]) {
+			strLink = [dUserInfo objectForKey:@"link"];
+		} else {
+			return;
+		}
+		
+		if ([strLink isEqualToString:@""]) {
+			return;
+		}
+		
+		UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+		
+		ArticleView *viewController = (ArticleView*)[storyboard instantiateViewControllerWithIdentifier:@"ArticleView"];
+		if (viewController != nil) {
+			viewController.m_strTitle = @"";
+			viewController.m_strDate = @"";
+			viewController.m_strName = @"";
+			viewController.m_strLink = strLink;
+			viewController.target = nil;
+			viewController.selector = nil;
+		} else {
+			return;
+		}
+		
+//		[self.window.rootViewController presentViewController:viewController animated:YES completion:NULL];
+		
+		UINavigationController *navController = (UINavigationController*)self.window.rootViewController;
+		if (navController != nil) {
+			[navController pushViewController:viewController animated:YES];
 		}
 	}
 }
-*/
+
 @end

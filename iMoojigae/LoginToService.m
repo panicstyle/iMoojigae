@@ -79,8 +79,6 @@
 		}
 		getVar.switchPush = switchPush;
 		
-		[self PushRegister];
-		
         return TRUE;
     } else {
         return FALSE;
@@ -124,6 +122,47 @@
  
 	[request setHTTPBody:body];
 
+	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
+	
+	NSLog(@"returnString = [%@]", returnString);
+}
+
+- (void)PushRegisterUpdate
+{
+	AppDelegate *getVar = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+	NSString *tokenDevice = getVar.strDevice;
+	NSString *userId = getVar.strUserId;
+	NSNumber *nPushYN = getVar.switchPush;
+	NSString *strPushYN = @"Y";
+	
+	if (tokenDevice == nil || userId == nil) {
+		NSLog(@"PushRegister fail. tokenDevice or userId is nil\n");
+		return;
+	}
+	
+	if ([nPushYN boolValue] == true) {
+		strPushYN = @"Y";
+	} else {
+		strPushYN = @"N";
+	}
+	
+	NSLog(@"Device : %@", tokenDevice);
+	
+	NSString *url;
+	url = [NSString stringWithFormat:@"%@/push/PushRegisterUpdate", PUSH_SERVER];
+	
+	NSLog(@"URL : %@", url);
+	
+	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+	[request setURL:[NSURL URLWithString:url]];
+	[request setHTTPMethod:@"POST"];
+	
+	NSMutableData *body = [NSMutableData data];
+	[body appendData:[[NSString stringWithFormat:@"{\"type\":\"iOS\",\"push_yn\":\"%@\",\"uuid\":\"%@\",\"userid\":\"%@\"}", strPushYN, tokenDevice, userId]  dataUsingEncoding:g_encodingOption]];
+ 
+	[request setHTTPBody:body];
+	
 	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
 	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
 	

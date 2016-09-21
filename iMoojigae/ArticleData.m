@@ -214,14 +214,24 @@
 	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=euc-kr\">"];
 	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
 	[strHeader appendString:@"<style>body {font-family:\"고딕\";font-size:medium;}.title{text-margin:10px 0px;font-size:large}.name{color:gray;margin:10px 0px;font-size:small}.content{}.profile {text-align:left;color:gray;margin:10px 0px;font-size:small}.comment_header{text-align:left;color:white;background: lightgray;padding:20px 0px 10px 10px;font-size:small}.reply{border-bottom:1px solid gray;margin:10px 0px}.reply_header {color:gray;;font-size:small}.reply_content {margin:10px 0px}.re_reply{border-bottom:1px solid gray;margin:10px 0px 0px 20px;background:lightgray}</style>"];
-	[strHeader appendString:@"</head>"];
+	[strHeader appendString:@"<script> \
+		function imageResize() { \
+			var boardWidth = 300; \
+			if (document.cashcow && document.cashcow.boardWidth) \
+				boardWidth = document.cashcow.boardWidth.value - 70; \
+			var obj = document.getElementsByName('unicornimage'); \
+			for (var i = 0; i < obj.length; i++) { \
+				if (obj[i].width > boardWidth) \
+					obj[i].width = boardWidth; \
+			} \
+		}</script>"];
+	 [strHeader appendString:@"<script>window.onload=imageResize;</script></head>"];
 	NSString *strBottom = @"</body></html>";
-	NSString *strResize = @"<script>function resizeImage2(mm){var width = eval(mm.width);var height = eval(mm.height);if( width > 300 ){var p_height = 300 / width;var new_height = height * p_height;eval(mm.width = 300);eval(mm.height = new_height);}} function image_open(src, mm) { var width = eval(mm.width); window.open(src,'image');}</script>";
 	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
 	NSString *strBody = @"<body>";
 	
 	
-	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@%@%@", strHeader, strResize, strBody, strContent, strAttach, strProfile, strBottom];
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@%@", strHeader, strBody, strContent, strAttach, strProfile, strBottom];
 	
 	/*
 	 CGRect rectScreen = m_webView.frame;

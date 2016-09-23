@@ -216,7 +216,7 @@
 	[strHeader appendString:@"<style>body {font-family:\"고딕\";font-size:medium;}.title{text-margin:10px 0px;font-size:large}.name{color:gray;margin:10px 0px;font-size:small}.content{}.profile {text-align:left;color:gray;margin:10px 0px;font-size:small}.comment_header{text-align:left;color:white;background: lightgray;padding:20px 0px 10px 10px;font-size:small}.reply{border-bottom:1px solid gray;margin:10px 0px}.reply_header {color:gray;;font-size:small}.reply_content {margin:10px 0px}.re_reply{border-bottom:1px solid gray;margin:10px 0px 0px 20px;background:lightgray}</style>"];
 	[strHeader appendString:@"<script> \
 		function imageResize() { \
-			var boardWidth = 300; \
+			var boardWidth = window.innerWidth - 30; \
 			if (document.cashcow && document.cashcow.boardWidth) \
 				boardWidth = document.cashcow.boardWidth.value - 70; \
 			var obj = document.getElementsByName('unicornimage'); \

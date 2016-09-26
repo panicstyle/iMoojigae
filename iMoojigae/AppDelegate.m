@@ -51,6 +51,14 @@
 		 (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
 	}
 
+	// 앱이 완전히 종료된 상태에서 푸쉬 알림을 받으면 해당 푸쉬 알림 메시지가 launchOptions 에 포함되어서 실행된다.
+	if (launchOptions) {
+		dUserInfo = [launchOptions valueForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+		if (dUserInfo) {
+			[self moveToViewController];
+		}
+	}
+	
 	return YES;
 }
 
@@ -98,49 +106,64 @@
 		NSLog(@"%@",userInfo);
 		dUserInfo = userInfo;
 	}
+
+/*	앱이 실행중일때 아래 코드를 추가하면 푸쉬 알림을 받아 바로 해당 글로 이동한다. 
+	중간에 새로운 글이 추가되었다고 해당 글을 보겠느냐는 알림을 보여준 뒤 	이동해야 할 것 같음.
+*/
+/*	if ([UIApplication sharedApplication].applicationState ==
+		UIApplicationStateActive) {
+		[self moveToViewController];
+	}
+*/
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
 	NSLog(@"applicationDidBecomeActive");
 	//Data from the push.
-	if (dUserInfo != nil)
-	{
-		//Do whatever you need
-		NSLog(@"applicationDidBecomeActive with UserInfo");
-		
-		NSString *strLink;
-		if ([dUserInfo objectForKey:@"link"]) {
-			strLink = [dUserInfo objectForKey:@"link"];
-		} else {
-			return;
-		}
-		
-		if ([strLink isEqualToString:@""]) {
-			return;
-		}
-		
-		UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
-		
-		ArticleView *viewController = (ArticleView*)[storyboard instantiateViewControllerWithIdentifier:@"ArticleView"];
-		if (viewController != nil) {
-			viewController.m_strTitle = @"";
-			viewController.m_strDate = @"";
-			viewController.m_strName = @"";
-			viewController.m_strLink = strLink;
-			viewController.target = nil;
-			viewController.selector = nil;
-		} else {
-			return;
-		}
-		
-//		[self.window.rootViewController presentViewController:viewController animated:YES completion:NULL];
-		
-		UINavigationController *navController = (UINavigationController*)self.window.rootViewController;
-		if (navController != nil) {
-			[navController pushViewController:viewController animated:YES];
-		}
+	if (dUserInfo != nil) {
+		[self moveToViewController];
 	}
+}
+
+-(void)moveToViewController {
+	//Do whatever you need
+	NSLog(@"applicationDidBecomeActive with UserInfo");
+	
+	NSString *strLink;
+	if ([dUserInfo objectForKey:@"link"]) {
+		strLink = [dUserInfo objectForKey:@"link"];
+	} else {
+		dUserInfo = nil;
+		return;
+	}
+	
+	if ([strLink isEqualToString:@""]) {
+		dUserInfo = nil;
+		return;
+	}
+	
+	UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+	
+	ArticleView *viewController = (ArticleView*)[storyboard instantiateViewControllerWithIdentifier:@"ArticleView"];
+	if (viewController != nil) {
+		viewController.m_strTitle = @"";
+		viewController.m_strDate = @"";
+		viewController.m_strName = @"";
+		viewController.m_strLink = strLink;
+		viewController.target = nil;
+		viewController.selector = nil;
+	} else {
+		return;
+	}
+	
+	//		[self.window.rootViewController presentViewController:viewController animated:YES completion:NULL];
+	
+	UINavigationController *navController = (UINavigationController*)self.window.rootViewController;
+	if (navController != nil) {
+		[navController pushViewController:viewController animated:YES];
+	}
+	dUserInfo = nil;
 }
 
 @end

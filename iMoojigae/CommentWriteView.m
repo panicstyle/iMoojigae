@@ -226,16 +226,15 @@
 	NSString *strContent = self.m_textView.text;
 	
 	NSString *url;
-	url = [NSString stringWithFormat:@"%@/memo-save.do", 
-		   WWW_SERVER];
+	url = [NSString stringWithFormat:@"%@/memo-save.do", WWW_SERVER];
 	NSLog(@"url = [%@]", url);
     
     NSString *referer;
     
     if ([m_nMode intValue] == CommentReply) {
-        referer = [NSString stringWithFormat:@"http://121.134.211.159/board-read.do"];
+        referer = [NSString stringWithFormat:@"%@/board-read.do", WWW_SERVER];
     } else {		// CommentWrite
-        referer = [NSString stringWithFormat:@"http://121.134.211.159/board-read.do?boardId=%@&boardNo=%@&command=READ&page=1&categoryId=-1", m_strBoardNo, m_strArticleNo];
+        referer = [NSString stringWithFormat:@"%@/board-read.do?boardId=%@&boardNo=%@&command=READ&page=1&categoryId=-1", WWW_SERVER, m_strBoardNo, m_strArticleNo];
     }
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];

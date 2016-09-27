@@ -52,9 +52,11 @@
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+	NSString *strReferer = [NSString stringWithFormat:@"%@/MLogin.do", WWW_SERVER];
+	
     [request setURL:[NSURL URLWithString:url]];
     [request setHTTPMethod:@"POST"];
-    [request addValue:@"http://121.134.211.159/MLogin.do" forHTTPHeaderField:@"Referer"];
+    [request addValue:strReferer forHTTPHeaderField:@"Referer"];
  
 	NSString *uid = [userid stringByAddingPercentEscapesUsingEncoding:g_encodingOption ];
     NSString *upwd = [userpwd stringByAddingPercentEscapesUsingEncoding:g_encodingOption];

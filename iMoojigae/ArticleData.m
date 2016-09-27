@@ -249,17 +249,14 @@
 {
 	NSLog(@"DeleteArticleConfirm start");
 	NSLog(@"boardID=[%@], boardNo=[%@]", strBoardNo, strArticleNo);
-	
-	// http://121.134.211.159/board-save.do
-	// boardId=mvHorizonLivingStory&page=1&categoryId=-1&time=1334217622773&returnBoardNo=133404944519504&boardNo=133404944519504&command=DELETE&totalPage=0&totalRecords=0&serialBadNick=&serialBadContent=&htmlImage=%2Fout&thumbnailSize=50&memoWriteable=true&list_yn=N&replyList_yn=N&defaultBoardSkin=default&boardWidth=710&multiView_yn=Y&titleCategory_yn=N&category_yn=N&titleNo_yn=Y&titleIcon_yn=N&titlePoint_yn=N&titleMemo_yn=Y&titleNew_yn=Y&titleThumbnail_yn=N&titleNick_yn=Y&titleTag_yn=Y&anonymity_yn=N&titleRead_yn=Y&boardModel_cd=A&titleDate_yn=Y&tag_yn=Y&thumbnailSize=50&readOver_color=%23336699&boardSerialBadNick=&boardSerialBadContent=&userPw=&userNick=&memoContent=&memoSeq=&pollSeq=&returnURI=&beforeCommand=&starPoint=&provenance=board-read.do&tagsName=&pageScale=&searchOrKey=&searchType=&tag=1
-	
+		
 	NSString *url = [NSString stringWithFormat:@"%@/board-save.do", WWW_SERVER];
 	NSLog(@"url = [%@]", url);
 	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
 	[request setURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"POST"];
-	[request addValue:@"http://121.134.211.159/board-read.do" forHTTPHeaderField:@"Referer"];
+	[request addValue:@"http://www.moojijgae.or.kr/board-read.do" forHTTPHeaderField:@"Referer"];
 	[request addValue:@"gzip,deflate,sdch" forHTTPHeaderField:@"Accept-Encoding"];
 	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
 	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
@@ -298,9 +295,11 @@
 	NSLog(@"url = [%@]", url);
 	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+	NSString *strReferer = [NSString stringWithFormat:@"%@/board-read.do", WWW_SERVER];
+	
 	[request setURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"POST"];
-	[request addValue:@"http://121.134.211.159/board-read.do" forHTTPHeaderField:@"Referer"];
+	[request addValue:strReferer forHTTPHeaderField:@"Referer"];
 	[request addValue:@"gzip,deflate,sdch" forHTTPHeaderField:@"Accept-Encoding"];
 	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
 	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];

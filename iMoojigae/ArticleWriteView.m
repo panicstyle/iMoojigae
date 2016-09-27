@@ -231,10 +231,12 @@
 					 WWW_SERVER];
 	
 	//        NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
+	NSString *strReferer = [NSString stringWithFormat:@"%@/board-edit.do", WWW_SERVER];
+	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
 	[request setURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"POST"];
-	[request addValue:@"http://121.134.211.159/board-edit.do" forHTTPHeaderField:@"Referer"];
+	[request addValue:strReferer forHTTPHeaderField:@"Referer"];
 	[request addValue:@"gzip,deflate,sdch" forHTTPHeaderField:@"Accept-Encoding"];
 	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
 	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];

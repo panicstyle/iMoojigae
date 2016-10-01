@@ -42,7 +42,7 @@
 
 - (void)fetchItems2
 {
-	NSString *url = [NSString stringWithFormat:@"%@%@%@&page=%d", WWW_SERVER, BOARD_LIST, m_strBoardNo, m_nPage];
+	NSString *url = [NSString stringWithFormat:@"%@/board-api-list.do?boardId=%@&page=%d", WWW_SERVER, m_strBoardNo, m_nPage];
 
 	m_receiveData = [[NSMutableData alloc] init];
 	
@@ -110,94 +110,50 @@
 		}
 	}
 	
-	// parent.setMainBodyLogin 가 포함되어 있으면 다시 로그인해야 함.
-
-	// <td><font style=font-size:12pt></td><b>시스템 메세지입니다</b></font><br>접근이 차단되었습니다<br> 가 나오면 접근할 수 없는 게시판
+	NSError *localError = nil;
+	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
 	
-	
-	int cnt = 0;
-	NSMutableArray *array = [[NSMutableArray alloc] init];
-	
-	NSMutableDictionary *item;
-	
-	NSRange range0 = {0, [str length]};
-	int i;
-	for (i = 0; i < 30; i++) {
-		NSRange find1 = [str rangeOfString:@" <tr height=22 align=center class=fAContent>" options:NSCaseInsensitiveSearch range:range0];
-		NSLog(@"find1 loc=[%lu], len=[%lu]", (unsigned long)find1.location, (unsigned long)find1.length);
-		if (find1.location == NSNotFound) {
-			NSLog(@"start NotFound find1");
-			//        [self alertNotFound];
-			break;
-		}
-		NSRange range1 = {find1.location, [str length] - find1.location};
-		NSRange find2 = [str rangeOfString:@"<td colspan=8 height=1 background=./img/skin/default/footer_line.gif>" options:NSCaseInsensitiveSearch range:range1];
-		NSLog(@"find2 loc=[%lu], len=[%lu]", (unsigned long)find2.location, (unsigned long)find2.length);
-		if (find2.location == NSNotFound) {
-			NSLog(@"start NotFound find2");
-			//        [self alertNotFound];
-			break;
-		}
-		
-		// -6은 <TR>\n<TD에서 <TR을 빼기 위함
-		NSRange range2 = {find1.location, ((find2.location - 30) - find1.location)};
-		NSString *str2 = [str substringWithRange:range2];
-		NSLog(@"[%d] str2 = [%@]", cnt, str2);
-		
-		item = [[NSMutableDictionary alloc] init];
-		
-		[item setValue:str2 forKey:@"data"];
-		
-		NSRange find3 = [str2 rangeOfString:@"src=./img/skin/default/i_new.gif"];
-		if (find3.location == NSNotFound) {
-			[item setValue:@"0" forKey:@"isNew"];
-		} else {
-			[item setValue:@"1" forKey:@"isNew"];
-			NSLog(@"isNew");
-		}
-		
-		[array addObject:item];
-		range0 = NSMakeRange(find2.location + find2.length, [str length] - (find2.location + find2.length));
-		cnt++;
-		NSLog(@"cnt = [%d]", cnt);
-		
+	if (localError != nil) {
+		return;
 	}
+	
+	NSArray *jsonItems = [parsedObject valueForKey:@"item"];
 	
 	NSMutableDictionary *currItem;
 	
-	for (int i = 0; i < cnt; i++) {
-		item = [array objectAtIndex:i];
-		NSString *data = [item valueForKey:@"data"];
+	for (int i = 0; i < [jsonItems count]; i++) {
+		NSDictionary *jsonItem = [jsonItems objectAtIndex:i];
 		
 		currItem = [[NSMutableDictionary alloc] init];
 		
-		// link
-		NSError *error = NULL;
-		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=<a href=).*?(?=[ ])" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:data options:0 range:NSMakeRange(0, [data length])];
+		// boardNo
+		NSString *boardNo = [jsonItem valueForKey:@"boardNo"];
+		[currItem setValue:boardNo forKey:@"boardNo"];
 		
-		NSString *link;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			link = [data substringWithRange:rangeOfFirstMatch];
-			NSLog(@"link=[%@]", link);
+		// isNew
+		NSString *isNew = [jsonItem valueForKey:@"recentArticle"];
+		if ([isNew isEqualToString:@"Y"]) {
+			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isNew"];
 		} else {
-			NSLog(@"link line not found");
-			link = @"";
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isNew"];
 		}
-		[currItem setValue:[NSString stringWithString:link] forKey:@"link"];
+		
+		// isUpdated
+		NSString *isUpdated = [jsonItem valueForKey:@"updatedArticle"];
+		if ([isUpdated isEqualToString:@"Y"]) {
+			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isUpdated"];
+		} else {
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isUpdated"];
+		}
+		
+		// 답변글 여부
+		[currItem setValue:[jsonItem valueForKey:@"boardDep"] forKey:@"isRe"];
+		
+		// boardId
+		[currItem setValue:[jsonItem valueForKey:@"boardId"] forKey:@"boardId"];
 		
 		// subject
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=class=\\\"list\\\">).*?(?=</a>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		rangeOfFirstMatch = [regex rangeOfFirstMatchInString:data options:0 range:NSMakeRange(0, [data length])];
-		
-		NSString *subject;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			subject = [data substringWithRange:rangeOfFirstMatch];
-			NSLog(@"subject=[%@]", subject);
-		} else {
-			NSLog(@"subject line not found");
-			subject = @"";
-		}
+		NSString *subject = [jsonItem valueForKey:@"boardTitle"];
 		subject = [subject stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
 		subject = [subject stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
 		subject = [subject stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
@@ -206,83 +162,18 @@
 		[currItem setValue:[NSString stringWithString:subject] forKey:@"subject"];
 		
 		// writer
-		// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=<td id=tBbsCol7 name=tBbsCol7 width=100 align=center>).*?(?=</td>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		rangeOfFirstMatch = [regex rangeOfFirstMatchInString:data options:0 range:NSMakeRange(0, [data length])];
-		
-		NSString *writer;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			writer = [data substringWithRange:rangeOfFirstMatch];
-			NSLog(@"writer=[%@]", writer);
-		} else {
-			NSLog(@"writer line not found");
-			writer = @"";
-		}
-		
-		//  <font onclick="viewCharacter('ib504', event)" style='cursor:pointer' onmouseover=this.style.textDecoration='underline' onmouseout=this.style.textDecoration='none'><img src=.//out/icon/20110811/20110811131302409212111_jpg onerror="this.src='.//out/icon/no.gif'" align=absmiddle>이봄</font>
-		// 에서 아이콘 부분 삭제하기
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(<).*?(>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		NSString *writer2 = [regex stringByReplacingMatchesInString:writer options:0 range:NSMakeRange(0, [writer length]) withTemplate:@""];
-		
-		NSString *trimmedwriter = [writer2 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		//        trimmedwriter = [trimmedwriter substringWithRange:NSMakeRange(1, [trimmedwriter length] - 2)];
-		
-		[currItem setValue:[NSString stringWithString:trimmedwriter] forKey:@"name"];
+		[currItem setValue:[jsonItem valueForKey:@"userNick"] forKey:@"name"];
 		
 		// Comment
-		// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=<font class=fAMemo>).*?(?=</font>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		rangeOfFirstMatch = [regex rangeOfFirstMatchInString:data options:0 range:NSMakeRange(0, [data length])];
+		NSNumber *comment = [jsonItem valueForKey:@"boardMemo_cnt"];
+		[currItem setValue:[comment stringValue] forKey:@"comment"];
 		
-		NSString *comment;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			comment = [data substringWithRange:rangeOfFirstMatch];
-			NSLog(@"comment=[%@]", comment);
-		} else {
-			NSLog(@"comment line not found");
-			comment = @"";
-		}
-		[currItem setValue:[NSString stringWithString:comment] forKey:@"comment"];
+		// Hit
+		NSNumber *hit = [jsonItem valueForKey:@"boardRead_cnt"];
+		[currItem setValue:[hit stringValue] forKey:@"hit"];
 		
 		// date
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=class=mdlgray>)\\d\\d\\d\\d-\\d\\d-\\d\\d(?=</td>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		rangeOfFirstMatch = [regex rangeOfFirstMatchInString:data options:0 range:NSMakeRange(0, [data length])];
-		
-		NSString *date;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			date = [data substringWithRange:rangeOfFirstMatch];
-			NSLog(@"date=[%@]", date);
-		} else {
-			NSLog(@"date line not found");
-			date = @"";
-		}
-		[currItem setValue:[NSString stringWithString:date] forKey:@"date"];
-		
-		// isNew
-		// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
-		regex = [NSRegularExpression regularExpressionWithPattern:@"i_new.gif" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		NSUInteger numberOfMatches = [regex numberOfMatchesInString:data options:0 range:NSMakeRange(0, [data length])];
-		NSString *isNew;
-		if (numberOfMatches > 0) {
-			isNew = @"1";
-			NSLog(@"isNew");
-		} else {
-			isNew = @"0";
-		}
-		[currItem setValue:[NSString stringWithString:isNew] forKey:@"isNew"];
-		
-		// is Reply
-		// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
-		regex = [NSRegularExpression regularExpressionWithPattern:@"i_re.gif" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		numberOfMatches = [regex numberOfMatchesInString:data options:0 range:NSMakeRange(0, [data length])];
-		NSString *isReply;
-		if (numberOfMatches > 0) {
-			isReply = @"1";
-			NSLog(@"isReply");
-		} else {
-			isReply = @"0";
-		}
-		[currItem setValue:[NSString stringWithString:isReply] forKey:@"isReply"];
+		[currItem setValue:[jsonItem valueForKey:@"boardRegister_dt"] forKey:@"date"];
 		
 		[currItem setValue:[NSNumber numberWithFloat:77.0f] forKey:@"height"];
 		

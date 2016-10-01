@@ -79,6 +79,13 @@
 	if (cell == nil) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 	}
+
+	if ([[item valueForKey:@"isNew"] intValue] == 0) {
+		[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
+	} else {
+		[cell.imageView setImage:[UIImage imageNamed:@"circle"]];
+	}
+	
 	cell.textLabel.text = [item valueForKey:@"title"];
 	
 	if (![[item valueForKey:@"link"] isEqualToString:@"-"])

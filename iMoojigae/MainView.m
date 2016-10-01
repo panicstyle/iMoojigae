@@ -10,6 +10,7 @@
 #import "SetView.h"
 #import "AboutView.h"
 #import "BoardView.h"
+#import "RecentView.h"
 #import "SetInfo.h"
 #import "LoginToService.h"
 #import "env.h"
@@ -113,16 +114,27 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	static NSString *CellIdentifier = @"reuseIdentifier";
+	static NSString *reusedentifier = @"reuseIdentifier";
+	static NSString *recentdentifier = @"recentIdentifier";
 	
-	UITableViewCell *cell = [tableView
-							 dequeueReusableCellWithIdentifier:CellIdentifier];
-	if (cell == nil) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-									  reuseIdentifier:CellIdentifier];
+	UITableViewCell *cell;
+	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
+	if ([[item valueForKey:@"link"] isEqualToString:@"recent"]) {
+		cell = [tableView
+				dequeueReusableCellWithIdentifier:recentdentifier];
+		if (cell == nil) {
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+										  reuseIdentifier:recentdentifier];
+		}
+	} else {
+		cell = [tableView
+								 dequeueReusableCellWithIdentifier:reusedentifier];
+		if (cell == nil) {
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+										  reuseIdentifier:reusedentifier];
+		}
 	}
 	// Configure the cell...
-	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 	cell.textLabel.text = [item valueForKey:@"title"];
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	
@@ -135,12 +147,18 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 	// Get the new view controller using [segue destinationViewController].
 	// Pass the selected object to the new view controller.
-	if ([[segue identifier] isEqualToString:@"Board"]) {
-		BoardView *viewController = [segue destinationViewController];
+	if ([[segue identifier] isEqualToString:@"Recent"]) {
+		RecentView *viewController = [segue destinationViewController];
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		viewController.m_strCommNo = [item valueForKey:@"link"];
+	} else if ([[segue identifier] isEqualToString:@"Board"]) {
+			BoardView *viewController = [segue destinationViewController];
+			NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
+			long row = currentIndexPath.row;
+			NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+			viewController.m_strCommNo = [item valueForKey:@"link"];
 	} else if ([[segue identifier] isEqualToString:@"SetLogin"]) {
 		SetView *viewController = [segue destinationViewController];
 		viewController.target = self;

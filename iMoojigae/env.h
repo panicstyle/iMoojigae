@@ -21,14 +21,15 @@
 #endif
 
 #ifdef DEBUG
-	#define WWW_SERVER  @"http://www.moojigae.or.kr"
-	#define PUSH_SERVER  @"http://www.moojigae.or.kr"
+	#define WWW_SERVER  @"http://www2.moojigae.or.kr"
+	#define PUSH_SERVER  @"http://www2.moojigae.or.kr"
 #else
 	#define WWW_SERVER  @"http://www.moojigae.or.kr"
 	#define PUSH_SERVER  @"http://www.moojigae.or.kr"
 #endif
 
-#define BOARD_LIST    @"/board-list.do?boardId="
+#define BOARD_LIST    @"/board-api-list.do?boardId="
+#define BOARD_READ    @"/board-api-read.do?boardId="
 #define kSampleAdUnitID @"ca-app-pub-9032980304073628/9510593996"
 #define AdPubID @"a1513842aba33a7"
 

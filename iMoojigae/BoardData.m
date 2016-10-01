@@ -133,18 +133,8 @@
 {
 	NSLog(@"fetchItems2");
 	m_receiveData = [[NSMutableData alloc] init];
-	
-	NSString *boardLink;
-	
-	if ([m_strCommNo isEqualToString:@"maul"]) {
-		boardLink = @"MMain.do";
-	} else if ([m_strCommNo isEqualToString:@"school1"]) {
-		boardLink = @"JMain.do";
-	} else {
-		boardLink = @"SMain.do";
-	}
-	
-	NSString *url = [NSString stringWithFormat:@"%@/%@", WWW_SERVER, boardLink];
+		
+	NSString *url = [NSString stringWithFormat:@"%@/board-api-new.do", WWW_SERVER];
 	NSLog(@"query = [%@]", url);
 	
 	m_connection = [[NSURLConnection alloc]
@@ -166,80 +156,30 @@
 	NSString *html = [[NSString alloc] initWithData:m_receiveData
 										   encoding:NSUTF8StringEncoding];
 	
-	//    NSLog(@"html=[%@]", html);
+	NSLog(@"html=[%@]", html);
 	
-	// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(function getNewIcon\\(menu\\)).*?(return rntVal;)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:html options:0 range:NSMakeRange(0, [html length])];
-	NSString *str;
-	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-		str = [html substringWithRange:rangeOfFirstMatch];
-		NSLog(@"str [%@]", str);
-	} else {
-		NSLog(@"str not found");
-		str = @"";
+	NSError *localError = nil;
+	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
+	
+	if (localError != nil) {
+		return;
 	}
 	
-	regex = [NSRegularExpression regularExpressionWithPattern:@"(function getNewIcon\\(menu\\)).*?(else)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	rangeOfFirstMatch = [regex rangeOfFirstMatchInString:str options:0 range:NSMakeRange(0, [str length])];
-	NSString *str1;
-	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-		str1 = [str substringWithRange:rangeOfFirstMatch];
-	} else {
-		str1 = @"";
-	}
-	NSLog(@"str1=[%@]", str1);
+	NSString *strNew = [parsedObject valueForKey:@"newIconBoard"];
+	NSLog(@"strNew %@", strNew);
 	
-	regex = [NSRegularExpression regularExpressionWithPattern:@"(else).*?(return rntVal;)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	rangeOfFirstMatch = [regex rangeOfFirstMatchInString:str options:0 range:NSMakeRange(0, [str length])];
-	NSString *str2;
-	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-		str2 = [str substringWithRange:rangeOfFirstMatch];
-	} else {
-		str2 = @"";
-	}
-	NSLog(@"str2=[%@]", str2);
 	
 	// icon_new 찾기. 게시판 이름을 찾아서 그 다음에 icon_new가 있는지 확인
 	for (int i = 0; i < [m_arrayItems count]; i++) {
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:i];
 		NSString *link = [item valueForKey:@"link"];
-		NSString *title = [item valueForKey:@"title"];
-		if ([link isEqualToString:@"-"]) {
-			NSMutableAttributedString *aTitle = [[NSMutableAttributedString alloc] initWithString:title];
-			[aTitle addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(0, [aTitle length])];
-			[item setValue:aTitle forKey:@"aTitle"];
-			continue;
+
+		if ([strNew rangeOfString:link].location != NSNotFound) {
+			// strNew 최근글이 포함된 게시판 목록 리스트에서 해당 게시판 아이가 있는지 찾고, 있으면 N 아이콘을 표시한다.
+			[item setValue:[NSNumber numberWithInt:1] forKey:@"isNew"];
+		} else {
+			[item setValue:[NSNumber numberWithInt:0] forKey:@"isNew"];
 		}
-		
-		regex = [NSRegularExpression regularExpressionWithPattern:link options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		
-		NSUInteger numberOfMatches;
-		numberOfMatches = [regex numberOfMatchesInString:str1 options:0 range:NSMakeRange(0, [str1 length])];
-		if (numberOfMatches > 0) {
-			title = [NSString stringWithFormat:@"%@ N", title];
-			NSMutableAttributedString *aTitle = [[NSMutableAttributedString alloc] initWithString:title];
-			[aTitle addAttribute:NSForegroundColorAttributeName value:[UIColor orangeColor] range:NSMakeRange([aTitle length] - 1, 1)];
-			UIFont *theFont = [UIFont boldSystemFontOfSize:10.00f];
-			[aTitle addAttribute:NSFontAttributeName value:theFont range:NSMakeRange([aTitle length] - 1, 1)];
-			[item setValue:aTitle forKey:@"aTitle"];
-			continue;
-		}
-		
-		numberOfMatches = [regex numberOfMatchesInString:str2 options:0 range:NSMakeRange(0, [str2 length])];
-		if (numberOfMatches > 0) {
-			title = [NSString stringWithFormat:@"%@ R", title];
-			NSMutableAttributedString *aTitle = [[NSMutableAttributedString alloc] initWithString:title];
-			[aTitle addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor] range:NSMakeRange([aTitle length] - 1, 1)];
-			UIFont *theFont = [UIFont boldSystemFontOfSize:10.00f];
-			[aTitle addAttribute:NSFontAttributeName value:theFont range:NSMakeRange([aTitle length] - 1, 1)];
-			[item setValue:aTitle forKey:@"aTitle"];
-			continue;
-		}
-		
-		NSMutableAttributedString *aTitle = [[NSMutableAttributedString alloc] initWithString:title];
-		[item setValue:aTitle forKey:@"aTitle"];
 	}
 	
 	[target performSelector:selector withObject:nil afterDelay:0];

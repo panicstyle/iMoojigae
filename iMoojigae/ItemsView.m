@@ -121,7 +121,7 @@
 	} else {
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 		int isRe = [[item valueForKey:@"isRe"] intValue];
-		if (isRe == 0) {
+		if (isRe == 1) {
 			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierItem];
 			if (cell == nil) {
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierItem];

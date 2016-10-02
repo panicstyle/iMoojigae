@@ -12,8 +12,8 @@
 @interface ArticleWriteView : UIViewController <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, weak) IBOutlet UITableView *tbView;
 @property (nonatomic, strong) NSNumber *m_nMode;
-@property (nonatomic, strong) NSString *m_strBoardNo;
-@property (nonatomic, strong) NSString *m_strArticleNo;
+@property (nonatomic, strong) NSString *m_boardId;
+@property (nonatomic, strong) NSString *m_boardNo;
 @property (nonatomic, strong) NSString *m_strTitle;
 @property (nonatomic, strong) NSString *m_strContent;
 @property id target;

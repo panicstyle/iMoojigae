@@ -130,15 +130,17 @@
 	//Do whatever you need
 	NSLog(@"applicationDidBecomeActive with UserInfo");
 	
-	NSString *strLink;
+	NSString *boardId;
+	NSString *boardNo;
 	if ([dUserInfo objectForKey:@"link"]) {
-		strLink = [dUserInfo objectForKey:@"link"];
+		boardId = [dUserInfo objectForKey:@"boardId"];
+		boardNo = [dUserInfo objectForKey:@"boardNo"];
 	} else {
 		dUserInfo = nil;
 		return;
 	}
 	
-	if ([strLink isEqualToString:@""]) {
+	if ([boardId isEqualToString:@""] || [boardNo isEqualToString:@""]) {
 		dUserInfo = nil;
 		return;
 	}
@@ -150,7 +152,8 @@
 		viewController.m_strTitle = @"";
 		viewController.m_strDate = @"";
 		viewController.m_strName = @"";
-		viewController.m_strLink = strLink;
+		viewController.m_boardId = boardId;
+		viewController.m_boardNo = boardNo;
 		viewController.target = nil;
 		viewController.selector = nil;
 	} else {

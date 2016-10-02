@@ -163,7 +163,8 @@
 		view.m_strTitle = [item valueForKey:@"subject"];
 		view.m_strDate = [item valueForKey:@"date"];
 		view.m_strName = [item valueForKey:@"writer"];
-		view.m_strLink = [item valueForKey:@"link"];
+		view.m_boardId = [item valueForKey:@"boardId"];
+		view.m_boardNo = [item valueForKey:@"boardNo"];
 	}
 }
 

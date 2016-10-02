@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface ArticleData : NSObject
+@property (strong, nonatomic) NSString *m_boardId;
+@property (strong, nonatomic) NSString *m_boardNo;
 @property (strong, nonatomic) NSString *m_strHtml;
 @property (strong, nonatomic) NSString *m_strTitle;
 @property (strong, nonatomic) NSString *m_strName;
@@ -16,7 +18,6 @@
 @property (strong, nonatomic) NSString *m_strHit;
 @property (strong, nonatomic) NSString *m_strContent;
 @property (strong, nonatomic) NSString *m_strEditableContent;
-@property (strong, nonatomic) NSString *m_strLink;
 @property (strong, nonatomic) NSMutableArray *m_arrayItems;
 @property (strong, nonatomic) NSMutableDictionary *m_dicAttach;
 @property id target;

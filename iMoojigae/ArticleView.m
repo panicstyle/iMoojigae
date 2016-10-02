@@ -35,8 +35,6 @@
 
 	NSString *htmlString;
 
-	NSString *m_strBoardNo;
-	NSString *m_strArticleNo;
 	NSString *m_strCommentNo;
 	NSString *m_strComment;
 	NSString *m_strHit;
@@ -58,7 +56,8 @@
 @synthesize m_strTitle;
 @synthesize m_strDate;
 @synthesize m_strName;
-@synthesize m_strLink;
+@synthesize m_boardId;
+@synthesize m_boardNo;
 @synthesize target;
 @synthesize selector;
 
@@ -102,28 +101,9 @@
 */
 	m_arrayItems = [[NSMutableArray alloc] init];
 
-	// link를 파싱하여 커뮤니티 아이다와 게시판 아이디 값을 구한다.
-	NSArray *a1 = [m_strLink componentsSeparatedByString:@"?"];
-	if (a1.count != 2) { return; };
-	
-	NSArray *linkArray = [[a1 objectAtIndex:1] componentsSeparatedByString:@"&"];
-	NSLog(@"linkArray = [%@]", linkArray);
-	if (linkArray) {
-		id key;
-		for (key in linkArray) {
-			////NSLog(@"key = [%@]", key);
-			NSArray *a = [key componentsSeparatedByString:@"="];
-			NSString *name = [a objectAtIndex:0];
-			if ([name isEqual:@"boardId"]) {
-				m_strBoardNo = [NSString stringWithString:[a objectAtIndex:1]];
-			} else if ([name isEqual:@"boardNo"]) {
-				m_strArticleNo = [NSString stringWithString:[a objectAtIndex:1]];
-			}
-		}
-	}
-	
 	m_articleData = [[ArticleData alloc] init];
-	m_articleData.m_strLink = m_strLink;
+	m_articleData.m_boardId = m_boardId;
+	m_articleData.m_boardNo = m_boardNo;
 	m_articleData.target = self;
 	m_articleData.selector = @selector(didFetchItems:);
 	[m_articleData fetchItems];
@@ -328,7 +308,7 @@
 			break;
 		case 1 :
 			item = [m_arrayItems objectAtIndex:[indexPath row]];
-			if ([[item valueForKey:@"isRe"] intValue] == 0) {
+			if ([[item valueForKey:@"isRe"] intValue] == 1) {
 				cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierReply];
 				if (cell == nil) {
 					cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierReply];
@@ -600,7 +580,7 @@
 	}
 	NSString *strCommentNo = [[NSString alloc] initWithString:[linkArray objectAtIndex:1]];
 	
-	bool result = [m_articleData DeleteComment:m_strBoardNo articleNo:m_strArticleNo commentNo:strCommentNo];
+	bool result = [m_articleData DeleteComment:m_boardId articleNo:m_boardNo commentNo:strCommentNo];
 
 	if (result == false) {
 		NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
@@ -660,9 +640,9 @@
 - (void)DeleteArticle
 {
 	NSLog(@"DeleteArticleConfirm start");
-	NSLog(@"boardID=[%@], boardNo=[%@]", m_strBoardNo, m_strArticleNo);
+	NSLog(@"boardID=[%@], boardNo=[%@]", m_boardId, m_boardNo);
 	
-	bool result = [m_articleData DeleteArticle:m_strBoardNo articleNo:m_strArticleNo];
+	bool result = [m_articleData DeleteArticle:m_boardId articleNo:m_boardNo];
 	
 	if (result == false) {
         NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
@@ -702,8 +682,8 @@
 	if ([[segue identifier] isEqualToString:@"Comment"]) {
 		CommentWriteView *view = [segue destinationViewController];
 		view.m_nMode = [NSNumber numberWithInt:CommentWrite];
-		view.m_strBoardNo = m_strBoardNo;
-		view.m_strArticleNo = m_strArticleNo;
+		view.m_boardId = m_boardId;
+		view.m_boardNo = m_boardNo;
 		view.m_strCommentNo = @"";
 		view.m_strComment = @"";
 		view.target = self;
@@ -718,8 +698,8 @@
 		long row = clickedButtonPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_nMode = [NSNumber numberWithInt:CommentModify];
-		view.m_strBoardNo = m_strBoardNo;
-		view.m_strArticleNo = m_strArticleNo;
+		view.m_boardId = m_boardId;
+		view.m_boardNo = m_boardNo;
 		view.m_strCommentNo = [item valueForKey:@"no"];
 		view.m_strComment = [item valueForKey:@"comment"];
 		view.target = self;
@@ -734,8 +714,8 @@
 		long row = clickedButtonPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_nMode = [NSNumber numberWithInt:CommentReply];
-		view.m_strBoardNo = m_strBoardNo;
-		view.m_strArticleNo = m_strArticleNo;
+		view.m_boardId = m_boardId;
+		view.m_boardNo = m_boardNo;
 		view.m_strCommentNo = [item valueForKey:@"no"];
 		view.m_strComment = @"";
 		view.target = self;
@@ -743,7 +723,8 @@
 	} else if ([[segue identifier] isEqualToString:@"ArticleModify"]) {
 		ArticleWriteView *view = [segue destinationViewController];
 		view.m_nMode = [NSNumber numberWithInt:ArticleModify];
-		view.m_strBoardNo = m_strBoardNo;
+		view.m_boardId = m_boardId;
+		view.m_boardNo = m_boardNo;
 		view.m_strTitle = m_strEditableTitle;
 		view.m_strContent = m_strEditableContent;
 		view.target = self;

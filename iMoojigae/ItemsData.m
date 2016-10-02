@@ -24,7 +24,7 @@
 @implementation ItemsData
 
 @synthesize m_strCommNo;
-@synthesize m_strBoardNo;
+@synthesize m_boardId;
 @synthesize m_arrayItems;
 @synthesize target;
 @synthesize selector;
@@ -42,7 +42,7 @@
 
 - (void)fetchItems2
 {
-	NSString *url = [NSString stringWithFormat:@"%@/board-api-list.do?boardId=%@&page=%d", WWW_SERVER, m_strBoardNo, m_nPage];
+	NSString *url = [NSString stringWithFormat:@"%@/board-api-list.do?boardId=%@&page=%d", WWW_SERVER, m_boardId, m_nPage];
 
 	m_receiveData = [[NSMutableData alloc] init];
 	
@@ -165,12 +165,10 @@
 		[currItem setValue:[jsonItem valueForKey:@"userNick"] forKey:@"name"];
 		
 		// Comment
-		NSNumber *comment = [jsonItem valueForKey:@"boardMemo_cnt"];
-		[currItem setValue:[comment stringValue] forKey:@"comment"];
+		[currItem setValue:[jsonItem valueForKey:@"boardMemo_cnt"] forKey:@"comment"];
 		
 		// Hit
-		NSNumber *hit = [jsonItem valueForKey:@"boardRead_cnt"];
-		[currItem setValue:[hit stringValue] forKey:@"hit"];
+		[currItem setValue:[jsonItem valueForKey:@"boardRead_cnt"] forKey:@"hit"];
 		
 		// date
 		[currItem setValue:[jsonItem valueForKey:@"boardRegister_dt"] forKey:@"date"];

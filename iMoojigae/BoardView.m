@@ -126,7 +126,7 @@
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_strCommNo = m_strCommNo;
-		view.m_strBoardNo = [item valueForKey:@"link"];
+		view.m_boardId = [item valueForKey:@"link"];
 	} else if ([[segue identifier] isEqualToString:@"Recent"]) {
 		RecentView *view = [segue destinationViewController];
 		view.m_strCommNo = m_strCommNo;

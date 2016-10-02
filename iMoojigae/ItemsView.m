@@ -33,7 +33,7 @@
 @implementation ItemsView
 
 @synthesize m_strCommNo;
-@synthesize m_strBoardNo;
+@synthesize m_boardId;
 
 - (void)viewDidLoad
 {
@@ -58,7 +58,7 @@
 	
 	m_itemsData = [[ItemsData alloc] init];
 	m_itemsData.m_strCommNo = m_strCommNo;
-	m_itemsData.m_strBoardNo = m_strBoardNo;
+	m_itemsData.m_boardId = m_boardId;
 	m_itemsData.target = self;
 	m_itemsData.selector = @selector(didFetchItems:);
 	m_nPage = 1;
@@ -269,14 +269,15 @@
 		view.m_strTitle = [item valueForKey:@"subject"];
 		view.m_strDate = [item valueForKey:@"date"];
 		view.m_strName = [item valueForKey:@"writer"];
-		view.m_strLink = [item valueForKey:@"link"];
+		view.m_boardId = m_boardId;
+		view.m_boardNo = [item valueForKey:@"boardNo"];
 		view.target = self;
 		view.selector = @selector(didWrite:);
 	} else 	if ([[segue identifier] isEqualToString:@"ArticleWrite"]) {
 		ArticleWriteView *view = [segue destinationViewController];
 		view.m_nMode = [NSNumber numberWithInt:ArticleWrite];
-		view.m_strBoardNo = m_strBoardNo;
-		view.m_strArticleNo = @"";
+		view.m_boardId = m_boardId;
+		view.m_boardNo = @"";
 		view.m_strTitle = @"";
 		view.m_strContent = @"";
 		view.target = self;

@@ -21,6 +21,8 @@
 @end
 
 @implementation ArticleData
+@synthesize m_boardId;
+@synthesize m_boardNo;
 @synthesize m_strTitle;
 @synthesize m_strName;
 @synthesize m_strDate;
@@ -28,7 +30,6 @@
 @synthesize m_strHtml;
 @synthesize m_strContent;
 @synthesize m_strEditableContent;
-@synthesize m_strLink;
 @synthesize m_arrayItems;
 @synthesize m_dicAttach;
 @synthesize target;
@@ -48,7 +49,7 @@
 
 - (void)fetchItems2
 {
-	NSString *url = [NSString stringWithFormat:@"%@/%@", WWW_SERVER, m_strLink];
+	NSString *url = [NSString stringWithFormat:@"%@/board-api-read.do?boardId=%@&boardNo=%@&command=READ&page=1&categoryId=-1&rid=20", WWW_SERVER, m_boardId, m_boardNo];
 
 	m_connection = [[NSURLConnection alloc]
 			initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
@@ -72,6 +73,11 @@
 	
 	NSLog(@"html = [%lu]", (unsigned long)[m_strHtml length]);
 	
+	if ([Utils numberOfMatches:m_strHtml regex:@"<td><font style=font-size:12pt></td><b>시스템 메세지입니다</b></font><br>접근이 차단되었습니다<br>"] > 0) {
+		[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
+		return;
+	}
+
 	// parent.setMainBodyLogin 가 포함되어 있으면 다시 로그인해야 함.
 	if ([Utils numberOfMatches:m_strHtml regex:@"parent.setMainBodyLogin"] > 0) {
 		if (m_isLogin == FALSE) {
@@ -95,104 +101,86 @@
 		}
 	}
 	
+	NSError *localError = nil;
+	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
 	
-	// Title, Name, Date, Hit
-	
-	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<font class=fTitle><b>제목 : <font size=3>).*?(?=</font>)"];
-	
-	NSString *strTitle = [Utils findStringWith:m_strHtml from:@"<td class=fSubTitle>" to:@"<td class=lReadTop></td>"];
-	
-	m_strName = [Utils findStringRegex:strTitle regex:@"(?<=textDecoration='none'>).*?(?=</font>)"];
-	m_strName = [Utils replaceStringHtmlTag:m_strName];
-	m_strDate = [Utils findStringRegex:strTitle regex:@"\\d\\d\\d\\d-\\d\\d-\\d\\d.\\d\\d:\\d\\d:\\d\\d"];
-	m_strHit = [Utils findStringRegex:strTitle regex:@"(?<=<font style=font-style:italic>).*?(?=</font>)"];
-	
-	strTitle = [NSString stringWithFormat:@"<div class='title'>%@</div><div class='name'><span>%@</span>&nbsp;&nbsp;<span>%@</span>&nbsp;&nbsp;<span>%@</span>명이 읽음</div>", m_strTitle, m_strName, m_strDate, m_strHit];
-	
-	NSString *strContent = [Utils findStringWith:m_strHtml from:@"<!-- 내용 -->" to:@"<!-- 투표 -->"];
-	
-	if ([strContent isEqualToString:@""]) {
-		NSLog(@"contents start NotFound url");
-		[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
+	if (localError != nil) {
 		return;
 	}
 	
-	strContent = [strContent stringByReplacingOccurrencesOfString:@"<td width=200 align=right class=fMemoSmallGray>" withString:@"<!--"];
-	strContent = [strContent stringByReplacingOccurrencesOfString:@"<td width=10></td>" withString:@"-->"];
-	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!-- 메모에 대한 답변 -->" withString:@"<!--"];
-	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!-- <font class=fMemoSmallGray>" withString:@"--><!--"];
-	strContent = [strContent stringByReplacingOccurrencesOfString:@"<nobr class=bbscut id=subjectTtl name=subjectTtl>" withString:@""];
-	strContent = [strContent stringByReplacingOccurrencesOfString:@"(</nobr)" withString:@""];
-	strContent = [NSString stringWithFormat:@"<div class='content'>%@</div>", strContent];
+	// Title, Name, Date, Hit
+	
+	m_strTitle = [parsedObject valueForKey:@"boardTitle"];
+
+	m_strName = [parsedObject valueForKey:@"userNick"];
+	
+	m_strDate = [parsedObject valueForKey:@"boardRegister_dt"];
+	
+	m_strHit = [parsedObject valueForKey:@"boardRead_cnt"];
+	
+	NSString *strContent = [parsedObject valueForKey:@"boardContent"];;
 	
 	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
 	
-	NSString *strAttach = [Utils findStringWith:m_strHtml from:@"<!-- 업로드 파일 정보  수정본 Edit By Yang -->" to:@"<!-- 평가 -->"];
-	strAttach = [NSString stringWithFormat:@"<div class='attach'><table>%@</table></div>", strAttach];
-
-	// 첨부파일 목록 만들기. 다운로드할 때 저잫할 파일이름을 획득하기 위한 방법
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<font class=smallgray>)(.|\\n)*?(</font>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
+	NSArray *imageItems = [parsedObject valueForKey:@"image"];
 	
-	NSArray *matches = [regex matchesInString:strAttach
-									  options:0
-										range:NSMakeRange(0, [strAttach length])];
-	for (NSTextCheckingResult *match in matches) {
-		NSRange matchRange = [match range];
-		NSString *matchStr = [strAttach substringWithRange:matchRange];
+	NSMutableString *strImage = [[NSMutableString alloc]init];
+	[strImage appendString:@""];
+	
+	for (int i = 0; i < [imageItems count]; i++) {
+		NSDictionary *jsonItem = [imageItems objectAtIndex:i];
+		NSString *link = [jsonItem valueForKey:@"link"];
+		[strImage appendString:link];
+	}
+
+	NSMutableString *strAttach = [[NSMutableString alloc]init];
+	[strAttach appendString:@""];
+
+	NSArray *attachItems = [parsedObject valueForKey:@"attachment"];
+	
+	if ([attachItems count] > 0) {
+		[strAttach appendString:@"<table boader=1><tr><th>첨부파일</th></tr>"];
+	}
+	for (int i = 0; i < [attachItems count]; i++) {
+		NSDictionary *jsonItem = [attachItems objectAtIndex:i];
+		NSString *link = [jsonItem valueForKey:@"link"];
+		[strAttach appendString:@"<tr><td>"];
+		[strAttach appendString:link];
+		[strAttach appendString:@"</td></tr>"];
 		
-		NSString *n = [Utils findStringRegex:matchStr regex:@"(?<=&c=).*?(?=&)"];
-		NSString *f = [Utils findStringRegex:matchStr regex:@"(?<=_self\\'\\)>).*?(?=</font>)"];
+		NSString *n = [jsonItem valueForKey:@"fileSeq"];
+		NSString *f = [jsonItem valueForKey:@"fileName"];
 
 		[m_dicAttach setValue:f forKey:n];
 	}
-	
-	// Attach 가 가로로 표시되는데 이 부분을 세로로 표시되게끔 수정
-	//	strAttach = [strAttach stringByReplacingOccurrencesOfString:@"</font>\n" withString:@"</font>\n</td></tr><tr><td align=right class=cContent>"];
-	strAttach = [Utils replaceStringRegex:strAttach regex:@"</font>\r" replace:@"</font>\n</td></tr><tr><td align=right class=cContent>"];
-//	strAttach = [Utils replaceStringRegex:strAttach regex:@"</font>\r" replace:@"</font>\r</ br>"];
+	if ([attachItems count] > 0) {
+		[strAttach appendString:@"</tr></table>"];
+	}
 
-	NSString *strProfile = [Utils findStringWith:m_strHtml from:@"<!-- 별점수 -->" to:@"<!-- 관련글 -->"];
+	NSString *strProfile = [NSString stringWithFormat:@"<div class='profile'>%@</div>", [parsedObject valueForKey:@"userComment"]];
 	
-	strProfile = [Utils findStringRegex:strProfile regex:@"(?<=<td class=cContent>).*?(?=</td>)"];
-	strProfile = [NSString stringWithFormat:@"<div class='profile'>%@</div>", strProfile];
-	
-	NSString *mComment = [Utils findStringWith:m_strHtml from:@"<!-- 메모글 반복 -->" to:@"<!-- 메모 입력 -->"];
-	
-	NSArray *commentItems = [mComment componentsSeparatedByString:@"<tr onMouseOver=this.style.backgroundColor='#F0F8FF'; onMouseOut=this.style.backgroundColor=''; class=bMemo>"];
-	
+	NSArray *memoItems = [parsedObject valueForKey:@"memo"];
+
 	NSMutableDictionary *currItem;
 	
-	for (int i = 1; i < [commentItems count]; i++) {
-		NSString *s = [commentItems objectAtIndex:i];
+	for (int i = 0; i < [memoItems count]; i++) {
+		NSDictionary *jsonItem = [memoItems objectAtIndex:i];
 		currItem = [[NSMutableDictionary alloc] init];
 		
-		NSRange find1 = [s rangeOfString:@"i_memo_reply.gif"];
-		if (find1.location == NSNotFound) {
-			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
-		} else {
-			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isRe"];
-		}
-		
-		NSString *strNo = [Utils findStringRegex:s regex:@"(?<=<span id=memoReply_).*?(?=>)"];
-		[currItem setValue:strNo forKey:@"no"];
+		// ieRe
+		[currItem setValue:[jsonItem valueForKey:@"memoDep"] forKey:@"isRe"];
+
+		// no
+		[currItem setValue:[jsonItem valueForKey:@"memoSeq"] forKey:@"no"];
 		
 		// Name
-		NSString *strName = [Utils findStringRegex:s regex:@"(<font onclick=\\\"viewCharacter).*?(</font>)"];
-		strName = [Utils replaceStringRegex:strName regex:@"(<).*?(>)" replace:@""];
-		strName = [strName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		
-		[currItem setValue:strName forKey:@"name"];
+		[currItem setValue:[jsonItem valueForKey:@"userNick"] forKey:@"name"];
 		
 		// Date
-		NSString *strDate = [Utils findStringRegex:s regex:@"(?<=<td width=200 align=right class=fMemoSmallGray>).*?(?=</td>)"];
-		strDate = [Utils replaceStringRegex:strDate regex:@"(<).*?(>)" replace:@""];
-		strDate = [strDate stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		
-		[currItem setValue:strDate forKey:@"date"];
+		[currItem setValue:[jsonItem valueForKey:@"memoRegister_dt"] forKey:@"date"];
 		
 		// Comment
-		NSString *strComm = [Utils findStringRegex:s regex:@"(<span id=memoReply_).*?(<!-- 메모에 대한 답변 -->)"];
+		NSString *strComm = [jsonItem valueForKey:@"memoContent"];
 		strComm = [Utils replaceStringHtmlTag:strComm];
 		[currItem setValue:strComm forKey:@"comment"];
 		
@@ -214,14 +202,24 @@
 	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=euc-kr\">"];
 	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
 	[strHeader appendString:@"<style>body {font-family:\"고딕\";font-size:medium;}.title{text-margin:10px 0px;font-size:large}.name{color:gray;margin:10px 0px;font-size:small}.content{}.profile {text-align:left;color:gray;margin:10px 0px;font-size:small}.comment_header{text-align:left;color:white;background: lightgray;padding:20px 0px 10px 10px;font-size:small}.reply{border-bottom:1px solid gray;margin:10px 0px}.reply_header {color:gray;;font-size:small}.reply_content {margin:10px 0px}.re_reply{border-bottom:1px solid gray;margin:10px 0px 0px 20px;background:lightgray}</style>"];
-	[strHeader appendString:@"</head>"];
+	[strHeader appendString:@"<script> \
+		function imageResize() { \
+			var boardWidth = window.innerWidth - 30; \
+			if (document.cashcow && document.cashcow.boardWidth) \
+				boardWidth = document.cashcow.boardWidth.value - 70; \
+			var obj = document.getElementsByName('unicornimage'); \
+			for (var i = 0; i < obj.length; i++) { \
+				if (obj[i].width > boardWidth) \
+					obj[i].width = boardWidth; \
+			} \
+		}</script>"];
+	 [strHeader appendString:@"<script>window.onload=imageResize;</script></head>"];
 	NSString *strBottom = @"</body></html>";
-	NSString *strResize = @"<script>function resizeImage2(mm){var width = eval(mm.width);var height = eval(mm.height);if( width > 300 ){var p_height = 300 / width;var new_height = height * p_height;eval(mm.width = 300);eval(mm.height = new_height);}} function image_open(src, mm) { var width = eval(mm.width); window.open(src,'image');}</script>";
 	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
 	NSString *strBody = @"<body>";
 	
 	
-	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@%@%@", strHeader, strResize, strBody, strContent, strAttach, strProfile, strBottom];
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@%@%@", strHeader, strBody, strContent, strImage, strAttach, strProfile, strBottom];
 	
 	/*
 	 CGRect rectScreen = m_webView.frame;
@@ -239,17 +237,14 @@
 {
 	NSLog(@"DeleteArticleConfirm start");
 	NSLog(@"boardID=[%@], boardNo=[%@]", strBoardNo, strArticleNo);
-	
-	// http://121.134.211.159/board-save.do
-	// boardId=mvHorizonLivingStory&page=1&categoryId=-1&time=1334217622773&returnBoardNo=133404944519504&boardNo=133404944519504&command=DELETE&totalPage=0&totalRecords=0&serialBadNick=&serialBadContent=&htmlImage=%2Fout&thumbnailSize=50&memoWriteable=true&list_yn=N&replyList_yn=N&defaultBoardSkin=default&boardWidth=710&multiView_yn=Y&titleCategory_yn=N&category_yn=N&titleNo_yn=Y&titleIcon_yn=N&titlePoint_yn=N&titleMemo_yn=Y&titleNew_yn=Y&titleThumbnail_yn=N&titleNick_yn=Y&titleTag_yn=Y&anonymity_yn=N&titleRead_yn=Y&boardModel_cd=A&titleDate_yn=Y&tag_yn=Y&thumbnailSize=50&readOver_color=%23336699&boardSerialBadNick=&boardSerialBadContent=&userPw=&userNick=&memoContent=&memoSeq=&pollSeq=&returnURI=&beforeCommand=&starPoint=&provenance=board-read.do&tagsName=&pageScale=&searchOrKey=&searchType=&tag=1
-	
+		
 	NSString *url = [NSString stringWithFormat:@"%@/board-save.do", WWW_SERVER];
 	NSLog(@"url = [%@]", url);
 	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
 	[request setURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"POST"];
-	[request addValue:@"http://121.134.211.159/board-read.do" forHTTPHeaderField:@"Referer"];
+	[request addValue:@"http://www.moojijgae.or.kr/board-read.do" forHTTPHeaderField:@"Referer"];
 	[request addValue:@"gzip,deflate,sdch" forHTTPHeaderField:@"Accept-Encoding"];
 	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
 	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
@@ -288,9 +283,11 @@
 	NSLog(@"url = [%@]", url);
 	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+	NSString *strReferer = [NSString stringWithFormat:@"%@/board-read.do", WWW_SERVER];
+	
 	[request setURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"POST"];
-	[request addValue:@"http://121.134.211.159/board-read.do" forHTTPHeaderField:@"Referer"];
+	[request addValue:strReferer forHTTPHeaderField:@"Referer"];
 	[request addValue:@"gzip,deflate,sdch" forHTTPHeaderField:@"Accept-Encoding"];
 	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
 	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];

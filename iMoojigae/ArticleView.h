@@ -18,7 +18,8 @@
 @property (strong, nonatomic) NSString *m_strTitle;
 @property (strong, nonatomic) NSString *m_strDate;
 @property (strong, nonatomic) NSString *m_strName;
-@property (strong, nonatomic) NSString *m_strLink;
+@property (strong, nonatomic) NSString *m_boardId;
+@property (strong, nonatomic) NSString *m_boardNo;
 @property id target;
 @property SEL selector;
 @property (nonatomic, retain) UIDocumentInteractionController *doic;

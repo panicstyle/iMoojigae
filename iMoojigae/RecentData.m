@@ -32,12 +32,18 @@
 
 	NSString *url;
 	
+	NSString *strMaul = @"mvTopic,mvTopic10Year,mvTopicGoBackHome,mvEduBasicRight,mvGongi,mvGongDong,mvGongDongFacility,mvGongDongEvent,mvGongDongLocalcommunity,mvDonghowhe,mvDonghowheMoojiageFC,mvPoomASee,mvPoomASeeWantBiz,mvPoomASeeBized,mvEduLove,mvEduVillageSchool,mvEduDream,mvEduSpring,mvEduSpring,mvMarketBoard,mvHorizonIntroduction,mvHorizonLivingStory,mvSecretariatAddress,mvSecretariatOldData,mvMinutes,mvEduResearch,mvBuilding,mvBuildingComm,mvDonationGongi,mvDonationQnA,toHomePageAdmin,mvUpgrade";
+	NSString *strSchool1 = @"mjGongi,mjFreeBoard,mjTeacher,mjTeachingData,mjJunior,mjParent,mjParentMinutes,mjAmaDiary,mjSchoolFood,mjPhoto,mjData";
+	NSString *strSchool2 = @"msGongi,msFreeBoard,msOverRainbow,msFreeComment,msTeacher,msSenior,msStudent,ms5Class,msStudentAssociation,msParent,msRepresentative,msMinutes,msPhoto,msData";
+	
 	if ([m_strCommNo isEqualToString:@"maul"]) {
-		url = @"http://www.moojigae.or.kr/Mboard-recent.do?part=index&rid=50&pid=mvTopic,mvTopic10Year,mvTopicGoBackHome,mvEduBasicRight,mvGongi,mvGongDong,mvGongDongFacility,mvGongDongEvent,mvGongDongLocalcommunity,mvDonghowhe,mvDonghowheMoojiageFC,mvPoomASee,mvPoomASeeWantBiz,mvPoomASeeBized,mvEduLove,mvEduVillageSchool,mvEduDream,mvEduSpring,mvEduSpring,mvMarketBoard,mvHorizonIntroduction,mvHorizonLivingStory,mvSecretariatAddress,mvSecretariatOldData,mvMinutes,mvEduResearch,mvBuilding,mvBuildingComm,mvDonationGongi,mvDonationQnA,toHomePageAdmin,mvUpgrade";
+		url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=50&pid=%@", WWW_SERVER, strMaul];
 	} else if ([m_strCommNo isEqualToString:@"school1"]) {
-		url = @"http://www.moojigae.or.kr/Mboard-recent.do?part=index&rid=50&pid=mjGongi,mjFreeBoard,mjTeacher,mjTeachingData,mjJunior,mjParent,mjParentMinutes,mjAmaDiary,mjSchoolFood,mjPhoto,mjData";
-	} else {
-		url = @"http://www.moojigae.or.kr/Mboard-recent.do?part=index&rid=50&pid=msGongi,msFreeBoard,msOverRainbow,msFreeComment,msTeacher,msSenior,msStudent,ms5Class,msStudentAssociation,msParent,msRepresentative,msMinutes,msPhoto,msData";
+		url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=50&pid=%@", WWW_SERVER, strSchool1];
+	} else if ([m_strCommNo isEqualToString:@"school2"]) {
+		url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=50&pid=%@", WWW_SERVER, strSchool2];
+	} else if ([m_strCommNo isEqualToString:@"recent"]) {
+		url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=100&pid=%@,%@,%@", WWW_SERVER, strMaul, strSchool1, strSchool2];
 	}
 	
 
@@ -47,7 +53,6 @@
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
 	[request setURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"POST"];
-	//        [request addValue:@"http://121.134.211.159/board-list.do" forHTTPHeaderField:@"Referer"];
 	[request addValue:@"gzip,deflate,sxdch" forHTTPHeaderField:@"Accept-Encoding"];
 	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
 	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
@@ -84,44 +89,51 @@
 	
 	NSString *str = [[NSString alloc] initWithData:m_receiveData
 										  encoding:g_encodingOption];
+
+	NSError *localError = nil;
+	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
 	
-	// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=<td width=\\\"2\\\").*?(?=<th height=\\\"1\\\")" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSArray *matches = [regex matchesInString:str options:0 range:NSMakeRange(0, [str length])];
+	if (localError != nil) {
+		return;
+	}
+	
+	NSArray *jsonItems = [parsedObject valueForKey:@"item"];
 	
 	NSMutableDictionary *currItem;
 	
-	for (NSTextCheckingResult *match in matches) {
-		NSRange matchRange = [match range];
-		NSString *str2 = [str substringWithRange:matchRange];
-		NSLog(@"str2=[%@]", str2);
+	for (int i = 0; i < [jsonItems count]; i++) {
+		NSDictionary *jsonItem = [jsonItems objectAtIndex:i];
 		
 		currItem = [[NSMutableDictionary alloc] init];
-		// Link
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=setMainBody\\(\\'contextTableMainBody\\',\\').*?(?=\\')" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:str2 options:0 range:NSMakeRange(0, [str2 length])];
-		NSString *link;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			link = [str2 substringWithRange:rangeOfFirstMatch];
-			NSLog(@"link=[%@]", link);
-		} else {
-			NSLog(@"link line not found");
-			link = @"";
-		}
-		[currItem setValue:[NSString stringWithString:link] forKey:@"link"];
 		
-		// Subject
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=target=_self class=\\\"list\\\">).*?(?=</a>)" options:0 error:&error];
-		rangeOfFirstMatch = [regex rangeOfFirstMatchInString:str2 options:0 range:NSMakeRange(0, [str2 length])];
-		NSString *subject;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			subject = [str2 substringWithRange:rangeOfFirstMatch];
-			NSLog(@"subject=[%@]", subject);
+		// boardNo
+		NSString *boardNo = [jsonItem valueForKey:@"boardNo"];
+		[currItem setValue:boardNo forKey:@"boardNo"];
+		
+		// isNew
+		NSString *isNew = [jsonItem valueForKey:@"recentArticle"];
+		if ([isNew isEqualToString:@"Y"]) {
+			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isNew"];
 		} else {
-			NSLog(@"subject line not found");
-			subject = @"";
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isNew"];
 		}
+		
+		// isUpdated
+		NSString *isUpdated = [jsonItem valueForKey:@"updatedArticle"];
+		if ([isUpdated isEqualToString:@"Y"]) {
+			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isUpdated"];
+		} else {
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isUpdated"];
+		}
+		
+		// 답변글 여부
+		[currItem setValue:[jsonItem valueForKey:@"boardDep"] forKey:@"isRe"];
+		
+		// boardId
+		[currItem setValue:[jsonItem valueForKey:@"boardId"] forKey:@"boardId"];
+		
+		// subject
+		NSString *subject = [jsonItem valueForKey:@"boardTitle"];
 		subject = [subject stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
 		subject = [subject stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
 		subject = [subject stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
@@ -130,66 +142,21 @@
 		[currItem setValue:[NSString stringWithString:subject] forKey:@"subject"];
 		
 		// writer
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=color:royalblue>).*?(?=</font>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		rangeOfFirstMatch = [regex rangeOfFirstMatchInString:str2 options:0 range:NSMakeRange(0, [str2 length])];
-		NSString *writer;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			writer = [str2 substringWithRange:rangeOfFirstMatch];
-			NSLog(@"writer=[%@]", writer);
-		} else {
-			NSLog(@"writer line not found");
-			writer = @"";
-		}
-		if ([writer length] > 2) {
-			writer = [writer substringWithRange:NSMakeRange(1, [writer length] - 2)];
-		}
-		
-		[currItem setValue:[NSString stringWithString:writer] forKey:@"name"];
-		
-		// Date
-		// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=<span class=\\\"board-inlet\\\">).*?(?=</span>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		rangeOfFirstMatch = [regex rangeOfFirstMatchInString:str2 options:0 range:NSMakeRange(0, [str2 length])];
-		NSString *date;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			date = [str2 substringWithRange:rangeOfFirstMatch];
-			NSLog(@"date=[%@]", date);
-		} else {
-			NSLog(@"date line not found");
-			date = @"";
-		}
-		[currItem setValue:[NSString stringWithString:date] forKey:@"date"];
+		[currItem setValue:[jsonItem valueForKey:@"userNick"] forKey:@"name"];
 		
 		// Comment
-		// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=<span class=\\\"board-comment\\\">\\().*?(?=\\)</s)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		rangeOfFirstMatch = [regex rangeOfFirstMatchInString:str2 options:0 range:NSMakeRange(0, [str2 length])];
-		NSString *comment;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			comment = [str2 substringWithRange:rangeOfFirstMatch];
-			NSLog(@"comment=[%@]", comment);
-		} else {
-			NSLog(@"comment line not found");
-			comment = @"";
-		}
-		[currItem setValue:[NSString stringWithString:comment] forKey:@"comment"];
+		[currItem setValue:[jsonItem valueForKey:@"boardMemo_cnt"] forKey:@"comment"];
 		
-		// isNew
-		// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
-		regex = [NSRegularExpression regularExpressionWithPattern:@"icon6.GIF" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		NSUInteger numberOfMatches = [regex numberOfMatchesInString:str2 options:0 range:NSMakeRange(0, [str2 length])];
-		NSString *isNew;
-		if (numberOfMatches > 0) {
-			isNew = @"1";
-			NSLog(@"isNew");
-		} else {
-			isNew = @"0";
-		}
-		[currItem setValue:[NSString stringWithString:isNew] forKey:@"isNew"];
+		// Hit
+		[currItem setValue:[jsonItem valueForKey:@"boardRead_cnt"] forKey:@"hit"];
+		
+		// date
+		[currItem setValue:[jsonItem valueForKey:@"boardRegister_dt"] forKey:@"date"];
+		
+		[currItem setValue:[NSNumber numberWithFloat:77.0f] forKey:@"height"];
 		
 		[currItem setValue:[NSNumber numberWithFloat:77.0f] forKey:@"height"];
 
-		
 		[m_arrayItems addObject:currItem];
 	}
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];

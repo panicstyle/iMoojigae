@@ -79,6 +79,13 @@
 	if (cell == nil) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 	}
+
+	if ([[item valueForKey:@"isNew"] intValue] == 0) {
+		[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
+	} else {
+		[cell.imageView setImage:[UIImage imageNamed:@"circle"]];
+	}
+	
 	cell.textLabel.text = [item valueForKey:@"title"];
 	
 	if (![[item valueForKey:@"link"] isEqualToString:@"-"])
@@ -119,7 +126,7 @@
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_strCommNo = m_strCommNo;
-		view.m_strBoardNo = [item valueForKey:@"link"];
+		view.m_boardId = [item valueForKey:@"link"];
 	} else if ([[segue identifier] isEqualToString:@"Recent"]) {
 		RecentView *view = [segue destinationViewController];
 		view.m_strCommNo = m_strCommNo;

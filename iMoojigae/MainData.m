@@ -20,6 +20,11 @@
 	NSMutableDictionary *currItem;
 	
 	currItem = [[NSMutableDictionary alloc] init];
+	[currItem setValue:@"최근글보기" forKey:@"title"];
+	[currItem setValue:@"recent" forKey:@"link"];
+	[m_arrayItems addObject:currItem];
+	
+	currItem = [[NSMutableDictionary alloc] init];
 	[currItem setValue:@"무지개교육마을" forKey:@"title"];
 	[currItem setValue:@"maul" forKey:@"link"];
 	[m_arrayItems addObject:currItem];

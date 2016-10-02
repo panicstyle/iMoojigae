@@ -572,13 +572,7 @@
 	long row = clickedButtonPath.row;
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
-	
-	NSArray *linkArray = [m_strCommentNo componentsSeparatedByString:@"_"];
-	NSLog(@"linkArray = [%@]", linkArray);
-	if ([linkArray count] < 2) {
-		return;
-	}
-	NSString *strCommentNo = [[NSString alloc] initWithString:[linkArray objectAtIndex:1]];
+	NSString *strCommentNo = m_strCommentNo;
 	
 	bool result = [m_articleData DeleteComment:m_boardId articleNo:m_boardNo commentNo:strCommentNo];
 

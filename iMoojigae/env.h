@@ -21,8 +21,8 @@
 #endif
 
 #ifdef DEBUG
-	#define WWW_SERVER  @"http://www2.moojigae.or.kr"
-	#define PUSH_SERVER  @"http://www2.moojigae.or.kr"
+	#define WWW_SERVER  @"http://www.moojigae.or.kr"
+	#define PUSH_SERVER  @"http://www.moojigae.or.kr"
 #else
 	#define WWW_SERVER  @"http://www.moojigae.or.kr"
 	#define PUSH_SERVER  @"http://www.moojigae.or.kr"

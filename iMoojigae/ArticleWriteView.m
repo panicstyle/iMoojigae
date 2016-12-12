@@ -7,6 +7,7 @@
 //
 
 #import "ArticleWriteView.h"
+#import "Utils.h"
 
 @interface ArticleWriteView ()
 {
@@ -16,6 +17,7 @@
 	long m_lContentHeight;
 	UITableViewCell *m_contentCell;
 	UITableViewCell *m_imageCell;
+	UIAlertView *alertWait;
 }
 
 @end
@@ -152,6 +154,27 @@
 	return fullScreenRect;
 }
 
+- (void)AlertShow
+{
+	alertWait = [[UIAlertView alloc] initWithTitle:@"저장중입니다." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+	[alertWait show];
+	
+	UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+	
+	// Adjust the indicator so it is up a few pixels from the bottom of the alert
+	indicator.center = CGPointMake(alertWait.bounds.size.width / 2, alertWait.bounds.size.height - 50);
+	[indicator startAnimating];
+	[alertWait addSubview:indicator];
+	
+	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+}
+
+- (void)AlertDismiss
+{
+	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+	[alertWait dismissWithClickedButtonIndex:0 animated:YES];
+}
+
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -227,6 +250,8 @@
 		return;
 	}
 	
+	[self AlertShow];
+	
 	NSString *url = [NSString stringWithFormat:@"%@/board-save.do",
 					 WWW_SERVER];
 	
@@ -277,12 +302,12 @@
 	
 	NSLog(@"returnString = [%@]", returnString);
 	
-	regex = [NSRegularExpression regularExpressionWithPattern:@"parent\\.checkLogin()" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSUInteger numberOfMatches = [regex numberOfMatchesInString:returnString options:0 range:NSMakeRange(0, [returnString length])];
+	[self AlertDismiss];
 	
-	if (numberOfMatches <= 0) {
+	if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
 		NSString *errmsg;
-		errmsg = @"글 작성중 오류가 발생했습니다. 잠시후 다시 해보세요.";
+		NSString *errmsg2 = [Utils findStringRegex:returnString regex:@"(?<=<b>시스템 메세지입니다</b></font><br>).*?(?=<br>)"];
+		errmsg = [NSString stringWithFormat:@"글 작성중 오류가 발생했습니다. 잠시후 다시 해보세요.[%@]", errmsg2];
 		
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"글 작성 오류"
 														message:errmsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"확인", nil];

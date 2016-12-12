@@ -8,6 +8,7 @@
 
 
 #import "CommentWriteView.h"
+#import "Utils.h"
 #import "env.h"
 
 @interface CommentWriteView () {
@@ -276,15 +277,18 @@
     
     NSLog(@"returnString = [%@]", returnString);
     
-    regex = [NSRegularExpression regularExpressionWithPattern:@"function redirect" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-    NSUInteger numberOfMatches = [regex numberOfMatchesInString:returnString options:0 range:NSMakeRange(0, [returnString length])];
-	
 	[self AlertDismiss];
-    
-    if (numberOfMatches <= 0) {
-		m_strErrorMsg = @"댓글 저장중 오류";
+	
+	if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
+		NSString *errmsg;
+		NSString *errmsg2 = [Utils findStringRegex:returnString regex:@"(?<=<b>시스템 메세지입니다</b></font><br>).*?(?=<br>)"];
+		errmsg = [NSString stringWithFormat:@"댓글 작성중 오류가 발생했습니다. 잠시후 다시 해보세요.[%@]", errmsg2];
+		
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"댓글 작성 오류"
+														message:errmsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
+		[alert show];
 		return false;
-    }
+	}
 	return true;
 }
 

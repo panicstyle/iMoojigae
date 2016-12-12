@@ -10,6 +10,7 @@
 #import "env.h"
 #import "SetStorage.h"
 #import "AppDelegate.h"
+#import "Utils.h"
 //#import "HTTPRequest.h"
 
 @implementation LoginToService
@@ -41,7 +42,7 @@
 	}
     
     NSLog(@"Before Logout");
-//    [self Logout];
+   [self Logout];
     NSLog(@"After Logout");
 //    [self GetMain];
 	
@@ -72,7 +73,7 @@
     NSLog(@"returnString = [%@]", returnString);
     
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
- 
+	
     if (returnString && [returnString rangeOfString:@"<script language=javascript>moveTop()</script>"].location != NSNotFound) {
 		AppDelegate *getVar = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 		getVar.strUserId = userid;
@@ -83,8 +84,12 @@
 		
         return TRUE;
     } else {
-        return FALSE;
-    }	
+		if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
+			return FALSE;
+		} else {
+			return TRUE;
+		}
+    }
 
     return FALSE;
 }

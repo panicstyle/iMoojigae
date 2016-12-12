@@ -1,4 +1,4 @@
-//
+	//
 //  ArticleData.m
 //  iMoojigae
 //
@@ -10,6 +10,7 @@
 #import "Utils.h"
 #import "env.h"
 #import "LoginToService.h"
+#import "Utils.h"
 
 @interface ArticleData () {
 	NSMutableData *m_receiveData;
@@ -263,11 +264,7 @@
 	//history.go(-1);
 	NSLog(@"returnData = [%@]", str);
 	
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"parent.checkLogin" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSUInteger numberOfMatches = [regex numberOfMatchesInString:str options:0 range:NSMakeRange(0, [str length])];
-	
-	if (numberOfMatches <= 0) {
+	if ([Utils numberOfMatches:str regex:@"<b>시스템 메세지입니다</b>"] > 0) {
 		return false;
 	}
 	
@@ -310,11 +307,7 @@
 	//history.go(-1);
 	NSLog(@"returnData = [%@]", str);
 	
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"function redirect" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSUInteger numberOfMatches = [regex numberOfMatchesInString:str options:0 range:NSMakeRange(0, [str length])];
-	
-	if (numberOfMatches <= 0) {
+	if ([Utils numberOfMatches:str regex:@"<b>시스템 메세지입니다</b>"] > 0) {
 		return false;
 	}
 	

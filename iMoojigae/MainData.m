@@ -7,9 +7,17 @@
 //
 
 #import "MainData.h"
+#import "env.h"
+
+@interface MainData () {
+	NSMutableData *m_receiveData;
+	NSURLConnection *m_connection;
+}
+@end
 
 @implementation MainData
 @synthesize m_arrayItems;
+@synthesize m_strRecent;
 @synthesize target;
 @synthesize selector;
 
@@ -39,6 +47,49 @@
 	[currItem setValue:@"school2" forKey:@"link"];
 	[m_arrayItems addObject:currItem];
 	
+	[self fetchItems2];
+}
+
+- (void)fetchItems2
+{
+	NSLog(@"fetchItems2");
+	m_receiveData = [[NSMutableData alloc] init];
+	
+	NSString *url = [NSString stringWithFormat:@"%@/board-api-menu.do?comm=0", WWW_SERVER];
+	NSLog(@"query = [%@]", url);
+	
+	m_connection = [[NSURLConnection alloc]
+					initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
+	NSLog(@"fetchItems 3");
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+	NSLog(@"didReceiveData");
+	[m_receiveData appendData:data];
+	NSLog(@"didReceiveData receiveData=[%lu], data=[%lu]", (unsigned long)[m_receiveData length], (unsigned long)[data length]);
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+	NSLog(@"ListView receiveData Size = [%lu]", (unsigned long)[m_receiveData length]);
+	
+	NSString *html = [[NSString alloc] initWithData:m_receiveData
+										   encoding:NSUTF8StringEncoding];
+	
+	NSLog(@"html=[%@]", html);
+	
+	NSError *localError = nil;
+	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
+	
+	if (localError != nil) {
+		return;
+	}
+	
+	m_strRecent = [parsedObject valueForKey:@"recent"];
+	NSLog(@"m_strRecent %@", m_strRecent);
+	
 	[target performSelector:selector withObject:nil afterDelay:0];
 }
+
 @end

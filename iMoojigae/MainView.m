@@ -22,6 +22,7 @@
 	NSMutableArray *m_arrayItems;
 	LoginToService *m_login;
 	MainData *m_mainData;
+	NSString *m_strRecent;
 }
 @end
 
@@ -152,7 +153,7 @@
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		viewController.m_strCommNo = [item valueForKey:@"link"];
+		viewController.m_strRecent = m_strRecent;
 	} else if ([[segue identifier] isEqualToString:@"Board"]) {
 			BoardView *viewController = [segue destinationViewController];
 			NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
@@ -175,6 +176,8 @@
 
 - (void)didFetchItems
 {
+	m_strRecent = m_mainData.m_strRecent;
+	
 	m_arrayItems = [NSMutableArray arrayWithArray:m_mainData.m_arrayItems];
 	[self.tbView reloadData];
 }

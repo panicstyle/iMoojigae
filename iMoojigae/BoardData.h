@@ -10,6 +10,7 @@
 
 @interface BoardData : NSObject
 @property (nonatomic, strong) NSString *m_strCommNo;
+@property (nonatomic, strong) NSString *m_strRecent;
 @property (strong, nonatomic) NSMutableArray *m_arrayItems;
 @property id target;
 @property SEL selector;

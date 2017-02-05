@@ -105,18 +105,20 @@
 	dest = [dest stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
 	dest = [dest stringByReplacingOccurrencesOfString:@"<br/>" withString:@"\n"];
 	dest = [dest stringByReplacingOccurrencesOfString:@"<br />" withString:@"\n"];
-	dest = [dest stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@""];
-	dest = [dest stringByReplacingOccurrencesOfString:@"&lt;" withString:@""];
-	dest = [dest stringByReplacingOccurrencesOfString:@"&gt;" withString:@""];
-	dest = [dest stringByReplacingOccurrencesOfString:@"&amp;" withString:@""];
-	dest = [dest stringByReplacingOccurrencesOfString:@"&quot;" withString:@""];
-	dest = [dest stringByReplacingOccurrencesOfString:@"&apos;" withString:@""];
 	dest = [self replaceStringRegex:dest regex:@"(<b>\\[)\\d+(\\]</b>)" replace:@""];
 	dest = [self replaceStringRegex:dest regex:@"(<!--).*?(-->)" replace:@""];
 	dest = [self replaceStringRegex:dest regex:@"(<style).*?(/style>)" replace:@""];
 	dest = [self replaceStringRegex:dest regex:@"(<img).*?(>)" replace:@""];
 	dest = [self replaceStringRegex:dest regex:@"(<font).*?(>)" replace:@""];
 	dest = [self replaceStringRegex:dest regex:@"(<).*?(>)" replace:@""];
+
+	dest = [dest stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@""];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&lt;" withString:@""];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&gt;" withString:@""];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&amp;" withString:@""];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&quot;" withString:@""];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&apos;" withString:@""];
+	
 	dest = [dest stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 
 /*

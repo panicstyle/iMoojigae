@@ -21,7 +21,7 @@
 
 @implementation RecentData
 
-@synthesize m_strCommNo;
+@synthesize m_strRecent;
 @synthesize m_arrayItems;
 @synthesize target;
 @synthesize selector;
@@ -31,7 +31,7 @@
 	m_arrayItems = [[NSMutableArray alloc] init];
 
 	NSString *url;
-	
+/*
 	NSString *strMaul = @"mvTopic,mvTopic10Year,mvTopicGoBackHome,mvEduBasicRight,mvGongi,mvGongDong,mvGongDongFacility,mvGongDongEvent,mvGongDongLocalcommunity,mvDonghowhe,mvDonghowheMoojiageFC,mvPoomASee,mvPoomASeeWantBiz,mvPoomASeeBized,mvEduLove,mvEduVillageSchool,mvEduDream,mvEduSpring,mvEduSpring,mvMarketBoard,mvHorizonIntroduction,mvHorizonLivingStory,mvSecretariatAddress,mvSecretariatOldData,mvMinutes,mvEduResearch,mvBuilding,mvBuildingComm,mvDonationGongi,mvDonationQnA,toHomePageAdmin,mvUpgrade";
 	NSString *strSchool1 = @"mjGongi,mjFreeBoard,mjTeacher,mjTeachingData,mjJunior,mjParent,mjParentMinutes,mjAmaDiary,mjSchoolFood,mjPhoto,mjData";
 	NSString *strSchool2 = @"msGongi,msFreeBoard,msOverRainbow,msFreeComment,msTeacher,msSenior,msStudent,ms5Class,msStudentAssociation,msParent,msRepresentative,msMinutes,msPhoto,msData";
@@ -45,7 +45,8 @@
 	} else if ([m_strCommNo isEqualToString:@"recent"]) {
 		url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=100&pid=%@,%@,%@", WWW_SERVER, strMaul, strSchool1, strSchool2];
 	}
-	
+*/
+	url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=50&pid=%@", WWW_SERVER, m_strRecent];
 
 	NSLog(@"fetchItems");
 	m_receiveData = [[NSMutableData alloc] init];

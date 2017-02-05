@@ -17,6 +17,7 @@
 {
     NSMutableArray *m_arrayItems;
 	BoardData *m_boardData;
+	NSString *m_strRecent;
 }
 @end
 
@@ -54,7 +55,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-	if ([[item valueForKey:@"link"] isEqualToString:@"-"]) {
+	if ([[item valueForKey:@"type"] isEqualToString:@"group"]) {
 		return 25.0f;
 	} else {
 		return 44.0f;
@@ -88,7 +89,7 @@
 	
 	cell.textLabel.text = [item valueForKey:@"title"];
 	
-	if (![[item valueForKey:@"link"] isEqualToString:@"-"])
+	if (![[item valueForKey:@"type"] isEqualToString:@"group"])
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	else
 		cell.accessoryType = UITableViewCellAccessoryNone;
@@ -101,13 +102,11 @@
 {
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 	
-	if ([[item valueForKey:@"link"] isEqualToString:@"-"]) return;
+	if ([[item valueForKey:@"type"] isEqualToString:@"group"]) return;
 	
-	if ([[item valueForKey:@"link"] isEqualToString:@"recent"]) {
+	if ([[item valueForKey:@"type"] isEqualToString:@"recent"]) {
 		[self performSegueWithIdentifier:@"Recent" sender:self];
-	} else if ([[item valueForKey:@"link"] isEqualToString:@"ama"] ||
-			   [[item valueForKey:@"link"] isEqualToString:@"maul-cal"] ||
-			   [[item valueForKey:@"link"] isEqualToString:@"school2-cal"]) {
+	} else if ([[item valueForKey:@"type"] isEqualToString:@"link"]) {
 		[self performSegueWithIdentifier:@"Calendar" sender:self];
 	} else {
 		[self performSegueWithIdentifier:@"Items" sender:self];
@@ -126,17 +125,17 @@
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_strCommNo = m_strCommNo;
-		view.m_boardId = [item valueForKey:@"link"];
+		view.m_boardId = [item valueForKey:@"boardId"];
 	} else if ([[segue identifier] isEqualToString:@"Recent"]) {
 		RecentView *view = [segue destinationViewController];
-		view.m_strCommNo = m_strCommNo;
+		view.m_strRecent = m_strRecent;
 	}
 	if ([[segue identifier] isEqualToString:@"Calendar"]) {
 		GoogleCalView *view = [segue destinationViewController];
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		view.m_strLink = [item valueForKey:@"link"];
+		view.m_strLink = [item valueForKey:@"boardId"];
 	}
 }
 
@@ -144,6 +143,8 @@
 
 - (void)didFetchItems
 {
+	m_strRecent = m_boardData.m_strRecent;
+	
 	m_arrayItems = [NSMutableArray arrayWithArray:m_boardData.m_arrayItems];
 	[self.tbView reloadData];
 }

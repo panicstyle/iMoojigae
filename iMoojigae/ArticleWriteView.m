@@ -12,17 +12,16 @@
 @interface ArticleWriteView ()
 {
 	int m_bUpMode;
-	UITextField *m_titleField;
-	UITextView *m_contentView;
 	long m_lContentHeight;
-	UITableViewCell *m_contentCell;
-	UITableViewCell *m_imageCell;
 	UIAlertView *alertWait;
 }
 
 @end
 
 @implementation ArticleWriteView
+@synthesize viewTitle;
+@synthesize viewContent;
+@synthesize viewImage;
 @synthesize m_nMode;
 @synthesize m_boardId;
 @synthesize m_boardNo;
@@ -91,7 +90,7 @@
 	if (m_bUpMode == up) return;
 	
 	NSDictionary* keyboardInfo = [notif userInfo];
-	NSValue* keyboardFrameBegin = [keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey];
+	NSValue* keyboardFrameBegin = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
 	CGRect keyboardFrameBeginRect = [keyboardFrameBegin CGRectValue];
 	
 	const int movementDistance = keyboardFrameBeginRect.size.height; // tweak as needed
@@ -111,13 +110,10 @@
 //	tableRect.size.height = tableRect.size.height + movement;
 //	self.tbView.frame = tableRect;
 	
-	CGRect contentRect = m_contentCell.frame;
+	CGRect contentRect = viewContent.frame;
 	contentRect.size.height = contentRect.size.height + movement;
-	m_contentCell.frame = contentRect;
+	viewContent.frame = contentRect;
 
-	[self.tbView beginUpdates];
-	[self.tbView endUpdates];
-	
 //	CGRect textRect = m_contentView.frame;
 //	textRect.size.height = textRect.size.height + movement;
 //	m_contentView.frame = textRect;
@@ -175,61 +171,6 @@
 	[alertWait dismissWithClickedButtonIndex:0 animated:YES];
 }
 
-#pragma mark - Table view data source
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	if ([indexPath row] == 0) {
-		return 40.0f;
-	} else if ([indexPath row] == 1) {
-		return (float)m_lContentHeight;
-	} else {
-		return 40.0f;
-	}
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 3;
-}
-
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	static NSString *CellIdentifierTitle = @"Title";
-	static NSString *CellIdentifierContent = @"Content";
-	static NSString *CellIdentifierImage = @"Image";
-	
-	UITableViewCell *cell;
-	if ([indexPath row] == 0) {
-		cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierTitle];
-		if (cell == nil) {
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierTitle];
-		}
-		m_titleField = (UITextField *)[cell viewWithTag:100];
-		m_titleField.text = m_strTitle;
-		return cell;
-	} else if ([indexPath row] == 1){
-		m_contentCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierContent];
-		if (m_contentCell == nil) {
-			m_contentCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierContent];
-		}
-		m_contentView = (UITextView *)[m_contentCell viewWithTag:101];
-		m_contentView.text = m_strContent;
-		return m_contentCell;
-	} else {
-		m_imageCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierImage];
-		if (m_imageCell == nil) {
-			m_imageCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierImage];
-		}
-		m_imageCell.textLabel.text = @"Image Line";
-		return m_imageCell;
-	}
-}
-
-
 - (void) cancelEditing:(id)sender
 {
 	//	[contentView resignFirstResponder];
@@ -238,7 +179,7 @@
 
 - (void) doneEditing:(id)sender
 {
-	if (m_titleField.text.length <= 0 || m_contentView.text.length <= 0) {
+	if (viewTitle.text.length <= 0 || viewContent.text.length <= 0) {
 		// 쓰여진 내용이 없으므로 저장하지 않는다.
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"확인"
 														message:@"입력된 내용이 없습니다."
@@ -275,7 +216,7 @@
 	//        NSMutableData *body = [[NSMutableData data] autorelease];
 	//        NSMutableData *body = [NSMutableData data];
 	// usetag = n
-	NSLog(@"boardID = %%7 [%@], subjectField.text=[%@], contentField.text=[%@]", m_boardId, m_titleField.text, m_contentView.text);
+	NSLog(@"boardID = %%7 [%@], subjectField.text=[%@], contentField.text=[%@]", m_boardId, viewTitle.text, viewContent.text);
 	
 	NSString *strCommand;
 	if ([m_nMode intValue] == ArticleWrite) {
@@ -286,9 +227,9 @@
 	// The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
 	NSError *error = NULL;
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\n" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSString *newContent = [regex stringByReplacingMatchesInString:m_contentView.text options:0 range:NSMakeRange(0, [m_contentView.text length]) withTemplate:@"<br />"];
+	NSString *newContent = [regex stringByReplacingMatchesInString:viewContent.text options:0 range:NSMakeRange(0, [viewContent.text length]) withTemplate:@"<br />"];
 	
-	NSString *bodyString = [NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&boardNo=%@&command=%@&htmlImage=%%2Fout&file_cnt=5&tag_yn=Y&thumbnailSize=50&boardWidth=710&defaultBoardSkin=default&boardBackGround_color=&boardBackGround_picture=&boardSerialBadNick=&boardSerialBadContent=&totalSize=20&serialBadNick=&serialBadContent=&fileTotalSize=0&simpleFileTotalSize=0+Bytes&serialFileName=&serialFileMask=&serialFileSize=&userPoint=2530&userEmail=panicstyle%%40gmail.com&userHomepage=&boardPollFrom_time=&boardPollTo_time=&boardContent=%@&boardTitle=%@&boardSecret_fg=N&boardEdit_fg=M&userNick=&userPw=&fileName=&fileMask=&fileSize=&pollContent=&boardPoint=0&boardTop_fg=&totalsize=0&tag=0&tagsName=", m_boardId, m_boardNo, strCommand, newContent, m_titleField.text];
+	NSString *bodyString = [NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&boardNo=%@&command=%@&htmlImage=%%2Fout&file_cnt=5&tag_yn=Y&thumbnailSize=50&boardWidth=710&defaultBoardSkin=default&boardBackGround_color=&boardBackGround_picture=&boardSerialBadNick=&boardSerialBadContent=&totalSize=20&serialBadNick=&serialBadContent=&fileTotalSize=0&simpleFileTotalSize=0+Bytes&serialFileName=&serialFileMask=&serialFileSize=&userPoint=2530&userEmail=panicstyle%%40gmail.com&userHomepage=&boardPollFrom_time=&boardPollTo_time=&boardContent=%@&boardTitle=%@&boardSecret_fg=N&boardEdit_fg=M&userNick=&userPw=&fileName=&fileMask=&fileSize=&pollContent=&boardPoint=0&boardTop_fg=&totalsize=0&tag=0&tagsName=", m_boardId, m_boardNo, strCommand, newContent, viewTitle.text];
 	
 	NSLog(@"bodyString = [%@]", bodyString);
 	

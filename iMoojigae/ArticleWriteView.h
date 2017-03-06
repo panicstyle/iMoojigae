@@ -9,8 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "env.h"
 
-@interface ArticleWriteView : UIViewController <UITableViewDelegate, UITableViewDataSource>
-@property (nonatomic, weak) IBOutlet UITableView *tbView;
+@interface ArticleWriteView : UIViewController
+@property (nonatomic, weak) IBOutlet UITextField *viewTitle;
+@property (nonatomic, weak) IBOutlet UITextView *viewContent;
+@property (nonatomic, weak) IBOutlet UIView *viewImage;
+
 @property (nonatomic, strong) NSNumber *m_nMode;
 @property (nonatomic, strong) NSString *m_boardId;
 @property (nonatomic, strong) NSString *m_boardNo;

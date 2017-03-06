@@ -6,6 +6,7 @@
 //  Copyright 2010 이니라인. All rights reserved.
 //
 
+#import <Photos/Photos.h>
 #import "ArticleWriteView.h"
 #import "Utils.h"
 
@@ -16,6 +17,12 @@
 	UIAlertView *alertWait;
 	int m_selectedImage;
 	int m_ImageStatus[5];
+	int m_nAttachCount;
+	NSString *m_strFileName[5];
+	NSString *m_strFileMask[5];
+	NSString *m_strFileSize[5];
+	NSString *m_errorMsg;
+	NSString *m_strImageFileName[5];
 }
 
 @end
@@ -195,7 +202,162 @@
 		[alert show];
 		return;
 	}
+	if (m_ImageStatus[0] == 1 || m_ImageStatus[1] == 1 || m_ImageStatus[2] == 1 || m_ImageStatus[3] == 1 || m_ImageStatus[4] == 1) {
+		[self postWithAttach];
+	} else {
+		[self postDo];
+	}
+}
+
+- (void)postWithAttach {
+	[self AlertShow];
+	//		/cafe.php?mode=up&sort=354&p1=tuntun&p2=HTTP/1.1
+	NSString *url = [NSString stringWithFormat:@"%@/uploadManager", WWW_SERVER];
+	NSString *strReferer = [NSString stringWithFormat:@"%@/board-edit.do", WWW_SERVER];
 	
+	NSData *respData;
+	
+	// 사진첨부됨, Multipart message로 전송
+	//        NSData *imageData = UIImagePNGRepresentation(addPicture.image);
+	//	NSData *imageData = UIImageJPEGRepresentation(addPicture.image, 0.5f);
+	
+	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+	[request setURL:[NSURL URLWithString:url]];
+	[request setHTTPMethod:@"POST"];
+	
+	NSString *boundary = @"0xKhTmLbOuNdArY";  // important!!!
+	NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+	[request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+	[request addValue:strReferer forHTTPHeaderField: @"Referer"];
+	
+	NSMutableData *body = [NSMutableData data];
+	
+	// userEmail
+	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userEmail\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// userHomepage
+	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userHomepage\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// boardTitle
+	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"boardTitle\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"%@\n", viewTitle.text] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// whatmode_uEdit
+	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"whatmode_uEdit\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"on\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// editContent
+	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"editContent\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// tagsName
+	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"tagsName\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	int i = 0;
+	m_nAttachCount = 0;
+	for (i = 0; i < 5; i++) {
+		if (m_ImageStatus[i] == 1) {
+			// file - 1
+			NSData *imageData;
+			if (i == 0) {
+				imageData = UIImagePNGRepresentation([self scaleToFitWidth:[viewImage0 image] width:SCALE_SIZE]);
+			} else if (i == 1) {
+				imageData = UIImagePNGRepresentation([self scaleToFitWidth:[viewImage1 image] width:SCALE_SIZE]);
+			} else if (i == 2) {
+				imageData = UIImagePNGRepresentation([self scaleToFitWidth:[viewImage2 image] width:SCALE_SIZE]);
+			} else if (i == 3) {
+				imageData = UIImagePNGRepresentation([self scaleToFitWidth:[viewImage3 image] width:SCALE_SIZE]);
+			} else if (i == 4) {
+				imageData = UIImagePNGRepresentation([self scaleToFitWidth:[viewImage4 image] width:SCALE_SIZE]);
+			}
+
+			[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file%d\"; filename=\"%@\"\n", m_nAttachCount, m_strImageFileName[i]] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"Content-Type: application/octet-stream\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:imageData];
+			[body appendData:[[NSString stringWithFormat:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+/*
+			[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file%d\"; filename=\"%@\"\n", m_nAttachCount + 1, @"test.txt"] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"Content-Type: text/plain\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"attach\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+*/
+			m_nAttachCount++;
+		}
+	}
+
+	// subId
+	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"subId\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"sub01\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// mode
+	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"mode\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"attach\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+
+	[body appendData:[[NSString stringWithFormat:@"--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	NSString *strCheck = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
+	NSLog(@"strCheck = %@", strCheck);
+
+	[request setHTTPBody:body];
+	
+	respData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+	
+	NSString *str = [[NSString alloc] initWithData:respData
+										  encoding:NSUTF8StringEncoding];
+	[self AlertDismiss];
+
+	if ([Utils numberOfMatches:str regex:@"fileNameArray[0] ="] <= 0) {
+		NSString *errmsg;
+		errmsg = [Utils findStringRegex:str regex:@"(?<=var message = ').*?(?=';)"];
+		errmsg = [Utils replaceStringHtmlTag:errmsg];
+		
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"글 작성 오류"
+														message:errmsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
+		[alert show];
+		return;
+	}
+	
+	if (![self parseAttachResult:str]) {
+		NSString *errmsg = @"첨부파일에서 오류가 발생했습니다.";
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"글 작성 오류"
+														message:errmsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
+		[alert show];
+		return;
+	}
+	
+	
+	[self postDo];
+}
+
+- (BOOL)parseAttachResult:(NSString *)str {
+	int i = 0;
+	
+	for (i = 0; i < m_nAttachCount; i++) {
+		m_strFileName[i] = [Utils findStringRegex:str regex:@"(?<=fileNameArray\\[.\\] = ').*?(?=';)" index:i];
+		m_strFileMask[i] = [Utils findStringRegex:str regex:@"(?<=fileMaskArray\\[.\\] = ').*?(?=';)" index:i];
+		m_strFileSize[i] = [Utils findStringRegex:str regex:@"(?<=fileSizeArray\\[.\\] = ').*?(?=';)" index:i];
+		if ([m_strFileName[i] isEqualToString:@""]) return false;
+		if ([m_strFileMask[i] isEqualToString:@""]) return false;
+		if ([m_strFileSize[i] isEqualToString:@""]) return false;
+	}
+	
+	return true;
+}
+
+- (void)postDo {
 	[self AlertShow];
 	
 	NSString *url = [NSString stringWithFormat:@"%@/board-save.do",
@@ -234,7 +396,25 @@
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\n" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
 	NSString *newContent = [regex stringByReplacingMatchesInString:viewContent.text options:0 range:NSMakeRange(0, [viewContent.text length]) withTemplate:@"<br />"];
 	
-	NSString *bodyString = [NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&boardNo=%@&command=%@&htmlImage=%%2Fout&file_cnt=5&tag_yn=Y&thumbnailSize=50&boardWidth=710&defaultBoardSkin=default&boardBackGround_color=&boardBackGround_picture=&boardSerialBadNick=&boardSerialBadContent=&totalSize=20&serialBadNick=&serialBadContent=&fileTotalSize=0&simpleFileTotalSize=0+Bytes&serialFileName=&serialFileMask=&serialFileSize=&userPoint=2530&userEmail=panicstyle%%40gmail.com&userHomepage=&boardPollFrom_time=&boardPollTo_time=&boardContent=%@&boardTitle=%@&boardSecret_fg=N&boardEdit_fg=M&userNick=&userPw=&fileName=&fileMask=&fileSize=&pollContent=&boardPoint=0&boardTop_fg=&totalsize=0&tag=0&tagsName=", m_boardId, m_boardNo, strCommand, newContent, viewTitle.text];
+	NSMutableString *strFileName = [[NSMutableString alloc] init];
+	NSMutableString *strFileMask = [[NSMutableString alloc] init];
+	NSMutableString *strFileSize = [[NSMutableString alloc] init];
+	[strFileName appendString:@""];
+	[strFileMask appendString:@""];
+	[strFileSize appendString:@""];
+	int i = 0;
+	for (i = 0; i < m_nAttachCount; i++) {
+		if (i > 0) {
+			[strFileName appendString:@"|"];
+			[strFileMask appendString:@"|"];
+			[strFileSize appendString:@"|"];
+		}
+		[strFileName appendString:m_strFileName[i]];
+		[strFileMask appendString:m_strFileMask[i]];
+		[strFileSize appendString:m_strFileSize[i]];
+	}
+	
+	NSString *bodyString = [NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&boardNo=%@&command=%@&htmlImage=%%2Fout&file_cnt=5&tag_yn=Y&thumbnailSize=50&boardWidth=710&defaultBoardSkin=default&boardBackGround_color=&boardBackGround_picture=&boardSerialBadNick=&boardSerialBadContent=&totalSize=20&serialBadNick=&serialBadContent=&fileTotalSize=0&simpleFileTotalSize=0+Bytes&serialFileName=&serialFileMask=&serialFileSize=&userPoint=2530&userEmail=panicstyle%%40gmail.com&userHomepage=&boardPollFrom_time=&boardPollTo_time=&boardContent=%@&boardTitle=%@&boardSecret_fg=N&boardEdit_fg=M&userNick=&userPw=&fileName=%@&fileMask=%@&fileSize=%@&pollContent=&boardPoint=0&boardTop_fg=&totalsize=0&tag=0&tagsName=", m_boardId, m_boardNo, strCommand, newContent, viewTitle.text, strFileName, strFileMask, strFileSize];
 	
 	NSLog(@"bodyString = [%@]", bodyString);
 	
@@ -276,22 +456,29 @@
 	UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
 	//Or you can get the image url from AssetsLibrary
 	NSURL *path = [info valueForKey:UIImagePickerControllerReferenceURL];
+	PHFetchResult *result = [PHAsset fetchAssetsWithALAssetURLs:@[path] options:nil];
+	NSString *filename = [[result firstObject] filename];
 	
 	if (m_selectedImage == 0) {
 		viewImage0.image = image;
 		m_ImageStatus[0] = 1;
+		m_strImageFileName[0] = filename;
 	} else if (m_selectedImage == 1) {
 		viewImage1.image = image;
 		m_ImageStatus[1] = 1;
+		m_strImageFileName[1] = filename;
 	} else if (m_selectedImage == 2) {
 		viewImage2.image = image;
 		m_ImageStatus[2] = 1;
+		m_strImageFileName[2] = filename;
 	} else if (m_selectedImage == 3) {
 		viewImage3.image = image;
 		m_ImageStatus[3] = 1;
+		m_strImageFileName[3] = filename;
 	} else if (m_selectedImage == 4) {
 		viewImage4.image = image;
 		m_ImageStatus[4] = 1;
+		m_strImageFileName[4] = filename;
 	}
 	
 	[picker dismissViewControllerAnimated:YES completion:nil];
@@ -370,5 +557,19 @@
 	}
 }
 
+-(UIImage *)scaleToFitWidth:(UIImage *)image width:(CGFloat)width
+{
+	CGFloat ratio = width / image.size.width;
+	CGFloat height = image.size.height * ratio;
+	
+	NSLog(@"W:%f H:%f",width,height);
+	
+	UIGraphicsBeginImageContext(CGSizeMake(width, height));
+	[image drawInRect:CGRectMake(0.0f,0.0f,width,height)];
+	UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	
+	return newImage;
+}
 
 @end

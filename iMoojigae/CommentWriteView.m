@@ -115,7 +115,7 @@
 -(void)animateTextView:(NSNotification *)notif up:(BOOL)up
 {
 	NSDictionary* keyboardInfo = [notif userInfo];
-	NSValue* keyboardFrameBegin = [keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey];
+	NSValue* keyboardFrameBegin = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
 	CGRect keyboardFrameBeginRect = [keyboardFrameBegin CGRectValue];
 	
 	const int movementDistance = keyboardFrameBeginRect.size.height; // tweak as needed

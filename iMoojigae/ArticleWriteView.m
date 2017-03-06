@@ -14,6 +14,8 @@
 	int m_bUpMode;
 	long m_lContentHeight;
 	UIAlertView *alertWait;
+	int m_selectedImage;
+	int m_ImageStatus[5];
 }
 
 @end
@@ -21,7 +23,11 @@
 @implementation ArticleWriteView
 @synthesize viewTitle;
 @synthesize viewContent;
-@synthesize viewImage;
+@synthesize viewImage0;
+@synthesize viewImage1;
+@synthesize viewImage2;
+@synthesize viewImage3;
+@synthesize viewImage4;
 @synthesize m_nMode;
 @synthesize m_boardId;
 @synthesize m_boardNo;
@@ -65,6 +71,17 @@
 											 selector:@selector(keyboardDidHide:)
 												 name:UIKeyboardDidHideNotification
 											   object:nil];
+	
+	viewImage0.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+	viewImage1.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+	viewImage2.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+	viewImage3.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+	viewImage4.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+	m_ImageStatus[0] = 0;
+	m_ImageStatus[1] = 0;
+	m_ImageStatus[2] = 0;
+	m_ImageStatus[3] = 0;
+	m_ImageStatus[4] = 0;
 }
 
 /*
@@ -106,21 +123,9 @@
 	viewRect.size.height = viewRect.size.height + movement;
 	self.view.frame = viewRect;
 	
-//	CGRect tableRect = self.tbView.frame;
-//	tableRect.size.height = tableRect.size.height + movement;
-//	self.tbView.frame = tableRect;
-	
 	CGRect contentRect = viewContent.frame;
 	contentRect.size.height = contentRect.size.height + movement;
 	viewContent.frame = contentRect;
-
-//	CGRect textRect = m_contentView.frame;
-//	textRect.size.height = textRect.size.height + movement;
-//	m_contentView.frame = textRect;
-	
-//	CGRect imageRect = m_imageCell.frame;
-//	imageRect.size.height = imageRect.size.height;
-//	m_imageCell.frame = imageRect;
 
 	[UIView commitAnimations];
 	m_bUpMode = up;
@@ -261,5 +266,109 @@
 	
 	[[self navigationController] popViewControllerAnimated:YES];
 }
+- (IBAction)AddImage:(id)sender {
+	NSLog(@"AddImage Push");
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+	//You can retrieve the actual UIImage
+	UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+	//Or you can get the image url from AssetsLibrary
+	NSURL *path = [info valueForKey:UIImagePickerControllerReferenceURL];
+	
+	if (m_selectedImage == 0) {
+		viewImage0.image = image;
+		m_ImageStatus[0] = 1;
+	} else if (m_selectedImage == 1) {
+		viewImage1.image = image;
+		m_ImageStatus[1] = 1;
+	} else if (m_selectedImage == 2) {
+		viewImage2.image = image;
+		m_ImageStatus[2] = 1;
+	} else if (m_selectedImage == 3) {
+		viewImage3.image = image;
+		m_ImageStatus[3] = 1;
+	} else if (m_selectedImage == 4) {
+		viewImage4.image = image;
+		m_ImageStatus[4] = 1;
+	}
+	
+	[picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	UITouch *touch = [touches anyObject];
+	int imageStatus;
+	UIImageView *viewImage;
+	if ([touch view] == viewImage0) {
+		NSLog(@"viewImage1 touched");
+		m_selectedImage = 0;
+		imageStatus = m_ImageStatus[0];
+		viewImage = viewImage0;
+	} else if ([touch view] == viewImage1) {
+		NSLog(@"viewImage2 touched");
+		m_selectedImage = 1;
+		imageStatus = m_ImageStatus[1];
+		viewImage = viewImage1;
+	} else if ([touch view] == viewImage2) {
+		NSLog(@"viewImage3 touched");
+		m_selectedImage = 2;
+		imageStatus = m_ImageStatus[2];
+		viewImage = viewImage2;
+	} else if ([touch view] == viewImage3) {
+		NSLog(@"viewImage4 touched");
+		m_selectedImage = 3;
+		imageStatus = m_ImageStatus[3];
+		viewImage = viewImage3;
+	} else if ([touch view] == viewImage4) {
+		NSLog(@"viewImage5 touched");
+		m_selectedImage = 4;
+		imageStatus = m_ImageStatus[4];
+		viewImage = viewImage4;
+	}
+	if (imageStatus == 0) {
+		UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+		imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+		imagePickerController.delegate = self;
+		[self presentViewController:imagePickerController animated:YES completion:nil];
+	} else {
+		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+																	   message:@"삭제하시겠습니까?"
+																preferredStyle:UIAlertControllerStyleAlert];
+		
+		UIAlertAction* okAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
+														 handler:^(UIAlertAction * action) {
+															 [self DeleteImage];
+														 }];
+		UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"취소" style:UIAlertActionStyleDefault
+															 handler:^(UIAlertAction * action) {}];
+		
+		
+		[alert addAction:okAction];
+		[alert addAction:cancelAction];
+		[self presentViewController:alert animated:YES completion:nil];
+	}
+}
+
+- (void)DeleteImage {
+	if (m_selectedImage == 0) {
+		viewImage0.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+		m_ImageStatus[0] = 0;
+	} else if (m_selectedImage == 1) {
+		viewImage1.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+		m_ImageStatus[1] = 0;
+	} else if (m_selectedImage == 2) {
+		viewImage2.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+		m_ImageStatus[2] = 0;
+	} else if (m_selectedImage == 3) {
+		viewImage3.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+		m_ImageStatus[3] = 0;
+	} else if (m_selectedImage == 4) {
+		viewImage4.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+		m_ImageStatus[4] = 0;
+	}
+}
+
 
 @end

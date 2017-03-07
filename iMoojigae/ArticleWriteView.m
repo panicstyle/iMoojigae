@@ -51,6 +51,8 @@
 		[(UILabel *)self.navigationItem.titleView setText:@"글쓰기"];
 	} else if ([m_nMode intValue] == ArticleModify) {
 		[(UILabel *)self.navigationItem.titleView setText:@"글수정"];
+		viewTitle.text = m_strTitle;
+		viewContent.text = m_strContent;
 	}
 
 	CGRect rectScreen = [self getScreenFrameForCurrentOrientation];
@@ -233,34 +235,34 @@
 	NSMutableData *body = [NSMutableData data];
 	
 	// userEmail
-	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userEmail\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userEmail\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 	[body appendData:[[NSString stringWithFormat:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	// userHomepage
-	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userHomepage\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userHomepage\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	// boardTitle
-	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"boardTitle\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"boardTitle\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 	[body appendData:[[NSString stringWithFormat:@"%@\n", viewTitle.text] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	// whatmode_uEdit
-	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"whatmode_uEdit\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"on\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"whatmode_uEdit\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"on\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	// editContent
-	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"editContent\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"editContent\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	// tagsName
-	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"tagsName\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"tagsName\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	int i = 0;
 	m_nAttachCount = 0;
@@ -280,36 +282,37 @@
 				imageData = UIImagePNGRepresentation([self scaleToFitWidth:[viewImage4 image] width:SCALE_SIZE]);
 			}
 
-			[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-			[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file%d\"; filename=\"%@\"\n", m_nAttachCount, m_strImageFileName[i]] dataUsingEncoding:NSUTF8StringEncoding]];
-			[body appendData:[[NSString stringWithFormat:@"Content-Type: application/octet-stream\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file%d\"; filename=\"%@\"\r\n", m_nAttachCount, m_strImageFileName[i]] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"Content-Type: application/octet-stream\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 			[body appendData:imageData];
-			[body appendData:[[NSString stringWithFormat:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+
 /*
-			[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-			[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file%d\"; filename=\"%@\"\n", m_nAttachCount + 1, @"test.txt"] dataUsingEncoding:NSUTF8StringEncoding]];
-			[body appendData:[[NSString stringWithFormat:@"Content-Type: text/plain\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-			[body appendData:[[NSString stringWithFormat:@"attach\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file%d\"; filename=\"%@\"\r\n", m_nAttachCount + 1, @"test.txt"] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"Content-Type: text/plain\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+			[body appendData:[[NSString stringWithFormat:@"attach\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 */
 			m_nAttachCount++;
 		}
 	}
 
 	// subId
-	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"subId\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"sub01\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"subId\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"sub01\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	// mode
-	[body appendData:[[NSString stringWithFormat:@"--%@\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"mode\"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-	[body appendData:[[NSString stringWithFormat:@"attach\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"mode\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"attach\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 
-	[body appendData:[[NSString stringWithFormat:@"--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
 	
-	NSString *strCheck = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
-	NSLog(@"strCheck = %@", strCheck);
+//	NSString *strCheck = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
+//	NSLog(@"strCheck = %@", strCheck);
 
 	[request setHTTPBody:body];
 	
@@ -319,7 +322,7 @@
 										  encoding:NSUTF8StringEncoding];
 	[self AlertDismiss];
 
-	if ([Utils numberOfMatches:str regex:@"fileNameArray[0] ="] <= 0) {
+	if ([Utils numberOfMatches:str regex:@"fileNameArray\\[0\\] ="] <= 0) {
 		NSString *errmsg;
 		errmsg = [Utils findStringRegex:str regex:@"(?<=var message = ').*?(?=';)"];
 		errmsg = [Utils replaceStringHtmlTag:errmsg];
@@ -348,7 +351,7 @@
 	for (i = 0; i < m_nAttachCount; i++) {
 		m_strFileName[i] = [Utils findStringRegex:str regex:@"(?<=fileNameArray\\[.\\] = ').*?(?=';)" index:i];
 		m_strFileMask[i] = [Utils findStringRegex:str regex:@"(?<=fileMaskArray\\[.\\] = ').*?(?=';)" index:i];
-		m_strFileSize[i] = [Utils findStringRegex:str regex:@"(?<=fileSizeArray\\[.\\] = ').*?(?=';)" index:i];
+		m_strFileSize[i] = [Utils findStringRegex:str regex:@"(?<=fileSizeArray\\[.\\] = ).*?(?=;)" index:i];
 		if ([m_strFileName[i] isEqualToString:@""]) return false;
 		if ([m_strFileMask[i] isEqualToString:@""]) return false;
 		if ([m_strFileSize[i] isEqualToString:@""]) return false;
@@ -559,6 +562,8 @@
 
 -(UIImage *)scaleToFitWidth:(UIImage *)image width:(CGFloat)width
 {
+	if (image.size.width <= SCALE_SIZE) return image;
+	
 	CGFloat ratio = width / image.size.width;
 	CGFloat height = image.size.height * ratio;
 	

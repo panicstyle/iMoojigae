@@ -150,9 +150,9 @@
 	// Pass the selected object to the new view controller.
 	if ([[segue identifier] isEqualToString:@"Recent"]) {
 		RecentView *viewController = [segue destinationViewController];
-		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
-		long row = currentIndexPath.row;
-		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+//		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
+//		long row = currentIndexPath.row;
+//		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		viewController.m_strRecent = m_strRecent;
 	} else if ([[segue identifier] isEqualToString:@"Board"]) {
 			BoardView *viewController = [segue destinationViewController];

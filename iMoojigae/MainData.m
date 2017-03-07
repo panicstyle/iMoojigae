@@ -74,10 +74,8 @@
 {
 	NSLog(@"ListView receiveData Size = [%lu]", (unsigned long)[m_receiveData length]);
 	
-	NSString *html = [[NSString alloc] initWithData:m_receiveData
-										   encoding:NSUTF8StringEncoding];
-	
-	NSLog(@"html=[%@]", html);
+//	NSString *html = [[NSString alloc] initWithData:m_receiveData encoding:NSUTF8StringEncoding];
+//	NSLog(@"html=[%@]", html);
 	
 	NSError *localError = nil;
 	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];

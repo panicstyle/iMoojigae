@@ -44,6 +44,8 @@
 #define RESULT_AUTH_FAIL	1
 #define RESULT_LOGIN_FAIL	2
 
+#define SCALE_SIZE		600
+
 extern NSStringEncoding g_encodingOption;
 
 #endif

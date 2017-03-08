@@ -129,10 +129,10 @@
  
 	[request setHTTPBody:body];
 
-	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
-	
-	NSLog(@"returnString = [%@]", returnString);
+	[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
+//	NSLog(@"returnString = [%@]", returnString);
 }
 
 - (void)PushRegisterUpdate
@@ -170,10 +170,10 @@
  
 	[request setHTTPBody:body];
 	
-	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
-	
-	NSLog(@"returnString = [%@]", returnString);
+	[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
+//	NSLog(@"returnString = [%@]", returnString);
 }
 
 - (void)Logout

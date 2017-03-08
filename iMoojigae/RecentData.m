@@ -88,8 +88,7 @@
 		[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
 	}
 	
-	NSString *str = [[NSString alloc] initWithData:m_receiveData
-										  encoding:g_encodingOption];
+//	NSString *str = [[NSString alloc] initWithData:m_receiveData encoding:g_encodingOption];
 
 	NSError *localError = nil;
 	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];

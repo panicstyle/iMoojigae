@@ -80,7 +80,7 @@
 	}
 
 	// parent.setMainBodyLogin 가 포함되어 있으면 다시 로그인해야 함.
-	if ([Utils numberOfMatches:m_strHtml regex:@"parent.setMainBodyLogin"] > 0) {
+	if ([Utils numberOfMatches:m_strHtml regex:@"parent.setMainBodyLogin"] > 0 || [Utils numberOfMatches:m_strHtml regex:@"<title>시스템 메세지입니다</title>"] > 0) {
 		if (m_isLogin == FALSE) {
 			NSLog(@"retry login");
 			// 저장된 로그인 정보를 이용하여 로그인

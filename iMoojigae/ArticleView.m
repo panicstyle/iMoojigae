@@ -12,6 +12,7 @@
 #import "env.h"
 #import "Utils.h"
 #import "ArticleData.h"
+#import "WebLinkView.h"
 
 @interface ArticleView ()
 {
@@ -47,6 +48,10 @@
 	NSString *m_strEditableContent;
 
 	NSURLConnection *conn;
+	
+	NSString *m_strWebLink;
+	int m_nFileType;
+	
 }
 @end
 
@@ -411,18 +416,45 @@
 
 -(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
 	
-//	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+	NSURL *url = request.URL;
+	NSString *urlString = url.absoluteString;
+	NSLog(@"request = %@", urlString);
+	NSString *key = [Utils findStringRegex:urlString regex:@"(?<=&c=).*?(?=&)"];
+	NSString *fileName = [m_dicAttach valueForKey:key];
+	
+	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+		//	URLEncoding 되어 있지 않음.
+		//		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		
-		NSURL *url = request.URL;
-		NSString *urlString = url.absoluteString;
+		if ([fileName hasSuffix:@"png"] || [fileName hasSuffix:@"jpg"]
+				|| [fileName hasSuffix:@"jpeg"]|| [fileName hasSuffix:@"gif"]) {
+			m_nFileType = FILE_TYPE_IMAGE;
+			m_strWebLink = urlString;
+			[self performSegueWithIdentifier:@"WebLink" sender:self];
+		} else {
+			[[UIApplication sharedApplication] openURL:[request URL]];
+		}
+			
+		return NO;
+	} else if (navigationType == UIWebViewNavigationTypeOther) {
 		
-		NSLog(@"request = %@", urlString);
-		NSString *key = [Utils findStringRegex:urlString regex:@"(?<=&c=).*?(?=&)"];
-		NSString *fileName = [m_dicAttach valueForKey:key];
-//	URLEncoding 되어 있지 않음.
-//		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-		
-		if ([fileName hasSuffix:@".hwp"] || [fileName hasSuffix:@".pdf"]) {
+		if ([[[request URL] absoluteString] hasPrefix:@"jscall:"]) {
+			
+			NSString *requestString = [[request URL] absoluteString];
+			NSArray *components = [requestString componentsSeparatedByString:@"://"];
+			NSString *functionName = [components objectAtIndex:1];
+
+			NSLog(@"requestString = [%@]", requestString);
+			NSLog(@"functionName = [%@]", functionName);
+			
+			NSString *fileName = [functionName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+			NSLog(@"fileName = [%@]", fileName);
+			
+			m_nFileType = FILE_TYPE_IMAGE;
+			m_strWebLink = fileName;
+			[self performSegueWithIdentifier:@"WebLink" sender:self];
+			return NO;
+		} else if ([fileName hasSuffix:@".hwp"] || [fileName hasSuffix:@".pdf"]) {
 			NSData	*tempData = [NSData dataWithContentsOfURL:url];
 			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
 			NSString *documentDirectory = [paths objectAtIndex:0];
@@ -438,11 +470,11 @@
 			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
 			self.doic.delegate = self;
 			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
+			return NO;
 		} else {
-			
+			return YES;
 		}
-		
-//	}
+	}
 	return YES;
 }
 
@@ -723,6 +755,10 @@
 		view.m_strContent = m_strEditableContent;
 		view.target = self;
 		view.selector = @selector(didWrite:);
+	} else if ([[segue identifier] isEqualToString:@"WebLink"]) {
+		WebLinkView *view = [segue destinationViewController];
+		view.m_nFileType = [NSNumber numberWithInt:m_nFileType];
+		view.m_strLink = m_strWebLink;
 	}
 }
 

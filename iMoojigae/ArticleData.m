@@ -130,10 +130,20 @@
 	
 	for (int i = 0; i < [imageItems count]; i++) {
 		NSDictionary *jsonItem = [imageItems objectAtIndex:i];
+		NSString *fileName = [jsonItem valueForKey:@"fileName"];
 		NSString *link = [jsonItem valueForKey:@"link"];
-		[strImage appendString:link];
-	}
 
+		/* 이미지 파일목록중 파일명이 이미지인 것들만 이미지에 포함시킨다. */
+		fileName = [fileName lowercaseString];
+		if ([fileName containsString:@".jpg"]
+			|| [fileName containsString:@".jpeg"]
+			|| [fileName containsString:@".png"]
+			|| [fileName containsString:@".gif"]
+			) {
+			[strImage appendString:link];
+		}
+	}
+	
 	NSMutableString *strAttach = [[NSMutableString alloc]init];
 	[strAttach appendString:@""];
 
@@ -190,20 +200,16 @@
 		[m_arrayItems addObject:currItem];
 	}
 	
-	/*    NSString *strHeader = @"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=euc-kr\"></head><body>";
-	 NSString *strBottom = @"</table></body></html>";
-	 NSString *strResize = @"<script>function resizeImage2(mm){var width = eval(mm.width);var height = eval(mm.height);if( width > 300 ){var p_height = 300 / width;var new_height = height * p_height;eval(mm.width = 300);eval(mm.height = new_height);}} function image_open(src, mm) { var width = eval(mm.width); window.open(src,'image');}</script>";
-	 NSString *cssStr = @"<link href=\"./css/default.css\" rel=\"stylesheet\">";
-	 NSString *strBody = @"<body><table border=0 width=100%>";
-	 NSString *strBody2 = @"</table><table border=0 width=100%>";
-	 */
 	NSMutableString *strHeader = [[NSMutableString alloc] init];
 	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
 	[strHeader appendString:@"<html><head>"];
 	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=euc-kr\">"];
 	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
 	[strHeader appendString:@"<style>body {font-family:\"고딕\";font-size:medium;}.title{text-margin:10px 0px;font-size:large}.name{color:gray;margin:10px 0px;font-size:small}.content{}.profile {text-align:left;color:gray;margin:10px 0px;font-size:small}.comment_header{text-align:left;color:white;background: lightgray;padding:20px 0px 10px 10px;font-size:small}.reply{border-bottom:1px solid gray;margin:10px 0px}.reply_header {color:gray;;font-size:small}.reply_content {margin:10px 0px}.re_reply{border-bottom:1px solid gray;margin:10px 0px 0px 20px;background:lightgray}</style>"];
-	[strHeader appendString:@"<script> \
+	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
+	[strHeader appendString:@"</head>"];
+	
+//	[strHeader appendString:@"<script> \
 		function imageResize() { \
 			var boardWidth = window.innerWidth - 30; \
 			if (document.cashcow && document.cashcow.boardWidth) \
@@ -214,22 +220,21 @@
 					obj[i].width = boardWidth; \
 			} \
 		}</script>"];
-	 [strHeader appendString:@"<script>window.onload=imageResize;</script></head>"];
+//	 [strHeader appendString:@"<script>window.onload=imageResize;</script></head>"];
 	NSString *strBottom = @"</body></html>";
 	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
 	NSString *strBody = @"<body>";
 	
+	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@%@%@",
+					strHeader,
+					strBody,
+					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					[strImage stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					strAttach,
+					strProfile,
+					strBottom];
 	
-	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@%@%@", strHeader, strBody, strContent, strImage, strAttach, strProfile, strBottom];
-	
-	/*
-	 CGRect rectScreen = m_webView.frame;
-	 m_lContentHeight = rectScreen.size.height;
-	 
-	 CGRect contentRect = m_contentCell.frame;
-	 contentRect.size.height = m_lContentHeight;
-	 m_contentCell.frame = contentRect;
-	 */
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;
 }

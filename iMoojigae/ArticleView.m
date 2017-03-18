@@ -422,15 +422,37 @@
 	NSString *key = [Utils findStringRegex:urlString regex:@"(?<=&c=).*?(?=&)"];
 	NSString *fileName = [m_dicAttach valueForKey:key];
 	
+	NSLog(@"fileName = %@", fileName);
+	NSString *loweredExtension = [[fileName pathExtension] lowercaseString];
+	NSLog(@"loweredExtension = %@", loweredExtension);
+	// Valid extensions may change.  Check the UIImage class reference for the most up to date list.
+	NSSet *validImageExtensions = [NSSet setWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"bmp", @"bmpf", @"ico", @"cur", @"xbm", nil];
+
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		//	URLEncoding 되어 있지 않음.
 		//		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		
-		if ([fileName hasSuffix:@"png"] || [fileName hasSuffix:@"jpg"]
-				|| [fileName hasSuffix:@"jpeg"]|| [fileName hasSuffix:@"gif"]) {
+		if ([validImageExtensions containsObject:loweredExtension]) {
 			m_nFileType = FILE_TYPE_IMAGE;
 			m_strWebLink = urlString;
 			[self performSegueWithIdentifier:@"WebLink" sender:self];
+		} else if ([loweredExtension hasSuffix:@"hwp"]|| [loweredExtension hasSuffix:@"pdf"]) {
+			NSData	*tempData = [NSData dataWithContentsOfURL:url];
+			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
+			NSString *documentDirectory = [paths objectAtIndex:0];
+			NSString *filePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			BOOL isWrite = [tempData writeToFile:filePath atomically:YES];
+			NSString *tempFilePath;
+			
+			if (isWrite) {
+				tempFilePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			}
+			NSURL *resultURL = [NSURL fileURLWithPath:tempFilePath];
+			
+			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
+			self.doic.delegate = self;
+			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
+			return NO;
 		} else {
 			[[UIApplication sharedApplication] openURL:[request URL]];
 		}
@@ -454,7 +476,7 @@
 			m_strWebLink = fileName;
 			[self performSegueWithIdentifier:@"WebLink" sender:self];
 			return NO;
-		} else if ([fileName hasSuffix:@".hwp"] || [fileName hasSuffix:@".pdf"]) {
+		} else if ([loweredExtension hasSuffix:@"hwp"]|| [loweredExtension hasSuffix:@"pdf"]) {
 			NSData	*tempData = [NSData dataWithContentsOfURL:url];
 			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
 			NSString *documentDirectory = [paths objectAtIndex:0];

@@ -49,14 +49,14 @@
 							@"2077ef9a63d2b398840261c8221a0c9a"  // Eric's iPod Touch
 							];
 	[self.bannerView loadRequest:request];
-/*
+
 	SetInfo *setInfo = [[SetInfo alloc] init];
 
 	if (![setInfo CheckVersionInfo]) {
 		
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"-무지개초등에 아마표 게시판이 추가되었습니다.\n-마을과 중등에 전체일정 게시판이 추가되었습니다.";
-		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"업데이트 안내"
+		NSString *NotiMessage = @"그동안 사진 확대가 안되어서 불편하셨죠. 사진을 클릭하면 확대해서 보실 수 있고 저장도 할 수 있어요.";
+		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];
 		
@@ -67,7 +67,7 @@
 		[self presentViewController:alert animated:YES completion:nil];
 		[setInfo SaveVersionInfo];
 	}
-*/
+
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
 	m_mainData = [[MainData alloc] init];

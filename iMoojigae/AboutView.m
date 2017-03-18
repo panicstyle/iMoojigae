@@ -26,7 +26,7 @@
 //    NSString *version = [infoDict objectForKey:@"CFBundleShortVersionString"];
     NSString *version = [infoDict objectForKey:@"CFBundleShortVersionString"];
     
-	msgAbout = [NSString stringWithFormat:@"무지개교육마을 / 아이폰\n버전 : %@\n문의메일 : panicstyle@gmail.com\n홈페이지 : http://www.panicstyle.net/?page_id=5",  version];
+	msgAbout = [NSString stringWithFormat:@"무지개교육마을앱 for iOS\n버전 : %@\n개발자 : 호랑이\n문의메일 : panicstyle@gmail.com\n홈페이지 : http://www.panicstyle.net/?page_id=5\n소스 : https://github.com/panicstyle/iMoojigae\n\n광고수익은 공동육아 저소득기금으로 사용됩니다.",  version];
     textView.text = msgAbout;
 }
 

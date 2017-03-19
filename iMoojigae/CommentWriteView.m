@@ -29,33 +29,6 @@
 @synthesize target;
 @synthesize selector;
 
-- (CommentWriteView *) initWithBoard:(NSString *)boardId boardNo:(NSString *)boardNo Comment:(NSString *)strCommentNo
-{
-	////NSLog(@"WriteArticleViewController start");
-	m_boardId = boardId;
-	m_boardNo = boardNo;
-	m_strCommentNo = strCommentNo;
-	
-	return self;
-}
-
-- (void)setDelegate:(id)aTarget selector:(SEL)aSelector
-{
-	// 데이터 수신이 완료된 이후에 호출될 메서드의 정보를 담고 있는 셀렉터 설정
-	self.target = aTarget;
-	self.selector = aSelector;
-}
-
-/*
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
- - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
- if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
- // Custom initialization
- }
- return self;
- }
- */
-
 - (void)viewDidLoad
 {
 	m_strErrorMsg = @"";

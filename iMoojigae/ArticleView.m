@@ -63,6 +63,7 @@
 @synthesize m_strName;
 @synthesize m_boardId;
 @synthesize m_boardNo;
+@synthesize m_boardName;
 @synthesize target;
 @synthesize selector;
 
@@ -72,6 +73,12 @@
 {
 	[super viewDidLoad];
 	
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = m_boardName;
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
 	buttonArticleDelete.target = self;
 	buttonArticleDelete.action = @selector(DeleteArticleConfirm);
 	

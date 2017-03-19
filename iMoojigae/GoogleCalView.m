@@ -13,6 +13,7 @@
 @implementation GoogleCalView
 @synthesize webView;
 @synthesize m_strLink;
+@synthesize m_boardName;
 
 #pragma mark - View lifecycle
 
@@ -20,6 +21,12 @@
 {
 	[super viewDidLoad];
 	
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = m_boardName;
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
 	self.bannerView.rootViewController = self;

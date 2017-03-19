@@ -12,6 +12,7 @@
 #import "env.h"
 
 @interface CommentWriteView () {
+	int m_bUpMode;
 	NSString *m_strErrorMsg;
 	long m_lContentHeight;
 	UIAlertView *alertWait;
@@ -58,18 +59,24 @@
 - (void)viewDidLoad
 {
 	m_strErrorMsg = @"";
+	m_bUpMode = false;
 	
-	CGRect rectScreen = [self getScreenFrameForCurrentOrientation];
-	m_lContentHeight = rectScreen.size.height;
-	
+	UILabel *lblTitle = [[UILabel alloc] init];
+
 	if ([m_nMode intValue] == CommentWrite) {
-		[(UILabel *)self.navigationItem.titleView setText:@"댓글쓰기"];
+		lblTitle.text = @"댓글쓰기";
 	} else if ([m_nMode intValue] == CommentModify) {
-		[(UILabel *)self.navigationItem.titleView setText:@"댓글수정"];
+		lblTitle.text = @"댓글수정";
 		m_textView.text = m_strComment;
 	} else {
-		[(UILabel *)self.navigationItem.titleView setText:@"댓글답변쓰기"];
+		lblTitle.text = @"댓글답변쓰기";
 	}
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+	
+//	CGRect rectScreen = [self getScreenFrameForCurrentOrientation];
+//	m_lContentHeight = rectScreen.size.height;
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
 											   initWithTitle:@"완료"
@@ -94,12 +101,6 @@
 												 name:UIKeyboardDidHideNotification
 											   object:nil];
 
-
-	// Prepare the Navigation Item
-	[(UILabel *)self.navigationItem.titleView setBackgroundColor:[UIColor clearColor]];
-	[(UILabel *)self.navigationItem.titleView setTextColor:[UIColor whiteColor]];
-	[(UILabel *)self.navigationItem.titleView setTextAlignment:NSTextAlignmentCenter];
-	[(UILabel *)self.navigationItem.titleView setFont:[UIFont fontWithName:@"Helvetica" size:18.0f]];
 }
 
 - (void)keyboardDidShow: (NSNotification *) notif{
@@ -114,6 +115,8 @@
 
 -(void)animateTextView:(NSNotification *)notif up:(BOOL)up
 {
+	if (m_bUpMode == up) return;
+	
 	NSDictionary* keyboardInfo = [notif userInfo];
 	NSValue* keyboardFrameBegin = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
 	CGRect keyboardFrameBeginRect = [keyboardFrameBegin CGRectValue];
@@ -131,25 +134,14 @@
 	viewRect.size.height = viewRect.size.height + movement;
 	self.view.frame = viewRect;
 	
-	//	CGRect tableRect = self.tbView.frame;
-	//	tableRect.size.height = tableRect.size.height + movement;
-	//	self.tbView.frame = tableRect;
-	
 	CGRect contentRect = m_textView.frame;
 	contentRect.size.height = contentRect.size.height + movement;
 	m_textView.frame = contentRect;
 	
-	//	CGRect textRect = m_contentView.frame;
-	//	textRect.size.height = textRect.size.height + movement;
-	//	m_contentView.frame = textRect;
-	
-	//	CGRect imageRect = m_imageCell.frame;
-	//	imageRect.size.height = imageRect.size.height;
-	//	m_imageCell.frame = imageRect;
-	
 	[UIView commitAnimations];
+	m_bUpMode = up;
 }
-
+/*
 - (CGRect)getScreenFrameForCurrentOrientation {
 	return [self getScreenFrameForOrientation:[UIApplication sharedApplication].statusBarOrientation];
 }
@@ -173,7 +165,7 @@
 	
 	return fullScreenRect;
 }
-
+*/
 - (void) cancelEditing:(id)sender
 {
 	//	[contentView resignFirstResponder];

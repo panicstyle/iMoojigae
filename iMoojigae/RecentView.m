@@ -33,6 +33,7 @@
 @implementation RecentView
 
 @synthesize m_strRecent;
+@synthesize m_strRecentTitle;
 
 #pragma mark - View lifecycle
 
@@ -40,6 +41,12 @@
 {
 	[super viewDidLoad];
 	
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = m_strRecentTitle;
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 
 	// Replace this ad unit ID with your own ad unit ID.

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="PfV-XL-rbF">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="PfV-XL-rbF">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -892,13 +892,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="7GS-8b-1C1">
                         <rightBarButtonItems>
-                            <barButtonItem tag="100" title="글삭제" id="Qsc-Bb-dgr"/>
-                            <barButtonItem title="글수정" id="uke-Ky-AW5">
+                            <barButtonItem tag="100" title="삭제" id="Qsc-Bb-dgr"/>
+                            <barButtonItem title="수정" id="uke-Ky-AW5">
                                 <connections>
                                     <segue destination="i6g-0e-7Hv" kind="show" identifier="ArticleModify" id="lGd-hv-6il"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem title="댓글쓰기" id="dVy-6y-o5W">
+                            <barButtonItem title="댓글" id="dVy-6y-o5W">
                                 <connections>
                                     <segue destination="LBO-7C-h3f" kind="show" identifier="Comment" id="G88-ln-Eq0"/>
                                 </connections>
@@ -1075,15 +1075,15 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="609"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Item" rowHeight="77" id="rsE-8Y-Xfn">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="77"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Item" rowHeight="105" id="rsE-8Y-Xfn">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="105"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rsE-8Y-Xfn" id="16r-1G-csH">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="77"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="105"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="101" contentMode="left" text="Subject" lineBreakMode="wordWrap" numberOfLines="2" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="989-Od-KVM">
-                                                    <rect key="frame" x="20" y="8" width="335" height="32"/>
+                                                    <rect key="frame" x="20" y="36" width="335" height="32"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="32" id="BWW-uc-wiH"/>
                                                     </constraints>
@@ -1091,39 +1091,51 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="100" contentMode="left" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M4M-1N-eje">
-                                                    <rect key="frame" x="20" y="48" width="297" height="20"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20" id="gIl-rj-4aT"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="103" contentMode="left" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ltr-ak-7Q2">
-                                                    <rect key="frame" x="325" y="48" width="30" height="20"/>
+                                                    <rect key="frame" x="325" y="76" width="30" height="20"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="30" id="FHU-84-6Ag"/>
                                                         <constraint firstAttribute="height" constant="20" id="XgP-xS-vDY"/>
-                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="Zr8-jL-Ecz"/>
-                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="30" id="d2H-mR-Yac"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <color key="highlightedColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="102" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="boardName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oVk-Cs-hhm">
+                                                    <rect key="frame" x="20" y="8" width="335" height="20"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="20" id="U2O-xv-NZh"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="100" contentMode="left" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M4M-1N-eje">
+                                                    <rect key="frame" x="20" y="76" width="297" height="20"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="20" id="gIl-rj-4aT"/>
+                                                        <constraint firstAttribute="width" constant="297" id="xlO-AS-OQr"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="ltr-ak-7Q2" firstAttribute="bottom" secondItem="16r-1G-csH" secondAttribute="bottomMargin" id="2IJ-KL-JDH"/>
-                                                <constraint firstItem="ltr-ak-7Q2" firstAttribute="leading" secondItem="M4M-1N-eje" secondAttribute="trailing" constant="8" id="67q-zI-SqO"/>
-                                                <constraint firstItem="989-Od-KVM" firstAttribute="leading" secondItem="16r-1G-csH" secondAttribute="leadingMargin" constant="12" id="Abj-0H-1KM"/>
-                                                <constraint firstItem="M4M-1N-eje" firstAttribute="bottom" secondItem="16r-1G-csH" secondAttribute="bottomMargin" id="BzG-UW-rka"/>
-                                                <constraint firstItem="989-Od-KVM" firstAttribute="top" secondItem="16r-1G-csH" secondAttribute="topMargin" id="I8g-5e-UcU"/>
-                                                <constraint firstItem="M4M-1N-eje" firstAttribute="top" secondItem="989-Od-KVM" secondAttribute="bottom" constant="8" id="VtX-9f-xfP"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="989-Od-KVM" secondAttribute="trailing" constant="12" id="fPl-tu-kMH"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="ltr-ak-7Q2" secondAttribute="trailing" constant="12" id="gLT-70-lF4"/>
-                                                <constraint firstItem="M4M-1N-eje" firstAttribute="leading" secondItem="16r-1G-csH" secondAttribute="leadingMargin" constant="12" id="lzt-bl-8BX"/>
-                                                <constraint firstItem="M4M-1N-eje" firstAttribute="top" secondItem="989-Od-KVM" secondAttribute="bottom" constant="8" id="qAl-ls-pIF"/>
-                                                <constraint firstItem="ltr-ak-7Q2" firstAttribute="top" secondItem="989-Od-KVM" secondAttribute="bottom" constant="8" id="xOo-eB-PRQ"/>
+                                                <constraint firstItem="989-Od-KVM" firstAttribute="top" secondItem="oVk-Cs-hhm" secondAttribute="bottom" constant="8" id="1E4-ll-hOO"/>
+                                                <constraint firstItem="oVk-Cs-hhm" firstAttribute="top" secondItem="16r-1G-csH" secondAttribute="topMargin" id="2K7-oo-ZR6"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="ltr-ak-7Q2" secondAttribute="trailing" constant="12" id="2Le-xg-djr"/>
+                                                <constraint firstItem="989-Od-KVM" firstAttribute="top" secondItem="oVk-Cs-hhm" secondAttribute="bottom" constant="8" id="2RF-WY-PYB"/>
+                                                <constraint firstItem="ltr-ak-7Q2" firstAttribute="top" secondItem="989-Od-KVM" secondAttribute="bottom" constant="8" id="43y-dB-99Q"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="oVk-Cs-hhm" secondAttribute="trailing" constant="12" id="HcZ-sh-Mgg"/>
+                                                <constraint firstItem="M4M-1N-eje" firstAttribute="leading" secondItem="16r-1G-csH" secondAttribute="leadingMargin" constant="12" id="N4m-T2-8Gd"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="ltr-ak-7Q2" secondAttribute="bottom" constant="0.5" id="OQj-Ah-5qP"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="989-Od-KVM" secondAttribute="trailing" constant="12" id="Sq8-Uq-Own"/>
+                                                <constraint firstItem="989-Od-KVM" firstAttribute="leading" secondItem="16r-1G-csH" secondAttribute="leadingMargin" constant="12" id="dDB-tW-uKC"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="M4M-1N-eje" secondAttribute="bottom" constant="0.5" id="i35-Db-lvw"/>
+                                                <constraint firstItem="oVk-Cs-hhm" firstAttribute="leading" secondItem="16r-1G-csH" secondAttribute="leadingMargin" constant="12" id="k27-L0-9l4"/>
+                                                <constraint firstItem="ltr-ak-7Q2" firstAttribute="leading" secondItem="M4M-1N-eje" secondAttribute="trailing" constant="8" id="pcx-A5-hEQ"/>
+                                                <constraint firstItem="M4M-1N-eje" firstAttribute="top" secondItem="989-Od-KVM" secondAttribute="bottom" constant="8" id="vZZ-HN-FYy"/>
+                                                <constraint firstItem="ltr-ak-7Q2" firstAttribute="leading" secondItem="M4M-1N-eje" secondAttribute="trailing" constant="8" id="yz2-fr-0so"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -1263,8 +1275,8 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="wxT-9d-wBW"/>
-        <segue reference="fjI-1J-ra1"/>
-        <segue reference="lGd-hv-6il"/>
+        <segue reference="zoG-b2-QE8"/>
         <segue reference="uqU-iQ-6El"/>
+        <segue reference="lGd-hv-6il"/>
     </inferredMetricsTieBreakers>
 </document>

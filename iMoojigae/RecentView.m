@@ -103,6 +103,10 @@
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 	cell.showsReorderControl = YES;
 	
+	UILabel *labelBoardName = (UILabel *)[cell viewWithTag:102];
+	NSString *strBoardName = [item valueForKey:@"boardName"];
+	labelBoardName.text = strBoardName;
+	
 	UILabel *labelName = (UILabel *)[cell viewWithTag:100];
 	NSString *strName = [item valueForKey:@"name"];
 	NSString *strDate = [item valueForKey:@"date"];
@@ -132,12 +136,9 @@
 	}
 	
 	CGSize size = [textSubject sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-	float height = (77 - 32) + (size.height);
+	float height = (105 - 32) + (size.height);
 	[item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
 	NSLog(@"row = %ld, width=%f, height=%f", (long)[indexPath row], textViewWidth, height);
-	
-	UILabel *labelDate = (UILabel *)[cell viewWithTag:102];
-	labelDate.text = [item valueForKey:@"date"];
 	
 	UILabel *labelComment = (UILabel *)[cell viewWithTag:103];
 	NSString *strComment = [item valueForKey:@"comment"];
@@ -172,6 +173,7 @@
 		view.m_strName = [item valueForKey:@"writer"];
 		view.m_boardId = [item valueForKey:@"boardId"];
 		view.m_boardNo = [item valueForKey:@"boardNo"];
+		view.m_boardName = [item valueForKey:@"boardName"];
 	}
 }
 

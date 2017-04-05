@@ -28,7 +28,7 @@
 	NSMutableDictionary *currItem;
 	
 	currItem = [[NSMutableDictionary alloc] init];
-	[currItem setValue:@"전체최근글보기" forKey:@"title"];
+	[currItem setValue:@"전체최신글보기" forKey:@"title"];
 	[currItem setValue:@"recent" forKey:@"link"];
 	[m_arrayItems addObject:currItem];
 	

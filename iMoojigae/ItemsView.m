@@ -34,11 +34,18 @@
 
 @synthesize m_strCommNo;
 @synthesize m_boardId;
+@synthesize m_boardName;
 
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
 	
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = m_boardName;
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 
 	// Replace this ad unit ID with your own ad unit ID.
@@ -271,6 +278,7 @@
 		view.m_strName = [item valueForKey:@"writer"];
 		view.m_boardId = m_boardId;
 		view.m_boardNo = [item valueForKey:@"boardNo"];
+		view.m_boardName = m_boardName;
 		view.target = self;
 		view.selector = @selector(didWrite:);
 	} else 	if ([[segue identifier] isEqualToString:@"ArticleWrite"]) {

@@ -23,9 +23,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
-        self.edgesForExtendedLayout = UIRectEdgeNone;   // iOS 7 specific
-    
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = @"로그인설정";
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+	
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 	NSString *myPath = [documentsDirectory stringByAppendingPathComponent:@"set.dat"];

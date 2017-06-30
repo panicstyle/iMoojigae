@@ -23,11 +23,17 @@
 
 @implementation BoardView
 @synthesize m_strCommNo;
+@synthesize m_strCommTitle;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = m_strCommTitle;
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
     // Replace this ad unit ID with your own ad unit ID.
     self.bannerView.adUnitID = kSampleAdUnitID;
     self.bannerView.rootViewController = self;
@@ -126,9 +132,11 @@
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_strCommNo = m_strCommNo;
 		view.m_boardId = [item valueForKey:@"boardId"];
+		view.m_boardName = [item valueForKey:@"title"];
 	} else if ([[segue identifier] isEqualToString:@"Recent"]) {
 		RecentView *view = [segue destinationViewController];
 		view.m_strRecent = m_strRecent;
+		view.m_strRecentTitle = @"최신글보기";
 	}
 	if ([[segue identifier] isEqualToString:@"Calendar"]) {
 		GoogleCalView *view = [segue destinationViewController];
@@ -136,6 +144,7 @@
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_strLink = [item valueForKey:@"boardId"];
+		view.m_boardName = [item valueForKey:@"title"];
 	}
 }
 

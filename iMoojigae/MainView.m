@@ -32,6 +32,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = @"무지개교육마을";
+	lblTitle.backgroundColor = [UIColor clearColor];
+//	lblTitle.textColor = [UIColor colorWithRed:77.0/255.0 green:77.0/255.0 blue:77.0/255.0 alpha:1.0];
+//	lblTitle.shadowColor = [UIColor whiteColor];
+//	lblTitle.shadowOffset = CGSizeMake(0, 1);
+//	lblTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0];
+	[lblTitle sizeToFit];
+	
+	self.navigationItem.titleView = lblTitle;
+
 	// 서버에서 encoding.info 파일을 읽어서 encoding option을 설정한다.
 	// 기존 euc-kr 이였던 서버를 utf-8 로 변경하는 과정중에 앱에서 이를 자동으로 처리하기 위해 필요한 옵션
 	EncodingOption *encodingOption = [[EncodingOption alloc] init];
@@ -154,12 +165,14 @@
 //		long row = currentIndexPath.row;
 //		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		viewController.m_strRecent = m_strRecent;
+		viewController.m_strRecentTitle = @"전체최신글보기";
 	} else if ([[segue identifier] isEqualToString:@"Board"]) {
-			BoardView *viewController = [segue destinationViewController];
-			NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
-			long row = currentIndexPath.row;
-			NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-			viewController.m_strCommNo = [item valueForKey:@"link"];
+		BoardView *viewController = [segue destinationViewController];
+		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
+		long row = currentIndexPath.row;
+		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+		viewController.m_strCommNo = [item valueForKey:@"link"];
+		viewController.m_strCommTitle = [item valueForKey:@"title"];
 	} else if ([[segue identifier] isEqualToString:@"SetLogin"]) {
 		SetView *viewController = [segue destinationViewController];
 		viewController.target = self;

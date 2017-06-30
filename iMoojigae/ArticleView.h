@@ -20,6 +20,7 @@
 @property (strong, nonatomic) NSString *m_strName;
 @property (strong, nonatomic) NSString *m_boardId;
 @property (strong, nonatomic) NSString *m_boardNo;
+@property (strong, nonatomic) NSString *m_boardName;
 @property id target;
 @property SEL selector;
 @property (nonatomic, retain) UIDocumentInteractionController *doic;

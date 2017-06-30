@@ -124,9 +124,11 @@
 	
 	NSString *boardId;
 	NSString *boardNo;
+	NSString *boardName;
 	if ([dUserInfo objectForKey:@"link"]) {
 		boardId = [dUserInfo objectForKey:@"boardId"];
 		boardNo = [dUserInfo objectForKey:@"boardNo"];
+		boardName = [dUserInfo objectForKey:@"boardName"];
 	} else {
 		dUserInfo = nil;
 		return;
@@ -146,6 +148,7 @@
 		viewController.m_strName = @"";
 		viewController.m_boardId = boardId;
 		viewController.m_boardNo = boardNo;
+		viewController.m_boardName = boardName;
 		viewController.target = nil;
 		viewController.selector = nil;
 	} else {

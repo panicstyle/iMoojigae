@@ -131,6 +131,8 @@
 		
 		// boardId
 		[currItem setValue:[jsonItem valueForKey:@"boardId"] forKey:@"boardId"];
+		// boardName
+		[currItem setValue:[jsonItem valueForKey:@"boardName"] forKey:@"boardName"];
 		
 		// subject
 		NSString *subject = [jsonItem valueForKey:@"boardTitle"];

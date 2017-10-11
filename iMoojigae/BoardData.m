@@ -35,13 +35,7 @@
 	m_receiveData = [[NSMutableData alloc] init];
 
 	NSString *url;
-	if ([m_strCommNo isEqualToString:@"maul"]) {
-		url = [NSString stringWithFormat:@"%@/board-api-menu.do?comm=1", WWW_SERVER];
-	} else if ([m_strCommNo isEqualToString:@"school1"]) {
-		url = [NSString stringWithFormat:@"%@/board-api-menu.do?comm=2", WWW_SERVER];
-	} else {
-		url = [NSString stringWithFormat:@"%@/board-api-menu.do?comm=3", WWW_SERVER];
-	}
+	url = [NSString stringWithFormat:@"%@/board-api-menu.do?comm=%@", WWW_SERVER, m_strCommNo];
 	
 	NSLog(@"query = [%@]", url);
 	

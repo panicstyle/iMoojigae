@@ -136,7 +136,7 @@
 	} else if ([[segue identifier] isEqualToString:@"Recent"]) {
 		RecentView *view = [segue destinationViewController];
 		view.m_strRecent = m_strRecent;
-		view.m_strRecentTitle = @"최신글보기";
+		view.m_strType = @"list";
 	}
 	if ([[segue identifier] isEqualToString:@"Calendar"]) {
 		GoogleCalView *view = [segue destinationViewController];

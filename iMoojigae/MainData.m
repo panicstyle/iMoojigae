@@ -23,71 +23,76 @@
 
 - (void)fetchItems
 {
-	m_arrayItems = [[NSMutableArray alloc] init];
-	
-	NSMutableDictionary *currItem;
-	
-	currItem = [[NSMutableDictionary alloc] init];
-	[currItem setValue:@"전체최신글보기" forKey:@"title"];
-	[currItem setValue:@"recent" forKey:@"link"];
-	[m_arrayItems addObject:currItem];
-	
-	currItem = [[NSMutableDictionary alloc] init];
-	[currItem setValue:@"무지개교육마을" forKey:@"title"];
-	[currItem setValue:@"maul" forKey:@"link"];
-	[m_arrayItems addObject:currItem];
-	
-	currItem = [[NSMutableDictionary alloc] init];
-	[currItem setValue:@"초등무지개학교" forKey:@"title"];
-	[currItem setValue:@"school1" forKey:@"link"];
-	[m_arrayItems addObject:currItem];
-	
-	currItem = [[NSMutableDictionary alloc] init];
-	[currItem setValue:@"중등무지개학교" forKey:@"title"];
-	[currItem setValue:@"school2" forKey:@"link"];
-	[m_arrayItems addObject:currItem];
-	
-	[self fetchItems2];
+    m_arrayItems = [[NSMutableArray alloc] init];
+    
+    [self fetchItems2];
 }
 
 - (void)fetchItems2
 {
-	NSLog(@"fetchItems2");
-	m_receiveData = [[NSMutableData alloc] init];
-	
-	NSString *url = [NSString stringWithFormat:@"%@/board-api-menu.do?comm=0", WWW_SERVER];
-	NSLog(@"query = [%@]", url);
-	
-	m_connection = [[NSURLConnection alloc]
-					initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
-	NSLog(@"fetchItems 3");
+    NSLog(@"fetchItems2");
+    m_receiveData = [[NSMutableData alloc] init];
+    
+    NSString *url;
+    url = [NSString stringWithFormat:@"%@/board-api-menu.do?comm=moo_menu", WWW_SERVER];
+    
+    NSLog(@"query = [%@]", url);
+    
+    m_connection = [[NSURLConnection alloc]
+                    initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
+    NSLog(@"fetchItems 3");
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-	NSLog(@"didReceiveData");
-	[m_receiveData appendData:data];
-	NSLog(@"didReceiveData receiveData=[%lu], data=[%lu]", (unsigned long)[m_receiveData length], (unsigned long)[data length]);
+    NSLog(@"didReceiveData");
+    [m_receiveData appendData:data];
+    NSLog(@"didReceiveData receiveData=[%lu], data=[%lu]", (unsigned long)[m_receiveData length], (unsigned long)[data length]);
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-	NSLog(@"ListView receiveData Size = [%lu]", (unsigned long)[m_receiveData length]);
-	
-//	NSString *html = [[NSString alloc] initWithData:m_receiveData encoding:NSUTF8StringEncoding];
-//	NSLog(@"html=[%@]", html);
-	
-	NSError *localError = nil;
-	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
-	
-	if (localError != nil) {
-		return;
-	}
-	
-	m_strRecent = [parsedObject valueForKey:@"recent"];
-	NSLog(@"m_strRecent %@", m_strRecent);
-	
-	[target performSelector:selector withObject:nil afterDelay:0];
+    NSLog(@"ListView receiveData Size = [%lu]", (unsigned long)[m_receiveData length]);
+    
+    //    NSString *html = [[NSString alloc] initWithData:m_receiveData encoding:NSUTF8StringEncoding];
+    //    NSLog(@"html=[%@]", html);
+    
+    NSError *localError = nil;
+    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
+    
+    if (localError != nil) {
+        return;
+    }
+    
+    m_strRecent = [parsedObject valueForKey:@"recent"];
+    NSLog(@"m_strRecent %@", m_strRecent);
+
+    NSArray *jsonItems = [parsedObject valueForKey:@"menu"];
+    
+    NSMutableDictionary *currItem;
+    
+    for (int i = 0; i < [jsonItems count]; i++) {
+        NSDictionary *jsonItem = [jsonItems objectAtIndex:i];
+        
+        currItem = [[NSMutableDictionary alloc] init];
+        
+        // title
+        NSString *strTitle = [jsonItem valueForKey:@"title"];
+        [currItem setValue:strTitle forKey:@"title"];
+        
+        // type
+        NSString *strType = [jsonItem valueForKey:@"type"];
+        [currItem setValue:strType forKey:@"type"];
+        
+        // boardId
+        NSString *strValue = [jsonItem valueForKey:@"value"];
+        [currItem setValue:strValue forKey:@"value"];
+        
+        [m_arrayItems addObject:currItem];
+    }
+        
+    [target performSelector:selector withObject:nil afterDelay:0];
 }
+
 
 @end

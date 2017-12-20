@@ -14,5 +14,5 @@
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
 @property (weak, nonatomic) IBOutlet GADBannerView *bannerView;
 @property (strong, nonatomic) NSString *m_strRecent;
-@property (strong, nonatomic) NSString *m_strRecentTitle;
+@property (strong, nonatomic) NSString *m_strType;
 @end

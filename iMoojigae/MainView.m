@@ -16,6 +16,7 @@
 #import "env.h"
 #import "MainData.h"
 #import "EncodingOption.h"
+#import "GoogleCalView.h"
 
 @interface MainView ()
 {
@@ -126,26 +127,34 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	static NSString *reusedentifier = @"reuseIdentifier";
-	static NSString *recentdentifier = @"recentIdentifier";
-	
+    static NSString *reuseIdentifier = @"reuseIdentifier";
+    static NSString *linkIdentifier = @"linkIdentifier";
+    static NSString *recentIdentifier = @"recentIdentifier";
+
 	UITableViewCell *cell;
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-	if ([[item valueForKey:@"link"] isEqualToString:@"recent"]) {
-		cell = [tableView
-				dequeueReusableCellWithIdentifier:recentdentifier];
-		if (cell == nil) {
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-										  reuseIdentifier:recentdentifier];
-		}
-	} else {
-		cell = [tableView
-								 dequeueReusableCellWithIdentifier:reusedentifier];
-		if (cell == nil) {
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-										  reuseIdentifier:reusedentifier];
-		}
-	}
+    if ([[item valueForKey:@"type"] isEqualToString:@"recent"]) {
+        cell = [tableView
+                dequeueReusableCellWithIdentifier:recentIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                          reuseIdentifier:recentIdentifier];
+        }
+    } else if ([[item valueForKey:@"type"] isEqualToString:@"link"]) {
+        cell = [tableView
+                dequeueReusableCellWithIdentifier:linkIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                          reuseIdentifier:linkIdentifier];
+        }
+    } else {
+        cell = [tableView
+                dequeueReusableCellWithIdentifier:reuseIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                          reuseIdentifier:reuseIdentifier];
+        }
+    }
 	// Configure the cell...
 	cell.textLabel.text = [item valueForKey:@"title"];
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -159,19 +168,26 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 	// Get the new view controller using [segue destinationViewController].
 	// Pass the selected object to the new view controller.
-	if ([[segue identifier] isEqualToString:@"Recent"]) {
-		RecentView *viewController = [segue destinationViewController];
-//		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
-//		long row = currentIndexPath.row;
-//		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		viewController.m_strRecent = m_strRecent;
-		viewController.m_strRecentTitle = @"전체최신글보기";
-	} else if ([[segue identifier] isEqualToString:@"Board"]) {
+    if ([[segue identifier] isEqualToString:@"Recent"]) {
+        RecentView *viewController = [segue destinationViewController];
+        NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
+        long row = currentIndexPath.row;
+        NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+        viewController.m_strType = [item valueForKey:@"value"];
+        viewController.m_strRecent = m_strRecent;
+    } else if ([[segue identifier] isEqualToString:@"Link"]) {
+        GoogleCalView *viewController = [segue destinationViewController];
+        NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
+        long row = currentIndexPath.row;
+        NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+        viewController.m_strLink = [item valueForKey:@"value"];
+        viewController.m_boardName = [item valueForKey:@"title"];
+    } else if ([[segue identifier] isEqualToString:@"Board"]) {
 		BoardView *viewController = [segue destinationViewController];
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		viewController.m_strCommNo = [item valueForKey:@"link"];
+		viewController.m_strCommNo = [item valueForKey:@"value"];
 		viewController.m_strCommTitle = [item valueForKey:@"title"];
 	} else if ([[segue identifier] isEqualToString:@"SetLogin"]) {
 		SetView *viewController = [segue destinationViewController];

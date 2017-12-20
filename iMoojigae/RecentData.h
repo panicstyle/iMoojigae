@@ -10,6 +10,7 @@
 
 @interface RecentData : NSObject
 @property (nonatomic, strong) NSString *m_strRecent;
+@property (strong, nonatomic) NSString *m_strType;
 @property (strong, nonatomic) NSMutableArray *m_arrayItems;
 @property id target;
 @property SEL selector;

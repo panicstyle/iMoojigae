@@ -22,6 +22,7 @@
 @implementation RecentData
 
 @synthesize m_strRecent;
+@synthesize m_strType;
 @synthesize m_arrayItems;
 @synthesize target;
 @synthesize selector;
@@ -31,22 +32,14 @@
 	m_arrayItems = [[NSMutableArray alloc] init];
 
 	NSString *url;
-/*
-	NSString *strMaul = @"mvTopic,mvTopic10Year,mvTopicGoBackHome,mvEduBasicRight,mvGongi,mvGongDong,mvGongDongFacility,mvGongDongEvent,mvGongDongLocalcommunity,mvDonghowhe,mvDonghowheMoojiageFC,mvPoomASee,mvPoomASeeWantBiz,mvPoomASeeBized,mvEduLove,mvEduVillageSchool,mvEduDream,mvEduSpring,mvEduSpring,mvMarketBoard,mvHorizonIntroduction,mvHorizonLivingStory,mvSecretariatAddress,mvSecretariatOldData,mvMinutes,mvEduResearch,mvBuilding,mvBuildingComm,mvDonationGongi,mvDonationQnA,toHomePageAdmin,mvUpgrade";
-	NSString *strSchool1 = @"mjGongi,mjFreeBoard,mjTeacher,mjTeachingData,mjJunior,mjParent,mjParentMinutes,mjAmaDiary,mjSchoolFood,mjPhoto,mjData";
-	NSString *strSchool2 = @"msGongi,msFreeBoard,msOverRainbow,msFreeComment,msTeacher,msSenior,msStudent,ms5Class,msStudentAssociation,msParent,msRepresentative,msMinutes,msPhoto,msData";
-	
-	if ([m_strCommNo isEqualToString:@"maul"]) {
-		url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=50&pid=%@", WWW_SERVER, strMaul];
-	} else if ([m_strCommNo isEqualToString:@"school1"]) {
-		url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=50&pid=%@", WWW_SERVER, strSchool1];
-	} else if ([m_strCommNo isEqualToString:@"school2"]) {
-		url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=50&pid=%@", WWW_SERVER, strSchool2];
-	} else if ([m_strCommNo isEqualToString:@"recent"]) {
-		url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=100&pid=%@,%@,%@", WWW_SERVER, strMaul, strSchool1, strSchool2];
-	}
-*/
-	url = [NSString stringWithFormat:@"%@/board-api-recent.do?part=index&rid=50&pid=%@", WWW_SERVER, m_strRecent];
+    NSString *doLink;
+    if ([m_strType isEqualToString:@"list"]) {
+        doLink = @"board-api-recent.do";
+    } else {
+        doLink = @"board-api-recent-memo.do";
+    }
+    
+	url = [NSString stringWithFormat:@"%@/%@?part=index&rid=50&pid=%@", WWW_SERVER, doLink, m_strRecent];
 
 	NSLog(@"fetchItems");
 	m_receiveData = [[NSMutableData alloc] init];

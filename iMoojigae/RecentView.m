@@ -33,7 +33,7 @@
 @implementation RecentView
 
 @synthesize m_strRecent;
-@synthesize m_strRecentTitle;
+@synthesize m_strType;
 
 #pragma mark - View lifecycle
 
@@ -42,7 +42,11 @@
 	[super viewDidLoad];
 	
 	UILabel *lblTitle = [[UILabel alloc] init];
-	lblTitle.text = m_strRecentTitle;
+    if ([m_strType isEqualToString:@"list"]) {
+        lblTitle.text = @"최신글보기";
+    } else {
+        lblTitle.text = @"최신댓글보기";
+    }
 	lblTitle.backgroundColor = [UIColor clearColor];
 	[lblTitle sizeToFit];
 	self.navigationItem.titleView = lblTitle;
@@ -65,7 +69,8 @@
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
 	m_recentData = [[RecentData alloc] init];
-	m_recentData.m_strRecent = m_strRecent;
+    m_recentData.m_strRecent = m_strRecent;
+    m_recentData.m_strType = m_strType;
 	m_recentData.target = self;
 	m_recentData.selector = @selector(didFetchItems:);
 	[m_recentData fetchItems];

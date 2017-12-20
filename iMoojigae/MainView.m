@@ -181,7 +181,7 @@
         long row = currentIndexPath.row;
         NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
         viewController.m_strLink = [item valueForKey:@"value"];
-        viewController.m_boardName = @"전체일정";
+        viewController.m_boardName = [item valueForKey:@"title"];
     } else if ([[segue identifier] isEqualToString:@"Board"]) {
 		BoardView *viewController = [segue destinationViewController];
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];

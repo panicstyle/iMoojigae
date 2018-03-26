@@ -74,13 +74,8 @@
 	
 	NSLog(@"html = [%lu]", (unsigned long)[m_strHtml length]);
 	
-	if ([Utils numberOfMatches:m_strHtml regex:@"<td><font style=font-size:12pt></td><b>시스템 메세지입니다</b></font><br>접근이 차단되었습니다<br>"] > 0) {
-		[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
-		return;
-	}
-
-	// parent.setMainBodyLogin 가 포함되어 있으면 다시 로그인해야 함.
-	if ([Utils numberOfMatches:m_strHtml regex:@"parent.setMainBodyLogin"] > 0 || [Utils numberOfMatches:m_strHtml regex:@"<title>시스템 메세지입니다</title>"] > 0) {
+	// ./img/common/board/alert.gif 가 포함되어 있으면 다시 로그인해야 함.
+	if ([Utils numberOfMatches:m_strHtml regex:@"./img/common/board/alert.gif"] > 0) {
 		if (m_isLogin == FALSE) {
 			NSLog(@"retry login");
 			// 저장된 로그인 정보를 이용하여 로그인

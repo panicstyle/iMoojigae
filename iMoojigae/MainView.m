@@ -17,6 +17,7 @@
 #import "MainData.h"
 #import "EncodingOption.h"
 #import "GoogleCalView.h"
+#import "DBInterface.h"
 
 @interface MainView ()
 {
@@ -67,7 +68,7 @@
 	if (![setInfo CheckVersionInfo]) {
 		
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"가끔 글보기에서 글이 보이지 않던 오류가 수정되었습니다.";
+		NSString *NotiMessage = @"이미 읽은 글을 표시하는 기능이 추가되었습니다.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];
@@ -85,6 +86,11 @@
 	m_mainData = [[MainData alloc] init];
 	m_mainData.target = self;
 	m_mainData.selector = @selector(didFetchItems);
+    
+    // DB에 6개월 지난 데이터는 삭제
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+    [db delete];
 	
 	if (m_login == nil) {
 		

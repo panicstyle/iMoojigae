@@ -11,6 +11,7 @@
 #import "LoginToService.h"
 #import "Utils.h"
 #import "NSString+HTML.h"
+#import "DBInterface.h"
 
 @interface ItemsData () {
 	NSMutableData *m_receiveData;
@@ -118,6 +119,10 @@
 	
 	NSMutableDictionary *currItem;
 	
+    // DB에 현재 읽는 글의 boardId, boardNo 를 insert
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+
 	for (int i = 0; i < [jsonItems count]; i++) {
 		NSDictionary *jsonItem = [jsonItems objectAtIndex:i];
 		
@@ -147,7 +152,8 @@
 		[currItem setValue:[jsonItem valueForKey:@"boardDep"] forKey:@"isRe"];
 		
 		// boardId
-		[currItem setValue:[jsonItem valueForKey:@"boardId"] forKey:@"boardId"];
+        NSString *boardId = [jsonItem valueForKey:@"boardId"];
+		[currItem setValue:boardId forKey:@"boardId"];
 		
 		// subject
 		NSString *subject = [jsonItem valueForKey:@"boardTitle"];
@@ -167,7 +173,14 @@
 		[currItem setValue:[jsonItem valueForKey:@"boardRegister_dt"] forKey:@"date"];
 		
 		[currItem setValue:[NSNumber numberWithFloat:77.0f] forKey:@"height"];
-		
+        
+        int checked = [db searchWithBoardId:boardId BoardNo:boardNo];
+        if (checked > 0) {
+            [currItem setValue:[NSNumber numberWithInt:1] forKey:@"read"];
+        } else {
+            [currItem setValue:[NSNumber numberWithInt:0] forKey:@"read"];
+        }
+
 		[m_arrayItems addObject:currItem];
 	}
 	

@@ -67,7 +67,7 @@
 	if (![setInfo CheckVersionInfo]) {
 		
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"아이폰에서 사진 첨부할 때 오류가 많이 발생하던 문제가 해결되었습니다.";
+		NSString *NotiMessage = @"가끔 글보기에서 글이 보이지 않던 오류가 수정되었습니다.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];

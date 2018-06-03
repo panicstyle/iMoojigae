@@ -84,11 +84,7 @@
 	NSString *str = [[NSString alloc] initWithData:m_receiveData
 										  encoding:g_encodingOption];
 	
-	if ([Utils numberOfMatches:str regex:@"<td><font style=font-size:12pt></td><b>시스템 메세지입니다</b></font><br>접근이 차단되었습니다<br>"] > 0) {
-		[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
-		return;
-	}
-	if ([Utils numberOfMatches:str regex:@"parent.setMainBodyLogin"] > 0) {
+	if ([Utils numberOfMatches:str regex:@"./img/common/board/alert.gif"] > 0) {
 		if (m_isLogin == FALSE) {
 			NSLog(@"retry login");
 			// 저장된 로그인 정보를 이용하여 로그인

@@ -2,12 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "moojiage-logo-400-200.png",
+      "filename" : "moojiage-logo-300-150.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "moojiage-logo-800-400.png",
+      "filename" : "moojiage-logo-600-300.png",
       "scale" : "2x"
     },
     {

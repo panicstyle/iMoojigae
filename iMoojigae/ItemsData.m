@@ -10,6 +10,7 @@
 #import "env.h"
 #import "LoginToService.h"
 #import "Utils.h"
+#import "NSString+HTML.h"
 
 @interface ItemsData () {
 	NSMutableData *m_receiveData;
@@ -150,11 +151,7 @@
 		
 		// subject
 		NSString *subject = [jsonItem valueForKey:@"boardTitle"];
-		subject = [subject stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
-		subject = [subject stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-		subject = [subject stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
-		subject = [subject stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
-		subject = [subject stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
+        subject = [subject stringByDecodingHTMLEntities];
 		[currItem setValue:[NSString stringWithString:subject] forKey:@"subject"];
 		
 		// writer

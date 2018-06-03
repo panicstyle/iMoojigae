@@ -11,6 +11,7 @@
 #import "env.h"
 #import "LoginToService.h"
 #import "Utils.h"
+#import "NSString+HTML.h"
 
 @interface ArticleData () {
 	NSMutableData *m_receiveData;
@@ -107,6 +108,7 @@
 	// Title, Name, Date, Hit
 	
 	m_strTitle = [parsedObject valueForKey:@"boardTitle"];
+    m_strTitle = [m_strTitle stringByDecodingHTMLEntities];
 
 	m_strName = [parsedObject valueForKey:@"userNick"];
 	

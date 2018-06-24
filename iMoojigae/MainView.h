@@ -9,8 +9,6 @@
 
 #import <UIKit/UIKit.h>
 
-NSStringEncoding g_encodingOption;
-
 @interface MainView : UIViewController <UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
 @property(nonatomic, weak) IBOutlet GADBannerView *bannerView;

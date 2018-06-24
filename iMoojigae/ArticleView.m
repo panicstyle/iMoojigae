@@ -556,6 +556,7 @@
 		m_webView.delegate = self;
 		m_webView.scrollView.scrollEnabled = YES;
 		m_webView.scrollView.bounces = NO;
+        m_webView.dataDetectorTypes = UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber;
 		[m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
 
 		[self.tbView reloadData];

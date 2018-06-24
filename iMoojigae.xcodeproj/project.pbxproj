@@ -40,7 +40,6 @@
 		EC938BC41C90534E006BEF9E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = EC938BC31C90534E006BEF9E /* Utils.m */; };
 		ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC846AD1C91588000CF47DA /* CommentWriteView.m */; };
 		ECC846B11C915F3700CF47DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC846AF1C915F3700CF47DA /* Main.storyboard */; };
-		ECFBFF331D72DBC3004B1BFB /* EncodingOption.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFBFF321D72DBC3004B1BFB /* EncodingOption.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,8 +126,6 @@
 		ECC846AC1C91588000CF47DA /* CommentWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentWriteView.h; sourceTree = "<group>"; };
 		ECC846AD1C91588000CF47DA /* CommentWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentWriteView.m; sourceTree = "<group>"; };
 		ECC846B01C915F3700CF47DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		ECFBFF311D72DBC3004B1BFB /* EncodingOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncodingOption.h; sourceTree = "<group>"; };
-		ECFBFF321D72DBC3004B1BFB /* EncodingOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EncodingOption.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -210,8 +207,6 @@
 				ECC846AD1C91588000CF47DA /* CommentWriteView.m */,
 				EC36787620C3736A00B02EF0 /* DBInterface.h */,
 				EC36787720C3736A00B02EF0 /* DBInterface.m */,
-				ECFBFF311D72DBC3004B1BFB /* EncodingOption.h */,
-				ECFBFF321D72DBC3004B1BFB /* EncodingOption.m */,
 				EC717F0E1C8811C500C1888B /* env.h */,
 				EC717F6D1C8AB6E600C1888B /* GoogleCalView.h */,
 				EC717F6E1C8AB6E600C1888B /* GoogleCalView.m */,
@@ -342,7 +337,7 @@
 		EC717E8A1C87C68800C1888B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = dykim;
 				TargetAttributes = {
 					EC717E911C87C68800C1888B = {
@@ -432,7 +427,6 @@
 				EC717F721C8ACD6E00C1888B /* ArticleWriteView.m in Sources */,
 				EC36787120C36EC900B02EF0 /* GTMNSString+HTML.m in Sources */,
 				EC717F2D1C882F3E00C1888B /* SetInfoStorage.m in Sources */,
-				ECFBFF331D72DBC3004B1BFB /* EncodingOption.m in Sources */,
 				EC717E9A1C87C68800C1888B /* AppDelegate.m in Sources */,
 				EC21A6B81E7CE33200B2D138 /* WebLinkView.m in Sources */,
 				EC3AA62F1C990865006BFE5B /* MainData.m in Sources */,
@@ -510,12 +504,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -605,12 +601,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -658,12 +656,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

@@ -58,7 +58,7 @@
 	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
 	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
 	
-	NSData *body = [[NSData alloc] initWithData:[@"" dataUsingEncoding:g_encodingOption]];
+	NSData *body = [[NSData alloc] initWithData:[@"" dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	[request setHTTPBody:body];
 	
@@ -84,7 +84,7 @@
 	NSLog(@"ListView receiveData Size = [%lu]", (unsigned long)[m_receiveData length]);
 	
 	NSString *str = [[NSString alloc] initWithData:m_receiveData
-										  encoding:g_encodingOption];
+										  encoding:NSUTF8StringEncoding];
 	
 	if ([Utils numberOfMatches:str regex:@"./img/common/board/alert.gif"] > 0) {
 		if (m_isLogin == FALSE) {

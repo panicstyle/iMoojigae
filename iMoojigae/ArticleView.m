@@ -13,6 +13,7 @@
 #import "Utils.h"
 #import "ArticleData.h"
 #import "WebLinkView.h"
+#import "DBInterface.h"
 
 @interface ArticleView ()
 {
@@ -119,6 +120,11 @@
 	m_articleData.target = self;
 	m_articleData.selector = @selector(didFetchItems:);
 	[m_articleData fetchItems];
+    
+    // DB에 현재 읽는 글의 boardId, boardNo 를 insert
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+    [db insertWithBoardId:m_boardId BoardNo:m_boardNo];
 }
 
 - (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -550,6 +556,7 @@
 		m_webView.delegate = self;
 		m_webView.scrollView.scrollEnabled = YES;
 		m_webView.scrollView.bounces = NO;
+        m_webView.dataDetectorTypes = UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber;
 		[m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
 
 		[self.tbView reloadData];

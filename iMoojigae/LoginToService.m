@@ -59,16 +59,16 @@
     [request setHTTPMethod:@"POST"];
     [request addValue:strReferer forHTTPHeaderField:@"Referer"];
  
-	NSString *uid = [userid stringByAddingPercentEscapesUsingEncoding:g_encodingOption ];
-    NSString *upwd = [userpwd stringByAddingPercentEscapesUsingEncoding:g_encodingOption];
+	NSString *uid = [userid stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
+    NSString *upwd = [userpwd stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     NSMutableData *body = [NSMutableData data];
-    [body appendData:[[NSString stringWithFormat:@"userId=%@&userPw=%@&boardId=&boardNo=&page=1&categoryId=-1&returnURI=&returnBoardNo=&beforeCommand=&command=LOGIN", uid, upwd]  dataUsingEncoding:g_encodingOption]];
+    [body appendData:[[NSString stringWithFormat:@"userId=%@&userPw=%@&boardId=&boardNo=&page=1&categoryId=-1&returnURI=&returnBoardNo=&beforeCommand=&command=LOGIN", uid, upwd]  dataUsingEncoding:NSUTF8StringEncoding]];
  
     [request setHTTPBody:body];
  
     NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
+    NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
     
     NSLog(@"returnString = [%@]", returnString);
     
@@ -125,13 +125,13 @@
 	[request setHTTPMethod:@"POST"];
 	
 	NSMutableData *body = [NSMutableData data];
-	[body appendData:[[NSString stringWithFormat:@"{\"type\":\"iOS\",\"push_yn\":\"%@\",\"uuid\":\"%@\",\"userid\":\"%@\"}", strPushYN, tokenDevice, userId]  dataUsingEncoding:g_encodingOption]];
+	[body appendData:[[NSString stringWithFormat:@"{\"type\":\"iOS\",\"push_yn\":\"%@\",\"uuid\":\"%@\",\"userid\":\"%@\"}", strPushYN, tokenDevice, userId]  dataUsingEncoding:NSUTF8StringEncoding]];
  
 	[request setHTTPBody:body];
 
 	[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
 //	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-//	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
+//	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
 //	NSLog(@"returnString = [%@]", returnString);
 }
 
@@ -166,13 +166,13 @@
 	[request setHTTPMethod:@"POST"];
 	
 	NSMutableData *body = [NSMutableData data];
-	[body appendData:[[NSString stringWithFormat:@"{\"type\":\"iOS\",\"push_yn\":\"%@\",\"uuid\":\"%@\",\"userid\":\"%@\"}", strPushYN, tokenDevice, userId]  dataUsingEncoding:g_encodingOption]];
+	[body appendData:[[NSString stringWithFormat:@"{\"type\":\"iOS\",\"push_yn\":\"%@\",\"uuid\":\"%@\",\"userid\":\"%@\"}", strPushYN, tokenDevice, userId]  dataUsingEncoding:NSUTF8StringEncoding]];
  
 	[request setHTTPBody:body];
 	
 	[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
 //	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-//	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
+//	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
 //	NSLog(@"returnString = [%@]", returnString);
 }
 

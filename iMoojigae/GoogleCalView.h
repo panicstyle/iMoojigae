@@ -13,7 +13,6 @@
 @interface GoogleCalView : UIViewController <UIWebViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UIWebView *webView;
-@property (weak, nonatomic) IBOutlet GADBannerView *bannerView;
 @property (strong, nonatomic) NSString *m_strLink;
 @property (strong, nonatomic) NSString *m_boardName;
 @end

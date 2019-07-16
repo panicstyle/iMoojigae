@@ -403,6 +403,8 @@
 	NSError *error = NULL;
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\n" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
 	NSString *newContent = [regex stringByReplacingMatchesInString:viewContent.text options:0 range:NSMakeRange(0, [viewContent.text length]) withTemplate:@"<br />"];
+    NSString *escapedContent = [newContent stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+    NSString *escapedTitle = [viewTitle.text stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
 	
 	NSMutableString *strFileName = [[NSMutableString alloc] init];
 	NSMutableString *strFileMask = [[NSMutableString alloc] init];
@@ -422,17 +424,17 @@
 		[strFileSize appendString:m_strFileSize[i]];
 	}
 	
-	NSString *bodyString = [NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&boardNo=%@&command=%@&htmlImage=%%2Fout&file_cnt=5&tag_yn=Y&thumbnailSize=50&boardWidth=710&defaultBoardSkin=default&boardBackGround_color=&boardBackGround_picture=&boardSerialBadNick=&boardSerialBadContent=&totalSize=20&serialBadNick=&serialBadContent=&fileTotalSize=0&simpleFileTotalSize=0+Bytes&serialFileName=&serialFileMask=&serialFileSize=&userPoint=2530&userEmail=panicstyle%%40gmail.com&userHomepage=&boardPollFrom_time=&boardPollTo_time=&boardContent=%@&boardTitle=%@&boardSecret_fg=N&boardEdit_fg=M&userNick=&userPw=&fileName=%@&fileMask=%@&fileSize=%@&pollContent=&boardPoint=0&boardTop_fg=&totalsize=0&tag=0&tagsName=", m_boardId, m_boardNo, strCommand, newContent, viewTitle.text, strFileName, strFileMask, strFileSize];
+	NSString *bodyString = [NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&boardNo=%@&command=%@&htmlImage=%%2Fout&file_cnt=5&tag_yn=Y&thumbnailSize=50&boardWidth=710&defaultBoardSkin=default&boardBackGround_color=&boardBackGround_picture=&boardSerialBadNick=&boardSerialBadContent=&totalSize=20&serialBadNick=&serialBadContent=&fileTotalSize=0&simpleFileTotalSize=0+Bytes&serialFileName=&serialFileMask=&serialFileSize=&userPoint=2530&userEmail=&userHomepage=&boardPollFrom_time=&boardPollTo_time=&boardContent=%@&boardTitle=%@&boardSecret_fg=N&boardEdit_fg=M&userNick=&userPw=&fileName=%@&fileMask=%@&fileSize=%@&pollContent=&boardPoint=0&boardTop_fg=&totalsize=0&tag=0&tagsName=", m_boardId, m_boardNo, strCommand, escapedContent, escapedTitle, strFileName, strFileMask, strFileSize];
 	
 	NSLog(@"bodyString = [%@]", bodyString);
 	
-	NSData *body = [[NSData alloc] initWithData:[bodyString dataUsingEncoding:g_encodingOption]];
+	NSData *body = [[NSData alloc] initWithData:[bodyString dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	[request setHTTPBody:body];
 	
 	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-	//        NSString *returnString = [[[NSString alloc] initWithData:returnData encoding:g_encodingOption] autorelease];
-	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:g_encodingOption];
+	//        NSString *returnString = [[[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding] autorelease];
+	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
 	
 	NSLog(@"returnString = [%@]", returnString);
 	

@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		EC2080A31C954540006305A8 /* ArticleData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC2080A21C954540006305A8 /* ArticleData.m */; };
 		EC21A6B81E7CE33200B2D138 /* WebLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC21A6B71E7CE33200B2D138 /* WebLinkView.m */; };
+		EC36787120C36EC900B02EF0 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36786E20C36EC800B02EF0 /* GTMNSString+HTML.m */; };
+		EC36787220C36EC900B02EF0 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36787020C36EC900B02EF0 /* NSString+HTML.m */; };
+		EC36787520C3730000B02EF0 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36787420C3730000B02EF0 /* libsqlite3.tbd */; };
+		EC36787820C3736A00B02EF0 /* DBInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36787720C3736A00B02EF0 /* DBInterface.m */; };
 		EC3AA62F1C990865006BFE5B /* MainData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA62E1C990865006BFE5B /* MainData.m */; };
 		EC3AA6321C992861006BFE5B /* BoardData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6311C992861006BFE5B /* BoardData.m */; };
 		EC3AA6351C993628006BFE5B /* ItemsData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6341C993628006BFE5B /* ItemsData.m */; };
@@ -36,7 +40,6 @@
 		EC938BC41C90534E006BEF9E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = EC938BC31C90534E006BEF9E /* Utils.m */; };
 		ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC846AD1C91588000CF47DA /* CommentWriteView.m */; };
 		ECC846B11C915F3700CF47DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC846AF1C915F3700CF47DA /* Main.storyboard */; };
-		ECFBFF331D72DBC3004B1BFB /* EncodingOption.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFBFF321D72DBC3004B1BFB /* EncodingOption.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +64,13 @@
 		EC2080A21C954540006305A8 /* ArticleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleData.m; sourceTree = "<group>"; };
 		EC21A6B61E7CE33200B2D138 /* WebLinkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebLinkView.h; sourceTree = "<group>"; };
 		EC21A6B71E7CE33200B2D138 /* WebLinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebLinkView.m; sourceTree = "<group>"; };
+		EC36786D20C36EC800B02EF0 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
+		EC36786E20C36EC800B02EF0 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		EC36786F20C36EC900B02EF0 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
+		EC36787020C36EC900B02EF0 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
+		EC36787420C3730000B02EF0 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		EC36787620C3736A00B02EF0 /* DBInterface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBInterface.h; sourceTree = "<group>"; };
+		EC36787720C3736A00B02EF0 /* DBInterface.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBInterface.m; sourceTree = "<group>"; };
 		EC3AA62D1C990865006BFE5B /* MainData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainData.h; sourceTree = "<group>"; };
 		EC3AA62E1C990865006BFE5B /* MainData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainData.m; sourceTree = "<group>"; };
 		EC3AA6301C992861006BFE5B /* BoardData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoardData.h; sourceTree = "<group>"; };
@@ -116,8 +126,6 @@
 		ECC846AC1C91588000CF47DA /* CommentWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentWriteView.h; sourceTree = "<group>"; };
 		ECC846AD1C91588000CF47DA /* CommentWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentWriteView.m; sourceTree = "<group>"; };
 		ECC846B01C915F3700CF47DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		ECFBFF311D72DBC3004B1BFB /* EncodingOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncodingOption.h; sourceTree = "<group>"; };
-		ECFBFF321D72DBC3004B1BFB /* EncodingOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EncodingOption.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +133,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC36787520C3730000B02EF0 /* libsqlite3.tbd in Frameworks */,
 				EC81F6FF1C884CED0012D779 /* GoogleMobileAds.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -146,6 +155,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EC36787320C3730000B02EF0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EC36787420C3730000B02EF0 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		EC717E891C87C68800C1888B = {
 			isa = PBXGroup;
 			children = (
@@ -154,6 +171,7 @@
 				EC717EAE1C87C68800C1888B /* iMoojigaeTests */,
 				EC717EB91C87C68800C1888B /* iMoojigaeUITests */,
 				EC717E931C87C68800C1888B /* Products */,
+				EC36787320C3730000B02EF0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -187,11 +205,13 @@
 				EC717E9C1C87C68800C1888B /* BoardView.m */,
 				ECC846AC1C91588000CF47DA /* CommentWriteView.h */,
 				ECC846AD1C91588000CF47DA /* CommentWriteView.m */,
-				ECFBFF311D72DBC3004B1BFB /* EncodingOption.h */,
-				ECFBFF321D72DBC3004B1BFB /* EncodingOption.m */,
+				EC36787620C3736A00B02EF0 /* DBInterface.h */,
+				EC36787720C3736A00B02EF0 /* DBInterface.m */,
 				EC717F0E1C8811C500C1888B /* env.h */,
 				EC717F6D1C8AB6E600C1888B /* GoogleCalView.h */,
 				EC717F6E1C8AB6E600C1888B /* GoogleCalView.m */,
+				EC36786F20C36EC900B02EF0 /* GTMNSString+HTML.h */,
+				EC36786E20C36EC800B02EF0 /* GTMNSString+HTML.m */,
 				EC582ED41D8D326200B55AEA /* iMoojigae.entitlements */,
 				EC717EA61C87C68800C1888B /* Info.plist */,
 				EC3AA6331C993628006BFE5B /* ItemsData.h */,
@@ -206,6 +226,8 @@
 				EC3AA62E1C990865006BFE5B /* MainData.m */,
 				EC717F0F1C8811C500C1888B /* MainView.h */,
 				EC717F101C8811C500C1888B /* MainView.m */,
+				EC36786D20C36EC800B02EF0 /* NSString+HTML.h */,
+				EC36787020C36EC900B02EF0 /* NSString+HTML.m */,
 				EC3AA6361C994623006BFE5B /* RecentData.h */,
 				EC3AA6371C994623006BFE5B /* RecentData.m */,
 				EC717F631C8AA71500C1888B /* RecentView.h */,
@@ -315,7 +337,7 @@
 		EC717E8A1C87C68800C1888B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = dykim;
 				TargetAttributes = {
 					EC717E911C87C68800C1888B = {
@@ -343,6 +365,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -400,13 +423,15 @@
 				EC717F2F1C882F3E00C1888B /* SetView.m in Sources */,
 				EC3AA6381C994623006BFE5B /* RecentData.m in Sources */,
 				EC2080A31C954540006305A8 /* ArticleData.m in Sources */,
+				EC36787820C3736A00B02EF0 /* DBInterface.m in Sources */,
 				ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */,
 				EC717F721C8ACD6E00C1888B /* ArticleWriteView.m in Sources */,
+				EC36787120C36EC900B02EF0 /* GTMNSString+HTML.m in Sources */,
 				EC717F2D1C882F3E00C1888B /* SetInfoStorage.m in Sources */,
-				ECFBFF331D72DBC3004B1BFB /* EncodingOption.m in Sources */,
 				EC717E9A1C87C68800C1888B /* AppDelegate.m in Sources */,
 				EC21A6B81E7CE33200B2D138 /* WebLinkView.m in Sources */,
 				EC3AA62F1C990865006BFE5B /* MainData.m in Sources */,
+				EC36787220C36EC900B02EF0 /* NSString+HTML.m in Sources */,
 				EC717F2C1C882F3E00C1888B /* SetInfo.m in Sources */,
 				EC717F2B1C882F3E00C1888B /* LoginToService.m in Sources */,
 				EC3AA6351C993628006BFE5B /* ItemsData.m in Sources */,
@@ -480,12 +505,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -575,12 +602,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -628,12 +657,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

@@ -109,10 +109,12 @@
 	cell.showsReorderControl = YES;
 	
 	UILabel *labelBoardName = (UILabel *)[cell viewWithTag:102];
+    [labelBoardName setTextColor:[UIColor grayColor]];
 	NSString *strBoardName = [item valueForKey:@"boardName"];
 	labelBoardName.text = strBoardName;
 	
 	UILabel *labelName = (UILabel *)[cell viewWithTag:100];
+    [labelName setTextColor:[UIColor grayColor]];
 	NSString *strName = [item valueForKey:@"name"];
 	NSString *strDate = [item valueForKey:@"date"];
 	NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
@@ -122,6 +124,11 @@
 	labelName.attributedText = textName;
 	
 	UITextView *textSubject = (UITextView *)[cell viewWithTag:101];
+    if ([[item valueForKey:@"read"] intValue] == 1) {
+        [textSubject setTextColor:[UIColor grayColor]];
+    } else {
+        [textSubject setTextColor:[UIColor blackColor]];
+    }
 	textSubject.text = [item valueForKey:@"subject"];
 	
 	//			CGFloat textViewWidth = viewComment.frame.size.width;
@@ -162,6 +169,17 @@
 
 }
 
+// Override to support row selection in the table view.
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
+    [item setValue:[NSNumber numberWithInt:1] forKey:@"read"];
+    
+    [tableView beginUpdates];
+    NSArray *array = [NSArray arrayWithObjects:indexPath, nil];
+    [tableView reloadRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationFade];
+    [tableView endUpdates];
+}
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -179,6 +197,8 @@
 		view.m_boardId = [item valueForKey:@"boardId"];
 		view.m_boardNo = [item valueForKey:@"boardNo"];
 		view.m_boardName = [item valueForKey:@"boardName"];
+        
+        [item setValue:[NSNumber numberWithInt:1] forKey:@"read"];
 	}
 }
 

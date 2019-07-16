@@ -9,6 +9,8 @@
 #import "RecentData.h"
 #import "env.h"
 #import "LoginToService.h"
+#import "NSString+HTML.h"
+#import "DBInterface.h"
 
 @interface RecentData () {
 	NSMutableData *m_receiveData;
@@ -51,7 +53,7 @@
 	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
 	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
 	
-	NSData *body = [[NSData alloc] initWithData:[@"" dataUsingEncoding:g_encodingOption]];
+	NSData *body = [[NSData alloc] initWithData:[@"" dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	[request setHTTPBody:body];
 	
@@ -81,7 +83,7 @@
 		[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
 	}
 	
-//	NSString *str = [[NSString alloc] initWithData:m_receiveData encoding:g_encodingOption];
+//	NSString *str = [[NSString alloc] initWithData:m_receiveData encoding:NSUTF8StringEncoding];
 
 	NSError *localError = nil;
 	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
@@ -94,6 +96,10 @@
 	
 	NSMutableDictionary *currItem;
 	
+    // DB에 현재 읽는 글의 boardId, boardNo 를 insert
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+
 	for (int i = 0; i < [jsonItems count]; i++) {
 		NSDictionary *jsonItem = [jsonItems objectAtIndex:i];
 		
@@ -123,17 +129,14 @@
 		[currItem setValue:[jsonItem valueForKey:@"boardDep"] forKey:@"isRe"];
 		
 		// boardId
-		[currItem setValue:[jsonItem valueForKey:@"boardId"] forKey:@"boardId"];
+        NSString *boardId = [jsonItem valueForKey:@"boardId"];
+		[currItem setValue:boardId forKey:@"boardId"];
 		// boardName
 		[currItem setValue:[jsonItem valueForKey:@"boardName"] forKey:@"boardName"];
 		
 		// subject
 		NSString *subject = [jsonItem valueForKey:@"boardTitle"];
-		subject = [subject stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
-		subject = [subject stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-		subject = [subject stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
-		subject = [subject stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
-		subject = [subject stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
+        subject = [subject stringByDecodingHTMLEntities];
 		[currItem setValue:[NSString stringWithString:subject] forKey:@"subject"];
 		
 		// writer
@@ -151,6 +154,13 @@
 		[currItem setValue:[NSNumber numberWithFloat:77.0f] forKey:@"height"];
 		
 		[currItem setValue:[NSNumber numberWithFloat:77.0f] forKey:@"height"];
+
+        int checked = [db searchWithBoardId:boardId BoardNo:boardNo];
+        if (checked > 0) {
+            [currItem setValue:[NSNumber numberWithInt:1] forKey:@"read"];
+        } else {
+            [currItem setValue:[NSNumber numberWithInt:0] forKey:@"read"];
+        }
 
 		[m_arrayItems addObject:currItem];
 	}

@@ -11,6 +11,7 @@
 #import "env.h"
 #import "LoginToService.h"
 #import "Utils.h"
+#import "NSString+HTML.h"
 
 @interface ArticleData () {
 	NSMutableData *m_receiveData;
@@ -70,7 +71,7 @@
 
 - (void)doFetch
 {
-	m_strHtml = [[NSString alloc] initWithData:m_receiveData encoding: g_encodingOption];
+	m_strHtml = [[NSString alloc] initWithData:m_receiveData encoding:NSUTF8StringEncoding];
 	
 	NSLog(@"html = [%lu]", (unsigned long)[m_strHtml length]);
 	
@@ -107,6 +108,7 @@
 	// Title, Name, Date, Hit
 	
 	m_strTitle = [parsedObject valueForKey:@"boardTitle"];
+    m_strTitle = [m_strTitle stringByDecodingHTMLEntities];
 
 	m_strName = [parsedObject valueForKey:@"userNick"];
 	
@@ -252,7 +254,7 @@
 	
 	NSMutableData *body = [NSMutableData data];
 	// usetag = n
-	[body appendData:[[NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&time=1334217622773&returnBoardNo=%@&boardNo=%@&command=DELETE&totalPage=0&totalRecords=0&serialBadNick=&serialBadContent=&htmlImage=%%2Fout&thumbnailSize=50&memoWriteable=true&list_yn=N&replyList_yn=N&defaultBoardSkin=default&boardWidth=710&multiView_yn=Y&titleCategory_yn=N&category_yn=N&titleNo_yn=Y&titleIcon_yn=N&titlePoint_yn=N&titleMemo_yn=Y&titleNew_yn=Y&titleThumbnail_yn=N&titleNick_yn=Y&titleTag_yn=Y&anonymity_yn=N&titleRead_yn=Y&boardModel_cd=A&titleDate_yn=Y&tag_yn=Y&thumbnailSize=50&readOver_color=%%23336699&boardSerialBadNick=&boardSerialBadContent=&userPw=&userNick=&memoContent=&memoSeq=&pollSeq=&returnURI=&beforeCommand=&starPoint=&provenance=board-read.do&tagsName=&pageScale=&searchOrKey=&searchType=&tag=1", strBoardNo, strArticleNo, strArticleNo] dataUsingEncoding:g_encodingOption]];
+	[body appendData:[[NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&time=1334217622773&returnBoardNo=%@&boardNo=%@&command=DELETE&totalPage=0&totalRecords=0&serialBadNick=&serialBadContent=&htmlImage=%%2Fout&thumbnailSize=50&memoWriteable=true&list_yn=N&replyList_yn=N&defaultBoardSkin=default&boardWidth=710&multiView_yn=Y&titleCategory_yn=N&category_yn=N&titleNo_yn=Y&titleIcon_yn=N&titlePoint_yn=N&titleMemo_yn=Y&titleNew_yn=Y&titleThumbnail_yn=N&titleNick_yn=Y&titleTag_yn=Y&anonymity_yn=N&titleRead_yn=Y&boardModel_cd=A&titleDate_yn=Y&tag_yn=Y&thumbnailSize=50&readOver_color=%%23336699&boardSerialBadNick=&boardSerialBadContent=&userPw=&userNick=&memoContent=&memoSeq=&pollSeq=&returnURI=&beforeCommand=&starPoint=&provenance=board-read.do&tagsName=&pageScale=&searchOrKey=&searchType=&tag=1", strBoardNo, strArticleNo, strArticleNo] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	[request setHTTPBody:body];
 	
@@ -260,7 +262,7 @@
 	NSData *respData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
 	
 	NSString *str = [[NSString alloc] initWithData:respData
-										  encoding:g_encodingOption];
+										  encoding:NSUTF8StringEncoding];
 	//history.go(-1);
 	NSLog(@"returnData = [%@]", str);
 	
@@ -295,7 +297,7 @@
 	
 	NSLog(@"bodyString = [%@]", bodyString);
 	
-	[body appendData:[bodyString dataUsingEncoding:g_encodingOption]];
+	[body appendData:[bodyString dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	[request setHTTPBody:body];
 	
@@ -303,7 +305,7 @@
 	NSData *respData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
 	
 	NSString *str = [[NSString alloc] initWithData:respData
-										  encoding:g_encodingOption];
+										  encoding:NSUTF8StringEncoding];
 	//history.go(-1);
 	NSLog(@"returnData = [%@]", str);
 	

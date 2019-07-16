@@ -15,8 +15,8 @@
 #import "LoginToService.h"
 #import "env.h"
 #import "MainData.h"
-#import "EncodingOption.h"
 #import "GoogleCalView.h"
+#import "DBInterface.h"
 
 @interface MainView ()
 {
@@ -44,11 +44,6 @@
 	
 	self.navigationItem.titleView = lblTitle;
 
-	// 서버에서 encoding.info 파일을 읽어서 encoding option을 설정한다.
-	// 기존 euc-kr 이였던 서버를 utf-8 로 변경하는 과정중에 앱에서 이를 자동으로 처리하기 위해 필요한 옵션
-	EncodingOption *encodingOption = [[EncodingOption alloc] init];
-	[encodingOption GetEncodingOption];
-
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
 	self.bannerView.rootViewController = self;
@@ -67,7 +62,7 @@
 	if (![setInfo CheckVersionInfo]) {
 		
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"가끔 글보기에서 글이 보이지 않던 오류가 수정되었습니다.";
+		NSString *NotiMessage = @"글 작성때 오류가 발생되는 문제가 해결되었습니다.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];
@@ -85,6 +80,11 @@
 	m_mainData = [[MainData alloc] init];
 	m_mainData.target = self;
 	m_mainData.selector = @selector(didFetchItems);
+    
+    // DB에 6개월 지난 데이터는 삭제
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+    [db delete];
 	
 	if (m_login == nil) {
 		

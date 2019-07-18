@@ -17,6 +17,10 @@
 		EC3AA6321C992861006BFE5B /* BoardData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6311C992861006BFE5B /* BoardData.m */; };
 		EC3AA6351C993628006BFE5B /* ItemsData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6341C993628006BFE5B /* ItemsData.m */; };
 		EC3AA6381C994623006BFE5B /* RecentData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6371C994623006BFE5B /* RecentData.m */; };
+		EC516C9322E04C7200C12378 /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC516C9022E04C7100C12378 /* nanopb.framework */; };
+		EC516C9422E04C7200C12378 /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC516C9122E04C7200C12378 /* GoogleUtilities.framework */; };
+		EC516C9822E04D2600C12378 /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC516C9722E04D2600C12378 /* GoogleAppMeasurement.framework */; };
+		EC516C9922E04D5A00C12378 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */; };
 		EC717E971C87C68800C1888B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717E961C87C68800C1888B /* main.m */; };
 		EC717E9A1C87C68800C1888B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717E991C87C68800C1888B /* AppDelegate.m */; };
 		EC717E9D1C87C68800C1888B /* BoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717E9C1C87C68800C1888B /* BoardView.m */; };
@@ -36,7 +40,6 @@
 		EC717F691C8AA71500C1888B /* RecentView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F641C8AA71500C1888B /* RecentView.m */; };
 		EC717F6F1C8AB6E600C1888B /* GoogleCalView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F6E1C8AB6E600C1888B /* GoogleCalView.m */; };
 		EC717F721C8ACD6E00C1888B /* ArticleWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F711C8ACD6E00C1888B /* ArticleWriteView.m */; };
-		EC81F6FF1C884CED0012D779 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */; };
 		EC938BC41C90534E006BEF9E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = EC938BC31C90534E006BEF9E /* Utils.m */; };
 		ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC846AD1C91588000CF47DA /* CommentWriteView.m */; };
 		ECC846B11C915F3700CF47DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC846AF1C915F3700CF47DA /* Main.storyboard */; };
@@ -79,6 +82,9 @@
 		EC3AA6341C993628006BFE5B /* ItemsData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemsData.m; sourceTree = "<group>"; };
 		EC3AA6361C994623006BFE5B /* RecentData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentData.h; sourceTree = "<group>"; };
 		EC3AA6371C994623006BFE5B /* RecentData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentData.m; sourceTree = "<group>"; };
+		EC516C9022E04C7100C12378 /* nanopb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = nanopb.framework; sourceTree = "<group>"; };
+		EC516C9122E04C7200C12378 /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleUtilities.framework; sourceTree = "<group>"; };
+		EC516C9722E04D2600C12378 /* GoogleAppMeasurement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleAppMeasurement.framework; sourceTree = "<group>"; };
 		EC582ED41D8D326200B55AEA /* iMoojigae.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iMoojigae.entitlements; sourceTree = "<group>"; };
 		EC717E921C87C68800C1888B /* iMoojigae.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iMoojigae.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC717E961C87C68800C1888B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -133,8 +139,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC516C9922E04D5A00C12378 /* GoogleMobileAds.framework in Frameworks */,
+				EC516C9322E04C7200C12378 /* nanopb.framework in Frameworks */,
+				EC516C9422E04C7200C12378 /* GoogleUtilities.framework in Frameworks */,
+				EC516C9822E04D2600C12378 /* GoogleAppMeasurement.framework in Frameworks */,
 				EC36787520C3730000B02EF0 /* libsqlite3.tbd in Frameworks */,
-				EC81F6FF1C884CED0012D779 /* GoogleMobileAds.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,6 +167,10 @@
 		EC36787320C3730000B02EF0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */,
+				EC516C9722E04D2600C12378 /* GoogleAppMeasurement.framework */,
+				EC516C9122E04C7200C12378 /* GoogleUtilities.framework */,
+				EC516C9022E04C7100C12378 /* nanopb.framework */,
 				EC36787420C3730000B02EF0 /* libsqlite3.tbd */,
 			);
 			name = Frameworks;
@@ -166,7 +179,6 @@
 		EC717E891C87C68800C1888B = {
 			isa = PBXGroup;
 			children = (
-				EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */,
 				EC717E941C87C68800C1888B /* iMoojigae */,
 				EC717EAE1C87C68800C1888B /* iMoojigaeTests */,
 				EC717EB91C87C68800C1888B /* iMoojigaeUITests */,
@@ -558,6 +570,7 @@
 				INFOPLIST_FILE = iMoojigae/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigae;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -709,6 +722,7 @@
 				INFOPLIST_FILE = iMoojigae/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigae;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -732,6 +746,7 @@
 				INFOPLIST_FILE = iMoojigae/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigae;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

@@ -2,7 +2,7 @@
 //  GADMediatedNativeAdDelegate.h
 //  Google Mobile Ads SDK
 //
-//  Copyright 2015 Google Inc. All rights reserved.
+//  Copyright 2015 Google LLC. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -10,20 +10,23 @@
 
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
-GAD_ASSUME_NONNULL_BEGIN
+NS_ASSUME_NONNULL_BEGIN
 
 @protocol GADMediatedNativeAd;
 
 /// GADMediatedNativeAdDelegate objects handle mediated native ad events.
-@protocol GADMediatedNativeAdDelegate<NSObject>
+@protocol GADMediatedNativeAdDelegate <NSObject>
 
 @optional
 
-/// Tells the delegate that the mediated native ad has rendered in |view|. viewController should be
-/// used to present modal views for the ad.
+/// Tells the delegate that the mediated native ad has rendered in |view| with clickable asset views
+/// and nonclickable asset views. viewController should be used to present modal views if the ad
+/// opens full screen.
 - (void)mediatedNativeAd:(id<GADMediatedNativeAd>)mediatedNativeAd
-         didRenderInView:(UIView *)view
-          viewController:(UIViewController *)viewController;
+           didRenderInView:(UIView *)view
+       clickableAssetViews:(NSDictionary<NSString *, UIView *> *)clickableAssetViews
+    nonclickableAssetViews:(NSDictionary<NSString *, UIView *> *)nonclickableAssetViews
+            viewController:(UIViewController *)viewController;
 
 /// Tells the delegate that the mediated native ad has recorded an impression. This method is called
 /// only once per mediated native ad.
@@ -44,6 +47,15 @@ GAD_ASSUME_NONNULL_BEGIN
 - (void)mediatedNativeAd:(id<GADMediatedNativeAd>)mediatedNativeAd
           didUntrackView:(nullable UIView *)view;
 
+/// Tells the delegate that the mediated native ad has rendered in |view|. viewController should be
+/// used to present modal views for the ad.
+- (void)mediatedNativeAd:(id<GADMediatedNativeAd>)mediatedNativeAd
+         didRenderInView:(UIView *)view
+          viewController:(UIViewController *)viewController
+    GAD_DEPRECATED_MSG_ATTRIBUTE("Use "
+                                 "-mediatedNativeAd:didRenderInView:clickableAssetViews:"
+                                 "nonclickableAssetViews:viewController: instead.");
+
 @end
 
-GAD_ASSUME_NONNULL_END
+NS_ASSUME_NONNULL_END

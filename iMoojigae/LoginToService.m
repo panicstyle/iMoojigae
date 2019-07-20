@@ -38,6 +38,7 @@
 	NSLog(@"push = %@", switchPush);
 	
 	if (userid == nil || [userid isEqualToString:@""] || userpwd == nil || [userpwd isEqualToString:@""]) {
+        NSLog(@"userid and userpw is not set");
         return FALSE;
 	}
     

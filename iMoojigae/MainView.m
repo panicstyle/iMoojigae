@@ -63,7 +63,7 @@
 	SetInfo *setInfo = [[SetInfo alloc] init];
 
 	if (![setInfo CheckVersionInfo]) {
-		
+/*
 		// 버전 업데이트 안내 다이얼로그 표시
 		NSString *NotiMessage = @"글 작성때 오류가 발생되는 문제가 해결되었습니다.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
@@ -75,6 +75,7 @@
 		
 		[alert addAction:defaultAction];
 		[self presentViewController:alert animated:YES completion:nil];
+*/
 		[setInfo SaveVersionInfo];
 	}
 
@@ -96,9 +97,7 @@
 		BOOL result = [m_login LoginToService];
 		
 		if (result) {
-			[m_login PushRegister];
-			
-			[m_mainData fetchItems];
+			[m_login PushRegister];			
 		} else {
 			UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
 																		   message:@"로그인 정보가 없거나 잘못되었습니다. 설정에서 로그인정보를 입력하세요."
@@ -110,6 +109,7 @@
 			[alert addAction:defaultAction];
 			[self presentViewController:alert animated:YES completion:nil];
 		}
+        [m_mainData fetchItems];
 	}
 }
 

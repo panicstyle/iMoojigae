@@ -136,7 +136,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="bannerView" destination="vXf-zU-RhQ" id="Zrq-yH-D5d"/>
+                        <outlet property="bannerView" destination="vXf-zU-RhQ" id="brC-pN-zvh"/>
                         <outlet property="tbView" destination="tbb-hi-BqG" id="4l7-JR-9pW"/>
                     </connections>
                 </viewController>
@@ -1265,9 +1265,9 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="gs0-5B-pXp"/>
-        <segue reference="wxT-9d-wBW"/>
-        <segue reference="sgI-vn-LdG"/>
+        <segue reference="Br0-NH-rQS"/>
+        <segue reference="lGd-hv-6il"/>
         <segue reference="uqU-iQ-6El"/>
-        <segue reference="SZI-aq-hc2"/>
+        <segue reference="zoG-b2-QE8"/>
     </inferredMetricsTieBreakers>
 </document>

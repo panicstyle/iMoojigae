@@ -13,7 +13,7 @@
 @interface ArticleView : UIViewController <UIWebViewDelegate, UITableViewDelegate, UITableViewDataSource, UITabBarDelegate, UIDocumentInteractionControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
-@property(nonatomic, strong) GADBannerView *bannerView;
+@property(nonatomic, strong) IBOutlet GADBannerView *bannerView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *buttonArticleDelete;
 @property (strong, nonatomic) NSString *m_strTitle;
 @property (strong, nonatomic) NSString *m_strDate;

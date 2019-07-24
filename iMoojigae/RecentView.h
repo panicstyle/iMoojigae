@@ -12,7 +12,7 @@
 
 @interface RecentView : UIViewController <UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
-@property(nonatomic, strong) GADBannerView *bannerView;
+@property(nonatomic, strong) IBOutlet GADBannerView *bannerView;
 @property (strong, nonatomic) NSString *m_strRecent;
 @property (strong, nonatomic) NSString *m_strType;
 @end

@@ -11,5 +11,5 @@
 
 @interface MainView : UIViewController <UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
-@property(nonatomic, strong) GADBannerView *bannerView;
+@property(nonatomic, strong) IBOutlet GADBannerView *bannerView;
 @end

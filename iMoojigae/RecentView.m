@@ -54,20 +54,10 @@
 
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 
-	// Replace this ad unit ID with your own ad unit ID.
-    self.bannerView = [[GADBannerView alloc]
-                       initWithAdSize:kGADAdSizeBanner];
-    
-    [self addBannerViewToView:self.bannerView];
-	
-	GADRequest *request = [GADRequest request];
-	// Requests test ads on devices you specify. Your test device ID is printed to the console when
-	// an ad request is made. GADBannerView automatically returns test ads when running on a
-	// simulator.
-	request.testDevices = @[
-							@"2077ef9a63d2b398840261c8221a0c9a"  // Eric's iPod Touch
-							];
-	[self.bannerView loadRequest:request];
+    // Replace this ad unit ID with your own ad unit ID.
+    self.bannerView.adUnitID = kSampleAdUnitID;
+    self.bannerView.rootViewController = self;
+    [self.bannerView loadRequest:[GADRequest request]];
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
@@ -260,27 +250,5 @@
 		m_arrayItems = [NSMutableArray arrayWithArray:m_recentData.m_arrayItems];
 		[self.tbView reloadData];
 	}
-}
-
-#pragma mark - Goolgle Admob Banner
-- (void)addBannerViewToView:(UIView *)bannerView {
-    bannerView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:bannerView];
-    [self.view addConstraints:@[
-                                [NSLayoutConstraint constraintWithItem:bannerView
-                                                             attribute:NSLayoutAttributeBottom
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.bottomLayoutGuide
-                                                             attribute:NSLayoutAttributeTop
-                                                            multiplier:1
-                                                              constant:0],
-                                [NSLayoutConstraint constraintWithItem:bannerView
-                                                             attribute:NSLayoutAttributeCenterX
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.view
-                                                             attribute:NSLayoutAttributeCenterX
-                                                            multiplier:1
-                                                              constant:0]
-                                ]];
 }
 @end

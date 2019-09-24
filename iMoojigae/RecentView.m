@@ -112,17 +112,19 @@
 	NSString *strDate = [item valueForKey:@"date"];
 	NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
 	
-	NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-	[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
-	labelName.attributedText = textName;
+	labelName.text = strNameDate;
 	
 	UITextView *textSubject = (UITextView *)[cell viewWithTag:101];
     if ([[item valueForKey:@"read"] intValue] == 1) {
         [textSubject setTextColor:[UIColor grayColor]];
     } else {
-        [textSubject setTextColor:[UIColor blackColor]];
-    }
-	textSubject.text = [item valueForKey:@"subject"];
+        if (@available(iOS 13.0, *)) {
+            [textSubject setTextColor:[UIColor labelColor]];
+        } else {
+            // Fallback on earlier versions
+            [textSubject setTextColor:[UIColor blackColor]];
+        }
+    }	textSubject.text = [item valueForKey:@"subject"];
 	
 	//			CGFloat textViewWidth = viewComment.frame.size.width;
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];

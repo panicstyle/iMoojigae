@@ -59,6 +59,7 @@
 
 @implementation ArticleView
 
+@synthesize tbView;
 @synthesize buttonArticleDelete;
 @synthesize m_strTitle;
 @synthesize m_strDate;
@@ -87,7 +88,11 @@
 	m_lContentHeight = 300;
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 	
-	m_fTitleHeight = 77.0f;
+    m_fTitleHeight = 77.0f;
+    
+    tbView.estimatedRowHeight = 150.0f;
+    tbView.rowHeight = UITableViewAutomaticDimension;
+    
 	m_strHit = @"";
 
     // Replace this ad unit ID with your own ad unit ID.
@@ -203,23 +208,27 @@
 	}
 }
 
+- (void)textViewDidChange:(UITextView *)textView;
+{
+    [tbView beginUpdates];
+    [tbView endUpdates];
+}
+
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if ([indexPath section] == 0) {
-		if ([indexPath row] == 0) {
-			return m_fTitleHeight;
-		} else if ([indexPath row] == 1) {
-			return (float)m_lContentHeight;
-		} else {
-			return 40.0f;
-		}
-	} else {
-		NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-		NSNumber *height = [item valueForKey:@"height"];
-		return [height floatValue];
-	}
+    if ([indexPath section] == 0) {
+        if ([indexPath row] == 0) {
+            return UITableViewAutomaticDimension;
+        } else if ([indexPath row] == 1) {
+            return (float)m_lContentHeight;
+        } else {
+            return UITableViewAutomaticDimension;
+        }
+    } else {
+        return UITableViewAutomaticDimension;
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -281,32 +290,12 @@
 				
 				UITextView *textSubject = (UITextView *)[cell viewWithTag:101];
 				textSubject.text = m_strTitle;
-				
-				//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 64;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 64;
-				}
-				
-				CGSize size = [textSubject sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-				m_fTitleHeight = (77 - 32) + (size.height);
-				
+                [textSubject sizeToFit];
+								
 				UILabel *labelName = (UILabel *)[cell viewWithTag:100];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@  %@명 읽음", m_strName, m_strDate, m_strHit];
 				
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([m_strName length] + 2, [strNameDate length] - [m_strName length] - 2)];
-				labelName.attributedText = textName;
+				labelName.text = strNameDate;
 
 			} else if (row == 1){
 				m_contentCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierContent];
@@ -327,39 +316,14 @@
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
 				
 				UILabel *labelName = (UILabel *)[cell viewWithTag:200];
-				labelName.attributedText = textName;
-				
-				
+				labelName.text = strNameDate;
+
 				UITextView *viewComment = (UITextView *)[cell viewWithTag:202];
 				viewComment.text = [item valueForKey:@"comment"];
-				
-				//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 60;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 60;
-				}
-				
-				CGSize size = [viewComment sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-				//			float height = [self measureHeightOfUITextView:viewComment];
-				// 37
-				float height = (120 - 34) + (size.height);
-				[item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
-				NSLog(@"row = %ld, width=%f, height=%f", (long)[indexPath row], textViewWidth, height);
-				
+                [viewComment sizeToFit];
+								
 				UIButton *buttonDelete = (UIButton *)[cell viewWithTag:211];
 				[buttonDelete addTarget:self action:@selector(DeleteCommentConfirm:) forControlEvents:UIControlEventTouchUpInside];
 			} else {
@@ -371,37 +335,13 @@
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
 				
 				UILabel *labelName = (UILabel *)[cell viewWithTag:300];
-				labelName.attributedText = textName;
+				labelName.text = strNameDate;
 				
 				UITextView *viewComment = (UITextView *)[cell viewWithTag:302];
 				viewComment.text = [item valueForKey:@"comment"];
-				
-				//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 60 - 17;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 60 - 17;
-				}
-				
-				CGSize size = [viewComment sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-				//			float height = [self measureHeightOfUITextView:viewComment];
-				// 37
-				float height = (120 - 34) + (size.height);
-				[item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
-				NSLog(@"row = %ld, width=%f, height=%f", (long)[indexPath row], textViewWidth, height);
+                [viewComment sizeToFit];
 				
 				UIButton *buttonDelete = (UIButton *)[cell viewWithTag:311];
 				[buttonDelete addTarget:self action:@selector(DeleteCommentConfirm:) forControlEvents:UIControlEventTouchUpInside];

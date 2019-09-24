@@ -33,6 +33,7 @@
 
 @implementation RecentView
 
+@synthesize tbView;
 @synthesize m_strRecent;
 @synthesize m_strType;
 
@@ -53,6 +54,9 @@
 	self.navigationItem.titleView = lblTitle;
 
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
+    
+    tbView.estimatedRowHeight = 78.0f;
+    tbView.rowHeight = UITableViewAutomaticDimension;
 
     // Replace this ad unit ID with your own ad unit ID.
     self.bannerView.adUnitID = kSampleAdUnitID;
@@ -69,12 +73,17 @@
 	[m_recentData fetchItems];
 }
 
+- (void)textViewDidChange:(UITextView *)textView;
+{
+    [tbView beginUpdates];
+    [tbView endUpdates];
+}
+
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
-
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -83,9 +92,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-	NSNumber *height = [item valueForKey:@"height"];
-	return [height floatValue];
+    return UITableViewAutomaticDimension;
 }
 
 // Customize the appearance of table view cells.
@@ -125,27 +132,6 @@
             [textSubject setTextColor:[UIColor blackColor]];
         }
     }	textSubject.text = [item valueForKey:@"subject"];
-	
-	//			CGFloat textViewWidth = viewComment.frame.size.width;
-	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-	CGFloat textViewWidth;
-	switch (orientation) {
-		case UIDeviceOrientationUnknown:
-		case UIDeviceOrientationPortrait:
-		case UIDeviceOrientationPortraitUpsideDown:
-		case UIDeviceOrientationFaceUp:
-		case UIDeviceOrientationFaceDown:
-			textViewWidth = m_rectScreen.size.width - 40;
-			break;
-		case UIDeviceOrientationLandscapeLeft:
-		case UIDeviceOrientationLandscapeRight:
-			textViewWidth = m_rectScreen.size.height - 40;
-	}
-	
-	CGSize size = [textSubject sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-	float height = (105 - 32) + (size.height);
-	[item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
-	NSLog(@"row = %ld, width=%f, height=%f", (long)[indexPath row], textViewWidth, height);
 	
 	UILabel *labelComment = (UILabel *)[cell viewWithTag:103];
 	NSString *strComment = [item valueForKey:@"comment"];

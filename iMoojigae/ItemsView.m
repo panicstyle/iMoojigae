@@ -71,6 +71,12 @@
 	
 }
 
+- (void)textViewDidChange:(UITextView *)textView;
+{
+    [tbView beginUpdates];
+    [tbView endUpdates];
+}
+
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -94,9 +100,7 @@
 	if ([indexPath row] == [m_arrayItems count]) {
 		return 50.0f;
 	} else {
-        NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-        NSNumber *height = [item valueForKey:@"height"];
-        return [height floatValue];
+        return UITableViewAutomaticDimension;
 	}
 }
 
@@ -159,26 +163,6 @@
             }
             textSubject.text = [item valueForKey:@"subject"];
 
-            //            CGFloat textViewWidth = viewComment.frame.size.width;
-            UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-            CGFloat textViewWidth;
-            switch (orientation) {
-                case UIDeviceOrientationUnknown:
-                case UIDeviceOrientationPortrait:
-                case UIDeviceOrientationPortraitUpsideDown:
-                case UIDeviceOrientationFaceUp:
-                case UIDeviceOrientationFaceDown:
-                    textViewWidth = m_rectScreen.size.width - 32 - 20;
-                    break;
-                case UIDeviceOrientationLandscapeLeft:
-                case UIDeviceOrientationLandscapeRight:
-                    textViewWidth = m_rectScreen.size.height - 32 - 20;
-            }
-            
-            CGSize size = [textSubject sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-            float height = (77 - 32) + (size.height);
-            [item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
-			
 			UILabel *labelComment = (UILabel *)[cell viewWithTag:103];
 			NSString *strComment = [item valueForKey:@"comment"];
 			if ([strComment isEqualToString:@""]) {
@@ -224,26 +208,6 @@
                 }
             }
 			textSubject.text = [item valueForKey:@"subject"];
-
-            //            CGFloat textViewWidth = viewComment.frame.size.width;
-            UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-            CGFloat textViewWidth;
-            switch (orientation) {
-                case UIDeviceOrientationUnknown:
-                case UIDeviceOrientationPortrait:
-                case UIDeviceOrientationPortraitUpsideDown:
-                case UIDeviceOrientationFaceUp:
-                case UIDeviceOrientationFaceDown:
-                    textViewWidth = m_rectScreen.size.width - 64 - 20;
-                    break;
-                case UIDeviceOrientationLandscapeLeft:
-                case UIDeviceOrientationLandscapeRight:
-                    textViewWidth = m_rectScreen.size.height - 64 - 20;
-            }
-            
-            CGSize size = [textSubject sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-            float height = (77 - 32) + (size.height);
-            [item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
 
 			UILabel *labelComment = (UILabel *)[cell viewWithTag:303];
 			NSString *strComment = [item valueForKey:@"comment"];

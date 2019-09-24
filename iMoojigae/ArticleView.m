@@ -446,6 +446,62 @@
 	return YES;
 }
 
+// Override to support row selection in the table view.
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    long row = indexPath.row;
+    long section = indexPath.section;
+    if (section < 1) return;    // subject & content 에서 클릭되는 것은 무시한다.
+    NSLog(@"selected section = %ld, row = %ld", section, row);
+    
+    NSMutableDictionary *item;
+    item = [m_arrayItems objectAtIndex:[indexPath row]];
+    
+    NSString *strTitle = [NSString stringWithFormat:@"%@님의 댓글", [item valueForKey:@"name"]];
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:strTitle
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+// moojigae_web 에서 comment modify 를 지원하지 않음.
+/*
+    UIAlertAction* modify = [UIAlertAction actionWithTitle:@"댓글수정" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self ModifyComment:row];
+                                                   }];
+*/
+    UIAlertAction* delete = [UIAlertAction actionWithTitle:@"댓글삭제" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self DeleteCommentConfirm:row];
+                                                   }];
+    
+    UIAlertAction* reply = [UIAlertAction actionWithTitle:@"댓글답변" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self WriteReComment:row];
+                                                   }];
+    
+    UIAlertAction* copy = [UIAlertAction actionWithTitle:@"댓글복사" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self CopyComment:row];
+                                                   }];
+    
+    UIAlertAction* share = [UIAlertAction actionWithTitle:@"댓글공유" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self ShareComment:row];
+                                                   }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"취소" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
+        //action when pressed button
+    }];
+    
+//    [alert addAction:modify];
+    [alert addAction:reply];
+    [alert addAction:delete];
+    [alert addAction:copy];
+    [alert addAction:share];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+
 #pragma mark Data Function
 
 - (void)didFetchItems:(NSNumber *)result
@@ -522,6 +578,46 @@
 }
 
 #pragma mark WriteComment
+- (void)CopyComment:(long)row
+{
+    NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+    NSString *strComment = [item valueForKey:@"comment"];
+
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = strComment;
+    
+    NSString *message = @"댓글이 복사되었습니다.";
+
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+
+    [self presentViewController:alert animated:YES completion:nil];
+
+    int duration = 1; // duration in seconds
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, duration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [alert dismissViewControllerAnimated:YES completion:nil];
+    });
+}
+
+- (void)ShareComment:(long)row
+{
+    NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+    NSString *strComment = [item valueForKey:@"comment"];
+    
+    NSMutableArray *shareItems = [[NSMutableArray alloc] init];
+    [shareItems addObject:strComment];
+
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:shareItems applicationActivities:nil];
+    activityVC.excludedActivityTypes = @[UIActivityTypeAirDrop
+, UIActivityTypeCopyToPasteboard
+, UIActivityTypeMail
+, UIActivityTypeMessage
+, UIActivityTypePrint
+]; //Exclude whichever aren't relevant
+    [self presentViewController:activityVC animated:YES completion:nil];
+}
 
 - (void)WriteComment
 {
@@ -545,7 +641,7 @@
 	[self performSegueWithIdentifier:@"Comment" sender:self];
 }
 
-- (void)DeleteCommentConfirm:(id)sender
+- (void)DeleteCommentConfirm:(long)row
 {
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
 																   message:@"삭제하시겠습니까?"
@@ -553,7 +649,7 @@
 	
 	UIAlertAction* okAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {
-														[self DeleteComment:sender];
+														[self DeleteComment:row];
 													}];
 	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"취소" style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {}];
@@ -564,13 +660,10 @@
 	[self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)DeleteComment:(id)sender
+- (void)DeleteComment:(long)row
 {
 	NSLog(@"DeleteArticleConfirm start");
-	
-	UITableViewCell *clickedCell = (UITableViewCell *)[[sender superview] superview];
-	NSIndexPath *clickedButtonPath = [self.tbView indexPathForCell:clickedCell];
-	long row = clickedButtonPath.row;
+
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	NSString *strCommentNo = m_strCommentNo;
@@ -587,17 +680,14 @@
 	}
 
 	// 삭제된 코멘트를 TableView에서 삭제한다.
-	[m_arrayItems removeObjectAtIndex:[clickedButtonPath row]];
+	[m_arrayItems removeObjectAtIndex:row];
 	[self.tbView reloadData];
 
 	NSLog(@"delete article success");
 }
 
-- (void)WriteReComment:(id)sender
+- (void)WriteReComment:(long)row
 {
-	NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
-	
-	long row = currentIndexPath.row;
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	m_strComment = @"";

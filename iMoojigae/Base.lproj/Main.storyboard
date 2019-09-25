@@ -130,7 +130,7 @@
                                 <segue destination="qDd-9D-0V5" kind="show" identifier="About" id="Yje-ei-vFg"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="로그인설정" id="fGQ-s9-wF2">
+                        <barButtonItem key="rightBarButtonItem" title="설정" id="fGQ-s9-wF2">
                             <connections>
                                 <segue destination="WbE-2D-Dcm" kind="show" identifier="SetLogin" id="DUq-hV-MAi"/>
                             </connections>
@@ -138,6 +138,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="bannerView" destination="vXf-zU-RhQ" id="brC-pN-zvh"/>
+                        <outlet property="loginButton" destination="fGQ-s9-wF2" id="jQX-UJ-Ye9"/>
                         <outlet property="tbView" destination="tbb-hi-BqG" id="4l7-JR-9pW"/>
                     </connections>
                 </viewController>
@@ -736,23 +737,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="7GS-8b-1C1">
-                        <rightBarButtonItems>
-                            <barButtonItem tag="100" title="삭제" id="Qsc-Bb-dgr"/>
-                            <barButtonItem title="수정" id="uke-Ky-AW5">
-                                <connections>
-                                    <segue destination="i6g-0e-7Hv" kind="show" identifier="ArticleModify" id="lGd-hv-6il"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem title="댓글" id="dVy-6y-o5W">
-                                <connections>
-                                    <segue destination="LBO-7C-h3f" kind="show" identifier="Comment" id="G88-ln-Eq0"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" tag="100" title="메뉴" id="Qsc-Bb-dgr"/>
                     </navigationItem>
                     <connections>
                         <outlet property="bannerView" destination="P9s-7m-CeD" id="GhL-bb-iLA"/>
-                        <outlet property="buttonArticleDelete" destination="Qsc-Bb-dgr" id="THK-DU-pM6"/>
+                        <outlet property="buttonArticleMenu" destination="Qsc-Bb-dgr" id="wQH-H3-wGV"/>
                         <outlet property="tbView" destination="hAg-3x-6Wu" id="NBF-Vc-B1p"/>
                     </connections>
                 </viewController>
@@ -763,7 +752,7 @@
         <!--Comment Write View-->
         <scene sceneID="zih-Uq-Hrd">
             <objects>
-                <viewController id="LBO-7C-h3f" customClass="CommentWriteView" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CommentWriteView" id="LBO-7C-h3f" customClass="CommentWriteView" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="IOZ-Th-ihG"/>
                         <viewControllerLayoutGuide type="bottom" id="G9z-ZQ-vNd"/>
@@ -799,7 +788,7 @@
         <!--Article Write View-->
         <scene sceneID="Sts-us-bJC">
             <objects>
-                <viewController id="i6g-0e-7Hv" customClass="ArticleWriteView" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ArticleWriteView" id="i6g-0e-7Hv" customClass="ArticleWriteView" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Clk-WU-7uM"/>
                         <viewControllerLayoutGuide type="bottom" id="xK0-kD-R5j"/>
@@ -1095,9 +1084,8 @@
         <image name="re" width="24" height="24"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="gs0-5B-pXp"/>
-        <segue reference="Br0-NH-rQS"/>
-        <segue reference="lGd-hv-6il"/>
+        <segue reference="Rjb-1d-YSx"/>
+        <segue reference="wxT-9d-wBW"/>
         <segue reference="fjI-1J-ra1"/>
     </inferredMetricsTieBreakers>
 </document>

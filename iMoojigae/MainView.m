@@ -30,6 +30,7 @@
 
 @implementation MainView
 @synthesize tbView;
+@synthesize loginButton;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -100,7 +101,9 @@
 			[self presentViewController:alert animated:YES completion:nil];
 		}
         [m_mainData fetchItems];
-	}
+    } else {
+        
+    }
 }
 
 #pragma mark - Table view data source

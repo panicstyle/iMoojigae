@@ -118,7 +118,7 @@
 	
 	NSString *strContent = [parsedObject valueForKey:@"boardContent"];;
 	
-	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
+	m_strEditableContent = [Utils makeEditableContent:strContent];
 	
 	NSArray *imageItems = [parsedObject valueForKey:@"image"];
 	

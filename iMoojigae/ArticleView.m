@@ -60,7 +60,7 @@
 @implementation ArticleView
 
 @synthesize tbView;
-@synthesize buttonArticleDelete;
+@synthesize buttonArticleMenu;
 @synthesize m_strTitle;
 @synthesize m_strDate;
 @synthesize m_strName;
@@ -82,8 +82,8 @@
 	[lblTitle sizeToFit];
 	self.navigationItem.titleView = lblTitle;
 
-	buttonArticleDelete.target = self;
-	buttonArticleDelete.action = @selector(DeleteArticleConfirm);
+	buttonArticleMenu.target = self;
+	buttonArticleMenu.action = @selector(ArticleMenu);
 	
 	m_lContentHeight = 300;
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
@@ -155,7 +155,7 @@
 	
 	return fullScreenRect;
 }
-
+/*
 - (CGFloat)measureHeightOfUITextView:(UITextView *)textView
 {
 	if ([textView respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)])
@@ -207,11 +207,41 @@
 		return textView.contentSize.height;
 	}
 }
-
+*/
 - (void)textViewDidChange:(UITextView *)textView;
 {
     [tbView beginUpdates];
     [tbView endUpdates];
+}
+
+- (void)ArticleMenu
+{
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* writecomment = [UIAlertAction actionWithTitle:@"댓글쓰기" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self WriteComment];
+                                                   }];
+    UIAlertAction* modify = [UIAlertAction actionWithTitle:@"글수정" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self ModifyArticle];
+                                                   }];
+    UIAlertAction* delete = [UIAlertAction actionWithTitle:@"글삭제" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self DeleteArticleConfirm];
+                                                   }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"취소" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
+        //action when pressed button
+    }];
+    
+    [alert addAction:writecomment];
+    [alert addAction:modify];
+    [alert addAction:delete];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - Table view data source
@@ -621,24 +651,40 @@
 
 - (void)WriteComment
 {
-	m_nMode = CommentWrite;
-	m_strCommentNo = @"";
-	m_strComment = @"";
-	
-	[self performSegueWithIdentifier:@"Comment" sender:self];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+    
+    CommentWriteView *viewController = (CommentWriteView*)[storyboard instantiateViewControllerWithIdentifier:@"CommentWriteView"];
+    if (viewController != nil) {
+        viewController.m_nMode = [NSNumber numberWithInt:CommentWrite];
+        viewController.m_boardId = m_boardId;
+        viewController.m_boardNo = m_boardNo;
+        viewController.m_strCommentNo = @"";
+        viewController.m_strComment = @"";
+        viewController.target = self;
+        viewController.selector = @selector(didWrite:);
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
-- (void)ModifyComment:(id)sender
+- (void)ModifyComment:(long)row
 {
-	NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
-	
-	long row = currentIndexPath.row;
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-	m_strCommentNo = [item valueForKey:@"no"];
-	m_strComment = [item valueForKey:@"comment"];
-	m_nMode = CommentModify;
-
-	[self performSegueWithIdentifier:@"Comment" sender:self];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+    
+    CommentWriteView *viewController = (CommentWriteView*)[storyboard instantiateViewControllerWithIdentifier:@"CommentWriteView"];
+    if (viewController != nil) {
+        viewController.m_nMode = [NSNumber numberWithInt:CommentModify];
+        viewController.m_boardId = m_boardId;
+        viewController.m_boardNo = m_boardNo;
+        viewController.m_strCommentNo = [item valueForKey:@"no"];
+        viewController.m_strComment = [item valueForKey:@"comment"];
+        viewController.target = self;
+        viewController.selector = @selector(didWrite:);
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
 - (void)DeleteCommentConfirm:(long)row
@@ -688,17 +734,40 @@
 
 - (void)WriteReComment:(long)row
 {
-	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-	m_strCommentNo = [item valueForKey:@"no"];
-	m_strComment = @"";
-	m_nMode = CommentReply;
-	
-	[self performSegueWithIdentifier:@"Comment" sender:self];
+    NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+    
+    CommentWriteView *viewController = (CommentWriteView*)[storyboard instantiateViewControllerWithIdentifier:@"CommentWriteView"];
+    if (viewController != nil) {
+        viewController.m_nMode = [NSNumber numberWithInt:CommentReply];
+        viewController.m_boardId = m_boardId;
+        viewController.m_boardNo = m_boardNo;
+        viewController.m_strCommentNo = [item valueForKey:@"no"];
+        viewController.m_strComment = @"";
+        viewController.target = self;
+        viewController.selector = @selector(didWrite:);
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
 - (void)ModifyArticle
 {
-	
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+    
+    ArticleWriteView *viewController = (ArticleWriteView*)[storyboard instantiateViewControllerWithIdentifier:@"ArticleWriteView"];
+    if (viewController != nil) {
+        viewController.m_nMode = [NSNumber numberWithInt:ArticleModify];
+        viewController.m_boardId = m_boardId;
+        viewController.m_boardNo = m_boardNo;
+        viewController.m_strTitle = m_strEditableTitle;
+        viewController.m_strContent = m_strEditableContent;
+        viewController.target = self;
+        viewController.selector = @selector(didWrite:);
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
 - (void)DeleteArticleConfirm
@@ -764,7 +833,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 	// Get the new view controller using [segue destinationViewController].
 	// Pass the selected object to the new view controller.
-	if ([[segue identifier] isEqualToString:@"Comment"]) {
+/*	if ([[segue identifier] isEqualToString:@"Comment"]) {
 		CommentWriteView *view = [segue destinationViewController];
 		view.m_nMode = [NSNumber numberWithInt:CommentWrite];
 		view.m_boardId = m_boardId;
@@ -814,7 +883,7 @@
 		view.m_strContent = m_strEditableContent;
 		view.target = self;
 		view.selector = @selector(didWrite:);
-	} else if ([[segue identifier] isEqualToString:@"WebLink"]) {
+	} else */ if ([[segue identifier] isEqualToString:@"WebLink"]) {
 		WebLinkView *view = [segue destinationViewController];
 		view.m_nFileType = [NSNumber numberWithInt:m_nFileType];
 		view.m_strLink = m_strWebLink;

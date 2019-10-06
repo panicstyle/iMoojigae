@@ -9,6 +9,7 @@
 #import "LoginToService.h"
 #import "env.h"
 #import "SetStorage.h"
+#import "SetTokenStorage.h"
 #import "AppDelegate.h"
 #import "Utils.h"
 //#import "HTTPRequest.h"
@@ -103,11 +104,31 @@
 	NSNumber *nPushYN = getVar.switchPush;
 	NSString *strPushYN = @"Y";
 
-	if (tokenDevice == nil || userId == nil) {
-		NSLog(@"PushRegister fail. tokenDevice or userId is nil\n");
-		return;
-	}
-	
+    if (userId == nil) {
+        NSLog(@"PushRegister fail. userId is nil\n");
+        return;
+    }
+    
+    if (tokenDevice == nil) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *myPath = [documentsDirectory stringByAppendingPathComponent:@"token.dat"];
+        
+        SetTokenStorage *storage = (SetTokenStorage *)[NSKeyedUnarchiver unarchiveObjectWithFile:myPath];
+        
+        if (storage == nil) {
+            tokenDevice = nil;
+        } else {
+            tokenDevice = storage.token;
+            getVar.strDevice = tokenDevice;
+        }
+        
+        if (tokenDevice == nil) {
+            NSLog(@"PushRegister fail. tokenDevice or userId is nil\n");
+            return;
+        }
+    }
+    
 	if ([nPushYN boolValue] == true) {
 		strPushYN = @"Y";
 	} else {
@@ -131,12 +152,9 @@
 	[request setHTTPBody:body];
 
 	[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-//	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-//	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
-//	NSLog(@"returnString = [%@]", returnString);
 }
 
-- (void)PushRegisterUpdate
+- (void)PushUpdate
 {
 	AppDelegate *getVar = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 	NSString *tokenDevice = getVar.strDevice;
@@ -144,10 +162,32 @@
 	NSNumber *nPushYN = getVar.switchPush;
 	NSString *strPushYN = @"Y";
 	
-	if (tokenDevice == nil || userId == nil) {
-		NSLog(@"PushRegister fail. tokenDevice or userId is nil\n");
-		return;
-	}
+    if (userId == nil) {
+        NSLog(@"PushRegister fail. userId is nil\n");
+        return;
+    }
+    
+    if (tokenDevice == nil) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *myPath = [documentsDirectory stringByAppendingPathComponent:@"token.dat"];
+        
+        SetTokenStorage *storage = (SetTokenStorage *)[NSKeyedUnarchiver unarchiveObjectWithFile:myPath];
+
+        if (storage == nil) {
+            tokenDevice = nil;
+        } else {
+            tokenDevice = storage.token;
+            getVar.strDevice = tokenDevice;
+        }
+
+        tokenDevice = storage.token;
+        getVar.strDevice = tokenDevice;
+        if (tokenDevice == nil) {
+            NSLog(@"PushRegister fail. tokenDevice or userId is nil\n");
+            return;
+        }
+    }
 	
 	if ([nPushYN boolValue] == true) {
 		strPushYN = @"Y";

@@ -69,7 +69,7 @@
 	if (result) {
 		
 		// Push 정보 업데이트
-		[login PushRegisterUpdate];
+		[login PushUpdate];
 
 		[target performSelector:selector withObject:[NSNumber numberWithBool:YES] afterDelay:0];
 	} else {

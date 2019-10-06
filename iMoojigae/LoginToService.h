@@ -21,7 +21,7 @@
 - (void)Logout;
 - (void)GetMain;
 - (void)PushRegister;
-- (void)PushRegisterUpdate;
+- (void)PushUpdate;
 //- (void)setDelegate:(id)aTarget selector:(SEL)aSelector;
 //- (void)didReceiveFinished:(NSString *)result;
 

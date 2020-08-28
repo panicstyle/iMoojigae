@@ -129,6 +129,7 @@
     dest = [NSString stringWithString:content];
     dest = [dest stringByReplacingOccurrencesOfString:@"\n" withString:@""];
     dest = [dest stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+    dest = [dest stringByReplacingOccurrencesOfString:@"</div>" withString:@"\n"];
     dest = [dest stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
     dest = [dest stringByReplacingOccurrencesOfString:@"<br/>" withString:@"\n"];
     dest = [dest stringByReplacingOccurrencesOfString:@"<br />" withString:@"\n"];

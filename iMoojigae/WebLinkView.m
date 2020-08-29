@@ -11,7 +11,7 @@
 #import "Utils.h"
 #import "Photos/Photos.h"
 
-@interface WebLinkView () {
+@interface WebLinkView () <UIScrollViewDelegate>  {
 	NSMutableData *m_receiveData;
 	NSURLConnection *m_connection;
 }
@@ -70,14 +70,25 @@
 		[mainView addSubview:m_imageView];
 
 	} else {
-		UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
-		
-		[mainView addSubview:webView];
-		
-		webView.delegate = self;
-		webView.scalesPageToFit = TRUE;
-		webView.scrollView.scrollEnabled = YES;
-		[webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:m_strLink]]];
+        if ([[m_strLink substringToIndex:4] isEqualToString:@"http"]) {
+            UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
+            
+            [mainView addSubview:webView];
+            
+            webView.delegate = self;
+            webView.scalesPageToFit = TRUE;
+            webView.scrollView.scrollEnabled = YES;
+            [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:m_strLink]]];
+        } else {
+            UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
+            
+            [mainView addSubview:webView];
+            
+            webView.delegate = self;
+            webView.scalesPageToFit = TRUE;
+            webView.scrollView.scrollEnabled = YES;
+            [webView loadHTMLString:m_strLink baseURL:nil];
+        }
 	}
 }
 

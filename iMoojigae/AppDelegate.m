@@ -10,6 +10,8 @@
 #import "Utils.h"
 #import "LoginToService.h"
 #import "ArticleView.h"
+#import "SetTokenStorage.h"
+@import GoogleMobileAds;
 
 @interface AppDelegate ()
 {
@@ -51,6 +53,8 @@
 		}
 	}
 	
+    [[GADMobileAds sharedInstance] startWithCompletionHandler:nil];
+    
 	return YES;
 }
 
@@ -74,15 +78,25 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 	NSLog(@"Did Register for Remote Notifications with Device Token (%@)", deviceToken);
-	strDevice = [[[[deviceToken description]
-							stringByReplacingOccurrencesOfString:@"<"withString:@""]
-						   stringByReplacingOccurrencesOfString:@">" withString:@""]
-						  stringByReplacingOccurrencesOfString: @" " withString: @""];
+    const char *data = [deviceToken bytes];
+    NSMutableString *token = [NSMutableString string];
+
+    for (NSUInteger i = 0; i < [deviceToken length]; i++) {
+        [token appendFormat:@"%02.2hhX", data[i]];
+    }
+    strDevice = [token copy];
 	NSLog(@"converted device Device Token (%@)", strDevice);
 	
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *myPath = [documentsDirectory stringByAppendingPathComponent:@"token.dat"];
+    ////NSLog(@"myPath = %@", myPath);
+    SetTokenStorage *storage = [[SetTokenStorage alloc] init];
+    storage.token = strDevice;
+    [NSKeyedArchiver archiveRootObject:storage toFile:myPath];
+    
 	LoginToService *login = [[LoginToService alloc] init];
 	[login PushRegister];
-
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {

@@ -12,6 +12,7 @@
 #import "RecentView.h"
 #import "GoogleCalView.h"
 #import "BoardData.h"
+@import GoogleMobileAds;
 
 @interface BoardView ()
 {
@@ -37,16 +38,8 @@
     // Replace this ad unit ID with your own ad unit ID.
     self.bannerView.adUnitID = kSampleAdUnitID;
     self.bannerView.rootViewController = self;
+    [self.bannerView loadRequest:[GADRequest request]];
     
-    GADRequest *request = [GADRequest request];
-    // Requests test ads on devices you specify. Your test device ID is printed to the console when
-    // an ad request is made. GADBannerView automatically returns test ads when running on a
-    // simulator.
-    request.testDevices = @[
-                            @"2077ef9a63d2b398840261c8221a0c9a"  // Eric's iPod Touch
-                            ];
-    [self.bannerView loadRequest:request];
-
 	m_arrayItems = [[NSMutableArray alloc] init];
 
 	m_boardData = [[BoardData alloc] init];
@@ -78,37 +71,45 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	static NSString *CellIdentifier = @"reuseIdentifier";
-	
+    static NSString *CellIdentifierRecent = @"Recent";
+    static NSString *CellIdentifierBoard = @"Board";
+    static NSString *CellIdentifierCalendar = @"Calendar";
+
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 	UITableViewCell *cell;
-	cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	if (cell == nil) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-	}
-
-	if ([[item valueForKey:@"isNew"] intValue] == 0) {
-		[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
-	} else {
-		[cell.imageView setImage:[UIImage imageNamed:@"circle"]];
-	}
+    if ([[item valueForKey:@"type"] isEqualToString:@"recent"]) {
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierRecent];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierRecent];
+        }
+        [cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
+    } else if ([[item valueForKey:@"type"] isEqualToString:@"calendar"]) {
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierCalendar];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierCalendar];
+        }
+        [cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
+    } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierBoard];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierBoard];
+        }
+        if ([[item valueForKey:@"isNew"] intValue] == 0) {
+            [cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
+        } else {
+            [cell.imageView setImage:[UIImage imageNamed:@"circle"]];
+        }
+    }
 	
 	cell.textLabel.text = [item valueForKey:@"title"];
 	
-	if (![[item valueForKey:@"type"] isEqualToString:@"group"])
-		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	else
-		cell.accessoryType = UITableViewCellAccessoryNone;
-	
-	// Configure the cell.
 	return cell;
 }
 
+/*
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-	
-	if ([[item valueForKey:@"type"] isEqualToString:@"group"]) return;
 	
 	if ([[item valueForKey:@"type"] isEqualToString:@"recent"]) {
 		[self performSegueWithIdentifier:@"Recent" sender:self];
@@ -118,6 +119,7 @@
 		[self performSegueWithIdentifier:@"Items" sender:self];
 	}
 }
+*/
 
 #pragma mark - Navigation
 
@@ -157,6 +159,5 @@
 	m_arrayItems = [NSMutableArray arrayWithArray:m_boardData.m_arrayItems];
 	[self.tbView reloadData];
 }
-
 @end
 

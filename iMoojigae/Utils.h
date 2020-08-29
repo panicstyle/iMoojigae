@@ -17,4 +17,5 @@
 + (NSString *)replaceStringRegex:(NSString *)content regex:(NSString *)strRegex replace:(NSString *)strReplace;
 + (NSString *)removeSpan:(NSString *)content;
 + (NSString *)replaceStringHtmlTag:(NSString *)content;
++ (NSString *)makeEditableContent:(NSString *)content;
 @end

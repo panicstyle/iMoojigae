@@ -17,6 +17,7 @@
 #import "MainData.h"
 #import "GoogleCalView.h"
 #import "DBInterface.h"
+@import GoogleMobileAds;
 
 @interface MainView ()
 {
@@ -29,6 +30,7 @@
 
 @implementation MainView
 @synthesize tbView;
+@synthesize loginButton;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -45,24 +47,16 @@
 	self.navigationItem.titleView = lblTitle;
 
 	// Replace this ad unit ID with your own ad unit ID.
-	self.bannerView.adUnitID = kSampleAdUnitID;
-	self.bannerView.rootViewController = self;
-	
-	GADRequest *request = [GADRequest request];
-	// Requests test ads on devices you specify. Your test device ID is printed to the console when
-	// an ad request is made. GADBannerView automatically returns test ads when running on a
-	// simulator.
-	request.testDevices = @[
-							@"2077ef9a63d2b398840261c8221a0c9a"  // Eric's iPod Touch
-							];
-	[self.bannerView loadRequest:request];
+    self.bannerView.adUnitID = kSampleAdUnitID;
+    self.bannerView.rootViewController = self;
+	[self.bannerView loadRequest:[GADRequest request]];
 
 	SetInfo *setInfo = [[SetInfo alloc] init];
 
 	if (![setInfo CheckVersionInfo]) {
-		
+
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"글 작성때 오류가 발생되는 문제가 해결되었습니다.";
+		NSString *NotiMessage = @"새글 알림을 설정했는데도 알림이 오지 않을 경우 설정->알림->무지개교육마을 에서 알림 허용을 재설정 하시거나, 앱을 다시 설치해 보시기 바랍니다.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];
@@ -72,6 +66,7 @@
 		
 		[alert addAction:defaultAction];
 		[self presentViewController:alert animated:YES completion:nil];
+
 		[setInfo SaveVersionInfo];
 	}
 
@@ -93,9 +88,7 @@
 		BOOL result = [m_login LoginToService];
 		
 		if (result) {
-			[m_login PushRegister];
-			
-			[m_mainData fetchItems];
+			[m_login PushRegister];			
 		} else {
 			UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
 																		   message:@"로그인 정보가 없거나 잘못되었습니다. 설정에서 로그인정보를 입력하세요."
@@ -107,7 +100,10 @@
 			[alert addAction:defaultAction];
 			[self presentViewController:alert animated:YES completion:nil];
 		}
-	}
+        [m_mainData fetchItems];
+    } else {
+        
+    }
 }
 
 #pragma mark - Table view data source
@@ -219,5 +215,4 @@
 		[m_mainData fetchItems];
 	}
 }
-
 @end

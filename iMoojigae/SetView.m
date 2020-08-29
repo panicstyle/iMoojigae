@@ -24,7 +24,7 @@
     [super viewDidLoad];
 
 	UILabel *lblTitle = [[UILabel alloc] init];
-	lblTitle.text = @"로그인설정";
+	lblTitle.text = @"설정";
 	lblTitle.backgroundColor = [UIColor clearColor];
 	[lblTitle sizeToFit];
 	self.navigationItem.titleView = lblTitle;
@@ -69,7 +69,7 @@
 	if (result) {
 		
 		// Push 정보 업데이트
-		[login PushRegisterUpdate];
+		[login PushUpdate];
 
 		[target performSelector:selector withObject:[NSNumber numberWithBool:YES] afterDelay:0];
 	} else {

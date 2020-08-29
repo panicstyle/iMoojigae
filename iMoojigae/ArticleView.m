@@ -14,6 +14,7 @@
 #import "ArticleData.h"
 #import "WebLinkView.h"
 #import "DBInterface.h"
+@import GoogleMobileAds;
 
 @interface ArticleView ()
 {
@@ -58,7 +59,8 @@
 
 @implementation ArticleView
 
-@synthesize buttonArticleDelete;
+@synthesize tbView;
+@synthesize buttonArticleMenu;
 @synthesize m_strTitle;
 @synthesize m_strDate;
 @synthesize m_strName;
@@ -80,27 +82,23 @@
 	[lblTitle sizeToFit];
 	self.navigationItem.titleView = lblTitle;
 
-	buttonArticleDelete.target = self;
-	buttonArticleDelete.action = @selector(DeleteArticleConfirm);
+	buttonArticleMenu.target = self;
+	buttonArticleMenu.action = @selector(ArticleMenu);
 	
 	m_lContentHeight = 300;
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 	
-	m_fTitleHeight = 77.0f;
+    m_fTitleHeight = 77.0f;
+    
+    tbView.estimatedRowHeight = 150.0f;
+    tbView.rowHeight = UITableViewAutomaticDimension;
+    
 	m_strHit = @"";
 
-	// Replace this ad unit ID with your own ad unit ID.
-	self.bannerView.adUnitID = kSampleAdUnitID;
-	self.bannerView.rootViewController = self;
-	
-	GADRequest *request = [GADRequest request];
-	// Requests test ads on devices you specify. Your test device ID is printed to the console when
-	// an ad request is made. GADBannerView automatically returns test ads when running on a
-	// simulator.
-	request.testDevices = @[
-							@"2077ef9a63d2b398840261c8221a0c9a"  // Eric's iPod Touch
-							];
-	[self.bannerView loadRequest:request];
+    // Replace this ad unit ID with your own ad unit ID.
+    self.bannerView.adUnitID = kSampleAdUnitID;
+    self.bannerView.rootViewController = self;
+    [self.bannerView loadRequest:[GADRequest request]];
 /*
 	if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
 		self.edgesForExtendedLayout = UIRectEdgeNone;   // iOS 7 specific
@@ -157,7 +155,7 @@
 	
 	return fullScreenRect;
 }
-
+/*
 - (CGFloat)measureHeightOfUITextView:(UITextView *)textView
 {
 	if ([textView respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)])
@@ -209,24 +207,58 @@
 		return textView.contentSize.height;
 	}
 }
+*/
+- (void)textViewDidChange:(UITextView *)textView;
+{
+    [tbView beginUpdates];
+    [tbView endUpdates];
+}
+
+- (void)ArticleMenu
+{
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* writecomment = [UIAlertAction actionWithTitle:@"댓글쓰기" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self WriteComment];
+                                                   }];
+    UIAlertAction* modify = [UIAlertAction actionWithTitle:@"글수정" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self ModifyArticle];
+                                                   }];
+    UIAlertAction* delete = [UIAlertAction actionWithTitle:@"글삭제" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self DeleteArticleConfirm];
+                                                   }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"취소" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
+        //action when pressed button
+    }];
+    
+    [alert addAction:writecomment];
+    [alert addAction:modify];
+    [alert addAction:delete];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
 
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if ([indexPath section] == 0) {
-		if ([indexPath row] == 0) {
-			return m_fTitleHeight;
-		} else if ([indexPath row] == 1) {
-			return (float)m_lContentHeight;
-		} else {
-			return 40.0f;
-		}
-	} else {
-		NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-		NSNumber *height = [item valueForKey:@"height"];
-		return [height floatValue];
-	}
+    if ([indexPath section] == 0) {
+        if ([indexPath row] == 0) {
+            return UITableViewAutomaticDimension;
+        } else if ([indexPath row] == 1) {
+            return (float)m_lContentHeight;
+        } else {
+            return UITableViewAutomaticDimension;
+        }
+    } else {
+        return UITableViewAutomaticDimension;
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -288,32 +320,12 @@
 				
 				UITextView *textSubject = (UITextView *)[cell viewWithTag:101];
 				textSubject.text = m_strTitle;
-				
-				//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 40;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 40;
-				}
-				
-				CGSize size = [textSubject sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-				m_fTitleHeight = (77 - 32) + (size.height);
-				
+                [textSubject sizeToFit];
+								
 				UILabel *labelName = (UILabel *)[cell viewWithTag:100];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@  %@명 읽음", m_strName, m_strDate, m_strHit];
 				
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([m_strName length] + 2, [strNameDate length] - [m_strName length] - 2)];
-				labelName.attributedText = textName;
+				labelName.text = strNameDate;
 
 			} else if (row == 1){
 				m_contentCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierContent];
@@ -334,39 +346,14 @@
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
 				
 				UILabel *labelName = (UILabel *)[cell viewWithTag:200];
-				labelName.attributedText = textName;
-				
-				
+				labelName.text = strNameDate;
+
 				UITextView *viewComment = (UITextView *)[cell viewWithTag:202];
 				viewComment.text = [item valueForKey:@"comment"];
-				
-				//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 60;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 60;
-				}
-				
-				CGSize size = [viewComment sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-				//			float height = [self measureHeightOfUITextView:viewComment];
-				// 37
-				float height = (120 - 34) + (size.height);
-				[item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
-				NSLog(@"row = %ld, width=%f, height=%f", (long)[indexPath row], textViewWidth, height);
-				
+                [viewComment sizeToFit];
+								
 				UIButton *buttonDelete = (UIButton *)[cell viewWithTag:211];
 				[buttonDelete addTarget:self action:@selector(DeleteCommentConfirm:) forControlEvents:UIControlEventTouchUpInside];
 			} else {
@@ -378,37 +365,13 @@
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
 				
 				UILabel *labelName = (UILabel *)[cell viewWithTag:300];
-				labelName.attributedText = textName;
+				labelName.text = strNameDate;
 				
 				UITextView *viewComment = (UITextView *)[cell viewWithTag:302];
 				viewComment.text = [item valueForKey:@"comment"];
-				
-				//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 60 - 17;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 60 - 17;
-				}
-				
-				CGSize size = [viewComment sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-				//			float height = [self measureHeightOfUITextView:viewComment];
-				// 37
-				float height = (120 - 34) + (size.height);
-				[item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
-				NSLog(@"row = %ld, width=%f, height=%f", (long)[indexPath row], textViewWidth, height);
+                [viewComment sizeToFit];
 				
 				UIButton *buttonDelete = (UIButton *)[cell viewWithTag:311];
 				[buttonDelete addTarget:self action:@selector(DeleteCommentConfirm:) forControlEvents:UIControlEventTouchUpInside];
@@ -513,6 +476,62 @@
 	return YES;
 }
 
+// Override to support row selection in the table view.
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    long row = indexPath.row;
+    long section = indexPath.section;
+    if (section < 1) return;    // subject & content 에서 클릭되는 것은 무시한다.
+    NSLog(@"selected section = %ld, row = %ld", section, row);
+    
+    NSMutableDictionary *item;
+    item = [m_arrayItems objectAtIndex:[indexPath row]];
+    
+    NSString *strTitle = [NSString stringWithFormat:@"%@님의 댓글", [item valueForKey:@"name"]];
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:strTitle
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+// moojigae_web 에서 comment modify 를 지원하지 않음.
+/*
+    UIAlertAction* modify = [UIAlertAction actionWithTitle:@"댓글수정" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self ModifyComment:row];
+                                                   }];
+*/
+    UIAlertAction* delete = [UIAlertAction actionWithTitle:@"댓글삭제" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self DeleteCommentConfirm:row];
+                                                   }];
+    
+    UIAlertAction* reply = [UIAlertAction actionWithTitle:@"댓글답변" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self WriteReComment:row];
+                                                   }];
+    
+    UIAlertAction* copy = [UIAlertAction actionWithTitle:@"댓글복사" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self CopyComment:row];
+                                                   }];
+    
+    UIAlertAction* share = [UIAlertAction actionWithTitle:@"댓글공유" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self ShareComment:row];
+                                                   }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"취소" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
+        //action when pressed button
+    }];
+    
+//    [alert addAction:modify];
+    [alert addAction:reply];
+    [alert addAction:delete];
+    [alert addAction:copy];
+    [alert addAction:share];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+
 #pragma mark Data Function
 
 - (void)didFetchItems:(NSNumber *)result
@@ -589,30 +608,86 @@
 }
 
 #pragma mark WriteComment
+- (void)CopyComment:(long)row
+{
+    NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+    NSString *strComment = [item valueForKey:@"comment"];
+
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = strComment;
+    
+    NSString *message = @"댓글이 복사되었습니다.";
+
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+
+    [self presentViewController:alert animated:YES completion:nil];
+
+    int duration = 1; // duration in seconds
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, duration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [alert dismissViewControllerAnimated:YES completion:nil];
+    });
+}
+
+- (void)ShareComment:(long)row
+{
+    NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+    NSString *strComment = [item valueForKey:@"comment"];
+    
+    NSMutableArray *shareItems = [[NSMutableArray alloc] init];
+    [shareItems addObject:strComment];
+
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:shareItems applicationActivities:nil];
+    activityVC.excludedActivityTypes = @[UIActivityTypeAirDrop
+, UIActivityTypeCopyToPasteboard
+, UIActivityTypeMail
+, UIActivityTypeMessage
+, UIActivityTypePrint
+]; //Exclude whichever aren't relevant
+    [self presentViewController:activityVC animated:YES completion:nil];
+}
 
 - (void)WriteComment
 {
-	m_nMode = CommentWrite;
-	m_strCommentNo = @"";
-	m_strComment = @"";
-	
-	[self performSegueWithIdentifier:@"Comment" sender:self];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+    
+    CommentWriteView *viewController = (CommentWriteView*)[storyboard instantiateViewControllerWithIdentifier:@"CommentWriteView"];
+    if (viewController != nil) {
+        viewController.m_nMode = [NSNumber numberWithInt:CommentWrite];
+        viewController.m_boardId = m_boardId;
+        viewController.m_boardNo = m_boardNo;
+        viewController.m_strCommentNo = @"";
+        viewController.m_strComment = @"";
+        viewController.target = self;
+        viewController.selector = @selector(didWrite:);
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
-- (void)ModifyComment:(id)sender
+- (void)ModifyComment:(long)row
 {
-	NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
-	
-	long row = currentIndexPath.row;
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-	m_strCommentNo = [item valueForKey:@"no"];
-	m_strComment = [item valueForKey:@"comment"];
-	m_nMode = CommentModify;
-
-	[self performSegueWithIdentifier:@"Comment" sender:self];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+    
+    CommentWriteView *viewController = (CommentWriteView*)[storyboard instantiateViewControllerWithIdentifier:@"CommentWriteView"];
+    if (viewController != nil) {
+        viewController.m_nMode = [NSNumber numberWithInt:CommentModify];
+        viewController.m_boardId = m_boardId;
+        viewController.m_boardNo = m_boardNo;
+        viewController.m_strCommentNo = [item valueForKey:@"no"];
+        viewController.m_strComment = [item valueForKey:@"comment"];
+        viewController.target = self;
+        viewController.selector = @selector(didWrite:);
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
-- (void)DeleteCommentConfirm:(id)sender
+- (void)DeleteCommentConfirm:(long)row
 {
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
 																   message:@"삭제하시겠습니까?"
@@ -620,7 +695,7 @@
 	
 	UIAlertAction* okAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {
-														[self DeleteComment:sender];
+														[self DeleteComment:row];
 													}];
 	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"취소" style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {}];
@@ -631,13 +706,10 @@
 	[self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)DeleteComment:(id)sender
+- (void)DeleteComment:(long)row
 {
 	NSLog(@"DeleteArticleConfirm start");
-	
-	UITableViewCell *clickedCell = (UITableViewCell *)[[sender superview] superview];
-	NSIndexPath *clickedButtonPath = [self.tbView indexPathForCell:clickedCell];
-	long row = clickedButtonPath.row;
+
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	NSString *strCommentNo = m_strCommentNo;
@@ -654,28 +726,48 @@
 	}
 
 	// 삭제된 코멘트를 TableView에서 삭제한다.
-	[m_arrayItems removeObjectAtIndex:[clickedButtonPath row]];
+	[m_arrayItems removeObjectAtIndex:row];
 	[self.tbView reloadData];
 
 	NSLog(@"delete article success");
 }
 
-- (void)WriteReComment:(id)sender
+- (void)WriteReComment:(long)row
 {
-	NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
-	
-	long row = currentIndexPath.row;
-	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-	m_strCommentNo = [item valueForKey:@"no"];
-	m_strComment = @"";
-	m_nMode = CommentReply;
-	
-	[self performSegueWithIdentifier:@"Comment" sender:self];
+    NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+    
+    CommentWriteView *viewController = (CommentWriteView*)[storyboard instantiateViewControllerWithIdentifier:@"CommentWriteView"];
+    if (viewController != nil) {
+        viewController.m_nMode = [NSNumber numberWithInt:CommentReply];
+        viewController.m_boardId = m_boardId;
+        viewController.m_boardNo = m_boardNo;
+        viewController.m_strCommentNo = [item valueForKey:@"no"];
+        viewController.m_strComment = @"";
+        viewController.target = self;
+        viewController.selector = @selector(didWrite:);
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
 - (void)ModifyArticle
 {
-	
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+    
+    ArticleWriteView *viewController = (ArticleWriteView*)[storyboard instantiateViewControllerWithIdentifier:@"ArticleWriteView"];
+    if (viewController != nil) {
+        viewController.m_nMode = [NSNumber numberWithInt:ArticleModify];
+        viewController.m_boardId = m_boardId;
+        viewController.m_boardNo = m_boardNo;
+        viewController.m_strTitle = m_strEditableTitle;
+        viewController.m_strContent = m_strEditableContent;
+        viewController.target = self;
+        viewController.selector = @selector(didWrite:);
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
 - (void)DeleteArticleConfirm
@@ -741,7 +833,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 	// Get the new view controller using [segue destinationViewController].
 	// Pass the selected object to the new view controller.
-	if ([[segue identifier] isEqualToString:@"Comment"]) {
+/*	if ([[segue identifier] isEqualToString:@"Comment"]) {
 		CommentWriteView *view = [segue destinationViewController];
 		view.m_nMode = [NSNumber numberWithInt:CommentWrite];
 		view.m_boardId = m_boardId;
@@ -791,11 +883,10 @@
 		view.m_strContent = m_strEditableContent;
 		view.target = self;
 		view.selector = @selector(didWrite:);
-	} else if ([[segue identifier] isEqualToString:@"WebLink"]) {
+	} else */ if ([[segue identifier] isEqualToString:@"WebLink"]) {
 		WebLinkView *view = [segue destinationViewController];
 		view.m_nFileType = [NSNumber numberWithInt:m_nFileType];
 		view.m_strLink = m_strWebLink;
 	}
 }
-
 @end

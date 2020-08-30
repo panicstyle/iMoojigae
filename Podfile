@@ -6,14 +6,10 @@ target 'iMoojigae' do
   use_frameworks!
 
   # Pods for iMoojigae
-  pod 'Google-Mobile-Ads-SDK'
+    pod 'Google-Mobile-Ads-SDK'
 
   target 'iMoojigaeTests' do
     inherit! :search_paths
-    # Pods for testing
-  end
-
-  target 'iMoojigaeUITests' do
     # Pods for testing
   end
 

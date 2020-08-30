@@ -7,339 +7,268 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		25833D2AB3014346730470C3 /* Pods_iMoojigae_iMoojigaeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 325CF5315E0FE1539638E9BE /* Pods_iMoojigae_iMoojigaeUITests.framework */; };
-		42C390E9E63FDA29B73C11A9 /* Pods_iMoojigae.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21B42B1AEFA2A5132A6AAD09 /* Pods_iMoojigae.framework */; };
-		E5E6100E38E6EFE2570B4CF4 /* Pods_iMoojigaeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 184FF8A8FE53E012F29030AB /* Pods_iMoojigaeTests.framework */; };
-		EC2080A31C954540006305A8 /* ArticleData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC2080A21C954540006305A8 /* ArticleData.m */; };
-		EC21A6B81E7CE33200B2D138 /* WebLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC21A6B71E7CE33200B2D138 /* WebLinkView.m */; };
-		EC36787120C36EC900B02EF0 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36786E20C36EC800B02EF0 /* GTMNSString+HTML.m */; };
-		EC36787220C36EC900B02EF0 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36787020C36EC900B02EF0 /* NSString+HTML.m */; };
-		EC36787520C3730000B02EF0 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36787420C3730000B02EF0 /* libsqlite3.tbd */; };
-		EC36787820C3736A00B02EF0 /* DBInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36787720C3736A00B02EF0 /* DBInterface.m */; };
-		EC3AA62F1C990865006BFE5B /* MainData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA62E1C990865006BFE5B /* MainData.m */; };
-		EC3AA6321C992861006BFE5B /* BoardData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6311C992861006BFE5B /* BoardData.m */; };
-		EC3AA6351C993628006BFE5B /* ItemsData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6341C993628006BFE5B /* ItemsData.m */; };
-		EC3AA6381C994623006BFE5B /* RecentData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6371C994623006BFE5B /* RecentData.m */; };
-		EC717E971C87C68800C1888B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717E961C87C68800C1888B /* main.m */; };
-		EC717E9A1C87C68800C1888B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717E991C87C68800C1888B /* AppDelegate.m */; };
-		EC717E9D1C87C68800C1888B /* BoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717E9C1C87C68800C1888B /* BoardView.m */; };
-		EC717EA21C87C68800C1888B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC717EA11C87C68800C1888B /* Assets.xcassets */; };
-		EC717EA51C87C68800C1888B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC717EA31C87C68800C1888B /* LaunchScreen.storyboard */; };
-		EC717EB01C87C68800C1888B /* iMoojigaeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717EAF1C87C68800C1888B /* iMoojigaeTests.m */; };
-		EC717EBB1C87C68800C1888B /* iMoojigaeUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717EBA1C87C68800C1888B /* iMoojigaeUITests.m */; };
-		EC717F111C8811C500C1888B /* MainView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F101C8811C500C1888B /* MainView.m */; };
-		EC717F2B1C882F3E00C1888B /* LoginToService.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F221C882F3E00C1888B /* LoginToService.m */; };
-		EC717F2C1C882F3E00C1888B /* SetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F241C882F3E00C1888B /* SetInfo.m */; };
-		EC717F2D1C882F3E00C1888B /* SetInfoStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F261C882F3E00C1888B /* SetInfoStorage.m */; };
-		EC717F2E1C882F3E00C1888B /* SetStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F281C882F3E00C1888B /* SetStorage.m */; };
-		EC717F2F1C882F3E00C1888B /* SetView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F2A1C882F3E00C1888B /* SetView.m */; };
-		EC717F511C89313400C1888B /* AboutView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F461C89313400C1888B /* AboutView.m */; };
-		EC717F531C89313400C1888B /* ItemsView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F4A1C89313400C1888B /* ItemsView.m */; };
-		EC717F591C8969FE00C1888B /* ArticleView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F581C8969FE00C1888B /* ArticleView.m */; };
-		EC717F691C8AA71500C1888B /* RecentView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F641C8AA71500C1888B /* RecentView.m */; };
-		EC717F6F1C8AB6E600C1888B /* GoogleCalView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F6E1C8AB6E600C1888B /* GoogleCalView.m */; };
-		EC717F721C8ACD6E00C1888B /* ArticleWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F711C8ACD6E00C1888B /* ArticleWriteView.m */; };
-		EC938BC41C90534E006BEF9E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = EC938BC31C90534E006BEF9E /* Utils.m */; };
-		ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC846AD1C91588000CF47DA /* CommentWriteView.m */; };
-		ECC846B11C915F3700CF47DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC846AF1C915F3700CF47DA /* Main.storyboard */; };
-		ECFCF9862349EE86003AD515 /* SetTokenStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFCF9852349EE86003AD515 /* SetTokenStorage.m */; };
+		09FFFB8FCD1975E9EE583479 /* Pods_iMoojigae.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1B3D53748D79FB826CBF405 /* Pods_iMoojigae.framework */; };
+		2AEE46B177E9ACB07502B2CF /* Pods_iMoojigaeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57A80A78C2C22918FB268F12 /* Pods_iMoojigaeTests.framework */; };
+		ECC9F2DD24FB48ED000E8F0E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F2DC24FB48ED000E8F0E /* AppDelegate.m */; };
+		ECC9F2E624FB48ED000E8F0E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC9F2E424FB48ED000E8F0E /* Main.storyboard */; };
+		ECC9F2E824FB48EF000E8F0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECC9F2E724FB48EF000E8F0E /* Assets.xcassets */; };
+		ECC9F2EB24FB48EF000E8F0E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC9F2E924FB48EF000E8F0E /* LaunchScreen.storyboard */; };
+		ECC9F2EE24FB48EF000E8F0E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F2ED24FB48EF000E8F0E /* main.m */; };
+		ECC9F2F824FB48EF000E8F0E /* iMoojigaeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F2F724FB48EF000E8F0E /* iMoojigaeTests.m */; };
+		ECC9F33524FB5255000E8F0E /* SetInfoStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F30224FB5253000E8F0E /* SetInfoStorage.m */; };
+		ECC9F33624FB5255000E8F0E /* SetTokenStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F30424FB5253000E8F0E /* SetTokenStorage.m */; };
+		ECC9F33724FB5255000E8F0E /* RecentData.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F30524FB5253000E8F0E /* RecentData.m */; };
+		ECC9F33824FB5255000E8F0E /* RecentView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F30824FB5253000E8F0E /* RecentView.m */; };
+		ECC9F33924FB5255000E8F0E /* ItemsData.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F30A24FB5253000E8F0E /* ItemsData.m */; };
+		ECC9F33A24FB5255000E8F0E /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F30B24FB5253000E8F0E /* NSString+HTML.m */; };
+		ECC9F33B24FB5255000E8F0E /* ArticleView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F31024FB5253000E8F0E /* ArticleView.m */; };
+		ECC9F33C24FB5255000E8F0E /* DBInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F31124FB5253000E8F0E /* DBInterface.m */; };
+		ECC9F33D24FB5255000E8F0E /* SetStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F31424FB5254000E8F0E /* SetStorage.m */; };
+		ECC9F33E24FB5255000E8F0E /* SetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F31824FB5254000E8F0E /* SetInfo.m */; };
+		ECC9F33F24FB5255000E8F0E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F31A24FB5254000E8F0E /* Utils.m */; };
+		ECC9F34024FB5255000E8F0E /* CommentWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F31C24FB5254000E8F0E /* CommentWriteView.m */; };
+		ECC9F34124FB5255000E8F0E /* LoginToService.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F31D24FB5254000E8F0E /* LoginToService.m */; };
+		ECC9F34224FB5255000E8F0E /* ArticleData.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F31E24FB5254000E8F0E /* ArticleData.m */; };
+		ECC9F34324FB5255000E8F0E /* AboutView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32024FB5254000E8F0E /* AboutView.m */; };
+		ECC9F34424FB5255000E8F0E /* ItemsView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32524FB5254000E8F0E /* ItemsView.m */; };
+		ECC9F34524FB5255000E8F0E /* GoogleCalView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32724FB5254000E8F0E /* GoogleCalView.m */; };
+		ECC9F34624FB5255000E8F0E /* WebLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32824FB5255000E8F0E /* WebLinkView.m */; };
+		ECC9F34724FB5255000E8F0E /* MainData.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32924FB5255000E8F0E /* MainData.m */; };
+		ECC9F34824FB5255000E8F0E /* ArticleWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32B24FB5255000E8F0E /* ArticleWriteView.m */; };
+		ECC9F34924FB5255000E8F0E /* BoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32C24FB5255000E8F0E /* BoardView.m */; };
+		ECC9F34A24FB5255000E8F0E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32E24FB5255000E8F0E /* GTMNSString+HTML.m */; };
+		ECC9F34B24FB5255000E8F0E /* BoardData.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32F24FB5255000E8F0E /* BoardData.m */; };
+		ECC9F34C24FB5255000E8F0E /* MainView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F33324FB5255000E8F0E /* MainView.m */; };
+		ECC9F34D24FB5255000E8F0E /* SetView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F33424FB5255000E8F0E /* SetView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		EC717EAC1C87C68800C1888B /* PBXContainerItemProxy */ = {
+		ECC9F2F424FB48EF000E8F0E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = EC717E8A1C87C68800C1888B /* Project object */;
+			containerPortal = ECC9F2D024FB48ED000E8F0E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = EC717E911C87C68800C1888B;
-			remoteInfo = iMoojigae;
-		};
-		EC717EB71C87C68800C1888B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EC717E8A1C87C68800C1888B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = EC717E911C87C68800C1888B;
+			remoteGlobalIDString = ECC9F2D724FB48ED000E8F0E;
 			remoteInfo = iMoojigae;
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		ECC9F29924F8F934000E8F0E /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		184FF8A8FE53E012F29030AB /* Pods_iMoojigaeTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iMoojigaeTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		21B42B1AEFA2A5132A6AAD09 /* Pods_iMoojigae.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iMoojigae.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F6DAE91B7FF050292D60304 /* Pods-iMoojigae-iMoojigaeUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigae-iMoojigaeUITests.release.xcconfig"; path = "Target Support Files/Pods-iMoojigae-iMoojigaeUITests/Pods-iMoojigae-iMoojigaeUITests.release.xcconfig"; sourceTree = "<group>"; };
-		325CF5315E0FE1539638E9BE /* Pods_iMoojigae_iMoojigaeUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iMoojigae_iMoojigaeUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7EC3333F1B78A7E5CF59B80A /* Pods-iMoojigae.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigae.release.xcconfig"; path = "Target Support Files/Pods-iMoojigae/Pods-iMoojigae.release.xcconfig"; sourceTree = "<group>"; };
-		81FF9AA54190B57A0B3C2601 /* Pods-iMoojigaeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigaeTests.debug.xcconfig"; path = "Target Support Files/Pods-iMoojigaeTests/Pods-iMoojigaeTests.debug.xcconfig"; sourceTree = "<group>"; };
-		A5A7B7309A61B7463B47576A /* Pods-iMoojigae-iMoojigaeUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigae-iMoojigaeUITests.debug.xcconfig"; path = "Target Support Files/Pods-iMoojigae-iMoojigaeUITests/Pods-iMoojigae-iMoojigaeUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		AAB13529D7DFE2ED2092709A /* Pods-iMoojigae.distribution.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigae.distribution.xcconfig"; path = "Target Support Files/Pods-iMoojigae/Pods-iMoojigae.distribution.xcconfig"; sourceTree = "<group>"; };
-		C104A23A9CDCE5706837268A /* Pods-iMoojigae.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigae.debug.xcconfig"; path = "Target Support Files/Pods-iMoojigae/Pods-iMoojigae.debug.xcconfig"; sourceTree = "<group>"; };
-		EC2080A11C954540006305A8 /* ArticleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleData.h; sourceTree = "<group>"; };
-		EC2080A21C954540006305A8 /* ArticleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleData.m; sourceTree = "<group>"; };
-		EC21A6B61E7CE33200B2D138 /* WebLinkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebLinkView.h; sourceTree = "<group>"; };
-		EC21A6B71E7CE33200B2D138 /* WebLinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebLinkView.m; sourceTree = "<group>"; };
-		EC36786D20C36EC800B02EF0 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
-		EC36786E20C36EC800B02EF0 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
-		EC36786F20C36EC900B02EF0 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
-		EC36787020C36EC900B02EF0 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
-		EC36787420C3730000B02EF0 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
-		EC36787620C3736A00B02EF0 /* DBInterface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBInterface.h; sourceTree = "<group>"; };
-		EC36787720C3736A00B02EF0 /* DBInterface.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBInterface.m; sourceTree = "<group>"; };
-		EC3AA62D1C990865006BFE5B /* MainData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainData.h; sourceTree = "<group>"; };
-		EC3AA62E1C990865006BFE5B /* MainData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainData.m; sourceTree = "<group>"; };
-		EC3AA6301C992861006BFE5B /* BoardData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoardData.h; sourceTree = "<group>"; };
-		EC3AA6311C992861006BFE5B /* BoardData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BoardData.m; sourceTree = "<group>"; };
-		EC3AA6331C993628006BFE5B /* ItemsData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemsData.h; sourceTree = "<group>"; };
-		EC3AA6341C993628006BFE5B /* ItemsData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemsData.m; sourceTree = "<group>"; };
-		EC3AA6361C994623006BFE5B /* RecentData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentData.h; sourceTree = "<group>"; };
-		EC3AA6371C994623006BFE5B /* RecentData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentData.m; sourceTree = "<group>"; };
-		EC582ED41D8D326200B55AEA /* iMoojigae.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iMoojigae.entitlements; sourceTree = "<group>"; };
-		EC717E921C87C68800C1888B /* iMoojigae.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iMoojigae.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		EC717E961C87C68800C1888B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		EC717E981C87C68800C1888B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		EC717E991C87C68800C1888B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		EC717E9B1C87C68800C1888B /* BoardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoardView.h; sourceTree = "<group>"; };
-		EC717E9C1C87C68800C1888B /* BoardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoardView.m; sourceTree = "<group>"; };
-		EC717EA11C87C68800C1888B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		EC717EA41C87C68800C1888B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		EC717EA61C87C68800C1888B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EC717EAB1C87C68800C1888B /* iMoojigaeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iMoojigaeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		EC717EAF1C87C68800C1888B /* iMoojigaeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iMoojigaeTests.m; sourceTree = "<group>"; };
-		EC717EB11C87C68800C1888B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EC717EB61C87C68800C1888B /* iMoojigaeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iMoojigaeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		EC717EBA1C87C68800C1888B /* iMoojigaeUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iMoojigaeUITests.m; sourceTree = "<group>"; };
-		EC717EBC1C87C68800C1888B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EC717F0E1C8811C500C1888B /* env.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = env.h; sourceTree = "<group>"; };
-		EC717F0F1C8811C500C1888B /* MainView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainView.h; sourceTree = "<group>"; };
-		EC717F101C8811C500C1888B /* MainView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainView.m; sourceTree = "<group>"; };
-		EC717F211C882F3E00C1888B /* LoginToService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginToService.h; sourceTree = "<group>"; };
-		EC717F221C882F3E00C1888B /* LoginToService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginToService.m; sourceTree = "<group>"; };
-		EC717F231C882F3E00C1888B /* SetInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetInfo.h; sourceTree = "<group>"; };
-		EC717F241C882F3E00C1888B /* SetInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetInfo.m; sourceTree = "<group>"; };
-		EC717F251C882F3E00C1888B /* SetInfoStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetInfoStorage.h; sourceTree = "<group>"; };
-		EC717F261C882F3E00C1888B /* SetInfoStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetInfoStorage.m; sourceTree = "<group>"; };
-		EC717F271C882F3E00C1888B /* SetStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetStorage.h; sourceTree = "<group>"; };
-		EC717F281C882F3E00C1888B /* SetStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetStorage.m; sourceTree = "<group>"; };
-		EC717F291C882F3E00C1888B /* SetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetView.h; sourceTree = "<group>"; };
-		EC717F2A1C882F3E00C1888B /* SetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetView.m; sourceTree = "<group>"; };
-		EC717F451C89313400C1888B /* AboutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutView.h; sourceTree = "<group>"; };
-		EC717F461C89313400C1888B /* AboutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutView.m; sourceTree = "<group>"; };
-		EC717F491C89313400C1888B /* ItemsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemsView.h; sourceTree = "<group>"; };
-		EC717F4A1C89313400C1888B /* ItemsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemsView.m; sourceTree = "<group>"; };
-		EC717F571C8969FE00C1888B /* ArticleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleView.h; sourceTree = "<group>"; };
-		EC717F581C8969FE00C1888B /* ArticleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleView.m; sourceTree = "<group>"; };
-		EC717F631C8AA71500C1888B /* RecentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentView.h; sourceTree = "<group>"; };
-		EC717F641C8AA71500C1888B /* RecentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentView.m; sourceTree = "<group>"; };
-		EC717F6D1C8AB6E600C1888B /* GoogleCalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleCalView.h; sourceTree = "<group>"; };
-		EC717F6E1C8AB6E600C1888B /* GoogleCalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleCalView.m; sourceTree = "<group>"; };
-		EC717F701C8ACD6E00C1888B /* ArticleWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleWriteView.h; sourceTree = "<group>"; };
-		EC717F711C8ACD6E00C1888B /* ArticleWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleWriteView.m; sourceTree = "<group>"; };
-		EC79C581B569150F8960A040 /* Pods-iMoojigaeTests.distribution.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigaeTests.distribution.xcconfig"; path = "Target Support Files/Pods-iMoojigaeTests/Pods-iMoojigaeTests.distribution.xcconfig"; sourceTree = "<group>"; };
-		EC938BC21C90534E006BEF9E /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
-		EC938BC31C90534E006BEF9E /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
-		ECC846AC1C91588000CF47DA /* CommentWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentWriteView.h; sourceTree = "<group>"; };
-		ECC846AD1C91588000CF47DA /* CommentWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentWriteView.m; sourceTree = "<group>"; };
-		ECC846B01C915F3700CF47DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		ECFCF9842349EE86003AD515 /* SetTokenStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SetTokenStorage.h; sourceTree = "<group>"; };
-		ECFCF9852349EE86003AD515 /* SetTokenStorage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SetTokenStorage.m; sourceTree = "<group>"; };
-		F248B2B50B553830D2BA7135 /* Pods-iMoojigaeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigaeTests.release.xcconfig"; path = "Target Support Files/Pods-iMoojigaeTests/Pods-iMoojigaeTests.release.xcconfig"; sourceTree = "<group>"; };
-		FDCCE56EAA7296449B5C7F68 /* Pods-iMoojigae-iMoojigaeUITests.distribution.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigae-iMoojigaeUITests.distribution.xcconfig"; path = "Target Support Files/Pods-iMoojigae-iMoojigaeUITests/Pods-iMoojigae-iMoojigaeUITests.distribution.xcconfig"; sourceTree = "<group>"; };
+		060319155B34A55127567590 /* Pods-iMoojigae.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigae.release.xcconfig"; path = "Target Support Files/Pods-iMoojigae/Pods-iMoojigae.release.xcconfig"; sourceTree = "<group>"; };
+		57A80A78C2C22918FB268F12 /* Pods_iMoojigaeTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iMoojigaeTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		82942B49665379305A9FB8C6 /* Pods-iMoojigaeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigaeTests.release.xcconfig"; path = "Target Support Files/Pods-iMoojigaeTests/Pods-iMoojigaeTests.release.xcconfig"; sourceTree = "<group>"; };
+		A5198F5A841BE02E25703EC7 /* Pods-iMoojigaeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigaeTests.debug.xcconfig"; path = "Target Support Files/Pods-iMoojigaeTests/Pods-iMoojigaeTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E09E1C8A58696C3C1129B65A /* Pods-iMoojigae.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigae.debug.xcconfig"; path = "Target Support Files/Pods-iMoojigae/Pods-iMoojigae.debug.xcconfig"; sourceTree = "<group>"; };
+		ECC9F2D824FB48ED000E8F0E /* iMoojigae.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iMoojigae.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECC9F2DB24FB48ED000E8F0E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		ECC9F2DC24FB48ED000E8F0E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		ECC9F2E524FB48ED000E8F0E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		ECC9F2E724FB48EF000E8F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		ECC9F2EA24FB48EF000E8F0E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		ECC9F2EC24FB48EF000E8F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ECC9F2ED24FB48EF000E8F0E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		ECC9F2F324FB48EF000E8F0E /* iMoojigaeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iMoojigaeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECC9F2F724FB48EF000E8F0E /* iMoojigaeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iMoojigaeTests.m; sourceTree = "<group>"; };
+		ECC9F2F924FB48EF000E8F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ECC9F30224FB5253000E8F0E /* SetInfoStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetInfoStorage.m; sourceTree = "<group>"; };
+		ECC9F30324FB5253000E8F0E /* MainData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainData.h; sourceTree = "<group>"; };
+		ECC9F30424FB5253000E8F0E /* SetTokenStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetTokenStorage.m; sourceTree = "<group>"; };
+		ECC9F30524FB5253000E8F0E /* RecentData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentData.m; sourceTree = "<group>"; };
+		ECC9F30624FB5253000E8F0E /* SetInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetInfo.h; sourceTree = "<group>"; };
+		ECC9F30724FB5253000E8F0E /* ItemsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemsView.h; sourceTree = "<group>"; };
+		ECC9F30824FB5253000E8F0E /* RecentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentView.m; sourceTree = "<group>"; };
+		ECC9F30924FB5253000E8F0E /* GoogleCalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleCalView.h; sourceTree = "<group>"; };
+		ECC9F30A24FB5253000E8F0E /* ItemsData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemsData.m; sourceTree = "<group>"; };
+		ECC9F30B24FB5253000E8F0E /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
+		ECC9F30C24FB5253000E8F0E /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
+		ECC9F30D24FB5253000E8F0E /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		ECC9F30E24FB5253000E8F0E /* ArticleWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleWriteView.h; sourceTree = "<group>"; };
+		ECC9F30F24FB5253000E8F0E /* LoginToService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginToService.h; sourceTree = "<group>"; };
+		ECC9F31024FB5253000E8F0E /* ArticleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleView.m; sourceTree = "<group>"; };
+		ECC9F31124FB5253000E8F0E /* DBInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBInterface.m; sourceTree = "<group>"; };
+		ECC9F31224FB5253000E8F0E /* MainView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainView.h; sourceTree = "<group>"; };
+		ECC9F31324FB5253000E8F0E /* DBInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBInterface.h; sourceTree = "<group>"; };
+		ECC9F31424FB5254000E8F0E /* SetStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetStorage.m; sourceTree = "<group>"; };
+		ECC9F31524FB5254000E8F0E /* RecentData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentData.h; sourceTree = "<group>"; };
+		ECC9F31624FB5254000E8F0E /* env.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = env.h; sourceTree = "<group>"; };
+		ECC9F31724FB5254000E8F0E /* CommentWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentWriteView.h; sourceTree = "<group>"; };
+		ECC9F31824FB5254000E8F0E /* SetInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetInfo.m; sourceTree = "<group>"; };
+		ECC9F31924FB5254000E8F0E /* AboutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutView.h; sourceTree = "<group>"; };
+		ECC9F31A24FB5254000E8F0E /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
+		ECC9F31B24FB5254000E8F0E /* BoardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoardView.h; sourceTree = "<group>"; };
+		ECC9F31C24FB5254000E8F0E /* CommentWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentWriteView.m; sourceTree = "<group>"; };
+		ECC9F31D24FB5254000E8F0E /* LoginToService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginToService.m; sourceTree = "<group>"; };
+		ECC9F31E24FB5254000E8F0E /* ArticleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleData.m; sourceTree = "<group>"; };
+		ECC9F31F24FB5254000E8F0E /* ArticleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleData.h; sourceTree = "<group>"; };
+		ECC9F32024FB5254000E8F0E /* AboutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutView.m; sourceTree = "<group>"; };
+		ECC9F32124FB5254000E8F0E /* WebLinkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebLinkView.h; sourceTree = "<group>"; };
+		ECC9F32224FB5254000E8F0E /* ItemsData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemsData.h; sourceTree = "<group>"; };
+		ECC9F32324FB5254000E8F0E /* ArticleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleView.h; sourceTree = "<group>"; };
+		ECC9F32424FB5254000E8F0E /* SetStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetStorage.h; sourceTree = "<group>"; };
+		ECC9F32524FB5254000E8F0E /* ItemsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemsView.m; sourceTree = "<group>"; };
+		ECC9F32624FB5254000E8F0E /* BoardData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoardData.h; sourceTree = "<group>"; };
+		ECC9F32724FB5254000E8F0E /* GoogleCalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleCalView.m; sourceTree = "<group>"; };
+		ECC9F32824FB5255000E8F0E /* WebLinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebLinkView.m; sourceTree = "<group>"; };
+		ECC9F32924FB5255000E8F0E /* MainData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainData.m; sourceTree = "<group>"; };
+		ECC9F32A24FB5255000E8F0E /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
+		ECC9F32B24FB5255000E8F0E /* ArticleWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleWriteView.m; sourceTree = "<group>"; };
+		ECC9F32C24FB5255000E8F0E /* BoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BoardView.m; sourceTree = "<group>"; };
+		ECC9F32D24FB5255000E8F0E /* SetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetView.h; sourceTree = "<group>"; };
+		ECC9F32E24FB5255000E8F0E /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		ECC9F32F24FB5255000E8F0E /* BoardData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BoardData.m; sourceTree = "<group>"; };
+		ECC9F33024FB5255000E8F0E /* RecentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentView.h; sourceTree = "<group>"; };
+		ECC9F33124FB5255000E8F0E /* SetTokenStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetTokenStorage.h; sourceTree = "<group>"; };
+		ECC9F33224FB5255000E8F0E /* SetInfoStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetInfoStorage.h; sourceTree = "<group>"; };
+		ECC9F33324FB5255000E8F0E /* MainView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainView.m; sourceTree = "<group>"; };
+		ECC9F33424FB5255000E8F0E /* SetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetView.m; sourceTree = "<group>"; };
+		F1B3D53748D79FB826CBF405 /* Pods_iMoojigae.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iMoojigae.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		EC717E8F1C87C68800C1888B /* Frameworks */ = {
+		ECC9F2D524FB48ED000E8F0E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC36787520C3730000B02EF0 /* libsqlite3.tbd in Frameworks */,
-				42C390E9E63FDA29B73C11A9 /* Pods_iMoojigae.framework in Frameworks */,
+				09FFFB8FCD1975E9EE583479 /* Pods_iMoojigae.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EC717EA81C87C68800C1888B /* Frameworks */ = {
+		ECC9F2F024FB48EF000E8F0E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E5E6100E38E6EFE2570B4CF4 /* Pods_iMoojigaeTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EC717EB31C87C68800C1888B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				25833D2AB3014346730470C3 /* Pods_iMoojigae_iMoojigaeUITests.framework in Frameworks */,
+				2AEE46B177E9ACB07502B2CF /* Pods_iMoojigaeTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		EC36787320C3730000B02EF0 /* Frameworks */ = {
+		5758DFC051419F9507028511 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EC36787420C3730000B02EF0 /* libsqlite3.tbd */,
-				21B42B1AEFA2A5132A6AAD09 /* Pods_iMoojigae.framework */,
-				325CF5315E0FE1539638E9BE /* Pods_iMoojigae_iMoojigaeUITests.framework */,
-				184FF8A8FE53E012F29030AB /* Pods_iMoojigaeTests.framework */,
+				F1B3D53748D79FB826CBF405 /* Pods_iMoojigae.framework */,
+				57A80A78C2C22918FB268F12 /* Pods_iMoojigaeTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		EC717E891C87C68800C1888B = {
+		EB49C4335550CBBF2AEF4BDD /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				EC717E941C87C68800C1888B /* iMoojigae */,
-				EC717EAE1C87C68800C1888B /* iMoojigaeTests */,
-				EC717EB91C87C68800C1888B /* iMoojigaeUITests */,
-				EC717E931C87C68800C1888B /* Products */,
-				EC36787320C3730000B02EF0 /* Frameworks */,
-				F28845520B46CAEB8025C9C3 /* Pods */,
+				E09E1C8A58696C3C1129B65A /* Pods-iMoojigae.debug.xcconfig */,
+				060319155B34A55127567590 /* Pods-iMoojigae.release.xcconfig */,
+				A5198F5A841BE02E25703EC7 /* Pods-iMoojigaeTests.debug.xcconfig */,
+				82942B49665379305A9FB8C6 /* Pods-iMoojigaeTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		ECC9F2CF24FB48ED000E8F0E = {
+			isa = PBXGroup;
+			children = (
+				ECC9F2DA24FB48ED000E8F0E /* iMoojigae */,
+				ECC9F2F624FB48EF000E8F0E /* iMoojigaeTests */,
+				ECC9F2D924FB48ED000E8F0E /* Products */,
+				EB49C4335550CBBF2AEF4BDD /* Pods */,
+				5758DFC051419F9507028511 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		EC717E931C87C68800C1888B /* Products */ = {
+		ECC9F2D924FB48ED000E8F0E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EC717E921C87C68800C1888B /* iMoojigae.app */,
-				EC717EAB1C87C68800C1888B /* iMoojigaeTests.xctest */,
-				EC717EB61C87C68800C1888B /* iMoojigaeUITests.xctest */,
+				ECC9F2D824FB48ED000E8F0E /* iMoojigae.app */,
+				ECC9F2F324FB48EF000E8F0E /* iMoojigaeTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		EC717E941C87C68800C1888B /* iMoojigae */ = {
+		ECC9F2DA24FB48ED000E8F0E /* iMoojigae */ = {
 			isa = PBXGroup;
 			children = (
-				EC717F451C89313400C1888B /* AboutView.h */,
-				EC717F461C89313400C1888B /* AboutView.m */,
-				EC717E981C87C68800C1888B /* AppDelegate.h */,
-				EC717E991C87C68800C1888B /* AppDelegate.m */,
-				EC2080A11C954540006305A8 /* ArticleData.h */,
-				EC2080A21C954540006305A8 /* ArticleData.m */,
-				EC717F571C8969FE00C1888B /* ArticleView.h */,
-				EC717F581C8969FE00C1888B /* ArticleView.m */,
-				EC717F701C8ACD6E00C1888B /* ArticleWriteView.h */,
-				EC717F711C8ACD6E00C1888B /* ArticleWriteView.m */,
-				EC717EA11C87C68800C1888B /* Assets.xcassets */,
-				EC3AA6301C992861006BFE5B /* BoardData.h */,
-				EC3AA6311C992861006BFE5B /* BoardData.m */,
-				EC717E9B1C87C68800C1888B /* BoardView.h */,
-				EC717E9C1C87C68800C1888B /* BoardView.m */,
-				ECC846AC1C91588000CF47DA /* CommentWriteView.h */,
-				ECC846AD1C91588000CF47DA /* CommentWriteView.m */,
-				EC36787620C3736A00B02EF0 /* DBInterface.h */,
-				EC36787720C3736A00B02EF0 /* DBInterface.m */,
-				EC717F0E1C8811C500C1888B /* env.h */,
-				EC717F6D1C8AB6E600C1888B /* GoogleCalView.h */,
-				EC717F6E1C8AB6E600C1888B /* GoogleCalView.m */,
-				EC36786F20C36EC900B02EF0 /* GTMNSString+HTML.h */,
-				EC36786E20C36EC800B02EF0 /* GTMNSString+HTML.m */,
-				EC582ED41D8D326200B55AEA /* iMoojigae.entitlements */,
-				EC717EA61C87C68800C1888B /* Info.plist */,
-				EC3AA6331C993628006BFE5B /* ItemsData.h */,
-				EC3AA6341C993628006BFE5B /* ItemsData.m */,
-				EC717F491C89313400C1888B /* ItemsView.h */,
-				EC717F4A1C89313400C1888B /* ItemsView.m */,
-				EC717EA31C87C68800C1888B /* LaunchScreen.storyboard */,
-				EC717F211C882F3E00C1888B /* LoginToService.h */,
-				EC717F221C882F3E00C1888B /* LoginToService.m */,
-				ECC846AF1C915F3700CF47DA /* Main.storyboard */,
-				EC3AA62D1C990865006BFE5B /* MainData.h */,
-				EC3AA62E1C990865006BFE5B /* MainData.m */,
-				EC717F0F1C8811C500C1888B /* MainView.h */,
-				EC717F101C8811C500C1888B /* MainView.m */,
-				EC36786D20C36EC800B02EF0 /* NSString+HTML.h */,
-				EC36787020C36EC900B02EF0 /* NSString+HTML.m */,
-				EC3AA6361C994623006BFE5B /* RecentData.h */,
-				EC3AA6371C994623006BFE5B /* RecentData.m */,
-				EC717F631C8AA71500C1888B /* RecentView.h */,
-				EC717F641C8AA71500C1888B /* RecentView.m */,
-				EC717F231C882F3E00C1888B /* SetInfo.h */,
-				EC717F241C882F3E00C1888B /* SetInfo.m */,
-				EC717F251C882F3E00C1888B /* SetInfoStorage.h */,
-				EC717F261C882F3E00C1888B /* SetInfoStorage.m */,
-				EC717F271C882F3E00C1888B /* SetStorage.h */,
-				EC717F281C882F3E00C1888B /* SetStorage.m */,
-				ECFCF9842349EE86003AD515 /* SetTokenStorage.h */,
-				ECFCF9852349EE86003AD515 /* SetTokenStorage.m */,
-				EC717F291C882F3E00C1888B /* SetView.h */,
-				EC717F2A1C882F3E00C1888B /* SetView.m */,
-				EC717E951C87C68800C1888B /* Supporting Files */,
-				EC938BC21C90534E006BEF9E /* Utils.h */,
-				EC938BC31C90534E006BEF9E /* Utils.m */,
-				EC21A6B61E7CE33200B2D138 /* WebLinkView.h */,
-				EC21A6B71E7CE33200B2D138 /* WebLinkView.m */,
+				ECC9F31924FB5254000E8F0E /* AboutView.h */,
+				ECC9F32024FB5254000E8F0E /* AboutView.m */,
+				ECC9F31F24FB5254000E8F0E /* ArticleData.h */,
+				ECC9F31E24FB5254000E8F0E /* ArticleData.m */,
+				ECC9F32324FB5254000E8F0E /* ArticleView.h */,
+				ECC9F31024FB5253000E8F0E /* ArticleView.m */,
+				ECC9F30E24FB5253000E8F0E /* ArticleWriteView.h */,
+				ECC9F32B24FB5255000E8F0E /* ArticleWriteView.m */,
+				ECC9F32624FB5254000E8F0E /* BoardData.h */,
+				ECC9F32F24FB5255000E8F0E /* BoardData.m */,
+				ECC9F31B24FB5254000E8F0E /* BoardView.h */,
+				ECC9F32C24FB5255000E8F0E /* BoardView.m */,
+				ECC9F31724FB5254000E8F0E /* CommentWriteView.h */,
+				ECC9F31C24FB5254000E8F0E /* CommentWriteView.m */,
+				ECC9F31324FB5253000E8F0E /* DBInterface.h */,
+				ECC9F31124FB5253000E8F0E /* DBInterface.m */,
+				ECC9F31624FB5254000E8F0E /* env.h */,
+				ECC9F30924FB5253000E8F0E /* GoogleCalView.h */,
+				ECC9F32724FB5254000E8F0E /* GoogleCalView.m */,
+				ECC9F32A24FB5255000E8F0E /* GTMNSString+HTML.h */,
+				ECC9F32E24FB5255000E8F0E /* GTMNSString+HTML.m */,
+				ECC9F32224FB5254000E8F0E /* ItemsData.h */,
+				ECC9F30A24FB5253000E8F0E /* ItemsData.m */,
+				ECC9F30724FB5253000E8F0E /* ItemsView.h */,
+				ECC9F32524FB5254000E8F0E /* ItemsView.m */,
+				ECC9F30F24FB5253000E8F0E /* LoginToService.h */,
+				ECC9F31D24FB5254000E8F0E /* LoginToService.m */,
+				ECC9F30324FB5253000E8F0E /* MainData.h */,
+				ECC9F32924FB5255000E8F0E /* MainData.m */,
+				ECC9F31224FB5253000E8F0E /* MainView.h */,
+				ECC9F33324FB5255000E8F0E /* MainView.m */,
+				ECC9F30C24FB5253000E8F0E /* NSString+HTML.h */,
+				ECC9F30B24FB5253000E8F0E /* NSString+HTML.m */,
+				ECC9F31524FB5254000E8F0E /* RecentData.h */,
+				ECC9F30524FB5253000E8F0E /* RecentData.m */,
+				ECC9F33024FB5255000E8F0E /* RecentView.h */,
+				ECC9F30824FB5253000E8F0E /* RecentView.m */,
+				ECC9F30624FB5253000E8F0E /* SetInfo.h */,
+				ECC9F31824FB5254000E8F0E /* SetInfo.m */,
+				ECC9F33224FB5255000E8F0E /* SetInfoStorage.h */,
+				ECC9F30224FB5253000E8F0E /* SetInfoStorage.m */,
+				ECC9F32424FB5254000E8F0E /* SetStorage.h */,
+				ECC9F31424FB5254000E8F0E /* SetStorage.m */,
+				ECC9F33124FB5255000E8F0E /* SetTokenStorage.h */,
+				ECC9F30424FB5253000E8F0E /* SetTokenStorage.m */,
+				ECC9F32D24FB5255000E8F0E /* SetView.h */,
+				ECC9F33424FB5255000E8F0E /* SetView.m */,
+				ECC9F30D24FB5253000E8F0E /* Utils.h */,
+				ECC9F31A24FB5254000E8F0E /* Utils.m */,
+				ECC9F32124FB5254000E8F0E /* WebLinkView.h */,
+				ECC9F32824FB5255000E8F0E /* WebLinkView.m */,
+				ECC9F2DB24FB48ED000E8F0E /* AppDelegate.h */,
+				ECC9F2DC24FB48ED000E8F0E /* AppDelegate.m */,
+				ECC9F2E424FB48ED000E8F0E /* Main.storyboard */,
+				ECC9F2E724FB48EF000E8F0E /* Assets.xcassets */,
+				ECC9F2E924FB48EF000E8F0E /* LaunchScreen.storyboard */,
+				ECC9F2EC24FB48EF000E8F0E /* Info.plist */,
+				ECC9F2ED24FB48EF000E8F0E /* main.m */,
 			);
 			path = iMoojigae;
 			sourceTree = "<group>";
 		};
-		EC717E951C87C68800C1888B /* Supporting Files */ = {
+		ECC9F2F624FB48EF000E8F0E /* iMoojigaeTests */ = {
 			isa = PBXGroup;
 			children = (
-				EC717E961C87C68800C1888B /* main.m */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		EC717EAE1C87C68800C1888B /* iMoojigaeTests */ = {
-			isa = PBXGroup;
-			children = (
-				EC717EAF1C87C68800C1888B /* iMoojigaeTests.m */,
-				EC717EB11C87C68800C1888B /* Info.plist */,
+				ECC9F2F724FB48EF000E8F0E /* iMoojigaeTests.m */,
+				ECC9F2F924FB48EF000E8F0E /* Info.plist */,
 			);
 			path = iMoojigaeTests;
-			sourceTree = "<group>";
-		};
-		EC717EB91C87C68800C1888B /* iMoojigaeUITests */ = {
-			isa = PBXGroup;
-			children = (
-				EC717EBA1C87C68800C1888B /* iMoojigaeUITests.m */,
-				EC717EBC1C87C68800C1888B /* Info.plist */,
-			);
-			path = iMoojigaeUITests;
-			sourceTree = "<group>";
-		};
-		F28845520B46CAEB8025C9C3 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				C104A23A9CDCE5706837268A /* Pods-iMoojigae.debug.xcconfig */,
-				7EC3333F1B78A7E5CF59B80A /* Pods-iMoojigae.release.xcconfig */,
-				AAB13529D7DFE2ED2092709A /* Pods-iMoojigae.distribution.xcconfig */,
-				A5A7B7309A61B7463B47576A /* Pods-iMoojigae-iMoojigaeUITests.debug.xcconfig */,
-				2F6DAE91B7FF050292D60304 /* Pods-iMoojigae-iMoojigaeUITests.release.xcconfig */,
-				FDCCE56EAA7296449B5C7F68 /* Pods-iMoojigae-iMoojigaeUITests.distribution.xcconfig */,
-				81FF9AA54190B57A0B3C2601 /* Pods-iMoojigaeTests.debug.xcconfig */,
-				F248B2B50B553830D2BA7135 /* Pods-iMoojigaeTests.release.xcconfig */,
-				EC79C581B569150F8960A040 /* Pods-iMoojigaeTests.distribution.xcconfig */,
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EC717E911C87C68800C1888B /* iMoojigae */ = {
+		ECC9F2D724FB48ED000E8F0E /* iMoojigae */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EC717EBF1C87C68800C1888B /* Build configuration list for PBXNativeTarget "iMoojigae" */;
+			buildConfigurationList = ECC9F2FC24FB48EF000E8F0E /* Build configuration list for PBXNativeTarget "iMoojigae" */;
 			buildPhases = (
-				7EDEFCDDA0440653D362D3F1 /* [CP] Check Pods Manifest.lock */,
-				EC717E8E1C87C68800C1888B /* Sources */,
-				EC717E8F1C87C68800C1888B /* Frameworks */,
-				EC717E901C87C68800C1888B /* Resources */,
-				ECC9F29924F8F934000E8F0E /* Embed Frameworks */,
-				64A49663C7EC3E609D83D57A /* [CP] Embed Pods Frameworks */,
+				56AA4F1FDC82089FDEC08459 /* [CP] Check Pods Manifest.lock */,
+				ECC9F2D424FB48ED000E8F0E /* Sources */,
+				ECC9F2D524FB48ED000E8F0E /* Frameworks */,
+				ECC9F2D624FB48ED000E8F0E /* Resources */,
+				54EA1447BC0A4EDDAADA6450 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -347,78 +276,47 @@
 			);
 			name = iMoojigae;
 			productName = iMoojigae;
-			productReference = EC717E921C87C68800C1888B /* iMoojigae.app */;
+			productReference = ECC9F2D824FB48ED000E8F0E /* iMoojigae.app */;
 			productType = "com.apple.product-type.application";
 		};
-		EC717EAA1C87C68800C1888B /* iMoojigaeTests */ = {
+		ECC9F2F224FB48EF000E8F0E /* iMoojigaeTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EC717EC21C87C68800C1888B /* Build configuration list for PBXNativeTarget "iMoojigaeTests" */;
+			buildConfigurationList = ECC9F2FF24FB48EF000E8F0E /* Build configuration list for PBXNativeTarget "iMoojigaeTests" */;
 			buildPhases = (
-				849A50D4194E63C556374496 /* [CP] Check Pods Manifest.lock */,
-				EC717EA71C87C68800C1888B /* Sources */,
-				EC717EA81C87C68800C1888B /* Frameworks */,
-				EC717EA91C87C68800C1888B /* Resources */,
+				E02D8D813103D865C1964112 /* [CP] Check Pods Manifest.lock */,
+				ECC9F2EF24FB48EF000E8F0E /* Sources */,
+				ECC9F2F024FB48EF000E8F0E /* Frameworks */,
+				ECC9F2F124FB48EF000E8F0E /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				EC717EAD1C87C68800C1888B /* PBXTargetDependency */,
+				ECC9F2F524FB48EF000E8F0E /* PBXTargetDependency */,
 			);
 			name = iMoojigaeTests;
 			productName = iMoojigaeTests;
-			productReference = EC717EAB1C87C68800C1888B /* iMoojigaeTests.xctest */;
+			productReference = ECC9F2F324FB48EF000E8F0E /* iMoojigaeTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		EC717EB51C87C68800C1888B /* iMoojigaeUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EC717EC51C87C68800C1888B /* Build configuration list for PBXNativeTarget "iMoojigaeUITests" */;
-			buildPhases = (
-				5FD857C905F1046D3D6C0A5B /* [CP] Check Pods Manifest.lock */,
-				EC717EB21C87C68800C1888B /* Sources */,
-				EC717EB31C87C68800C1888B /* Frameworks */,
-				EC717EB41C87C68800C1888B /* Resources */,
-				5B3E68FFBD7450137E23C7E7 /* [CP] Embed Pods Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				EC717EB81C87C68800C1888B /* PBXTargetDependency */,
-			);
-			name = iMoojigaeUITests;
-			productName = iMoojigaeUITests;
-			productReference = EC717EB61C87C68800C1888B /* iMoojigaeUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		EC717E8A1C87C68800C1888B /* Project object */ = {
+		ECC9F2D024FB48ED000E8F0E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1160;
 				ORGANIZATIONNAME = dykim;
 				TargetAttributes = {
-					EC717E911C87C68800C1888B = {
-						CreatedOnToolsVersion = 7.2.1;
-						DevelopmentTeam = 8PG9C7Q5V8;
-						ProvisioningStyle = Automatic;
-						SystemCapabilities = {
-							com.apple.Push = {
-								enabled = 1;
-							};
-						};
+					ECC9F2D724FB48ED000E8F0E = {
+						CreatedOnToolsVersion = 11.6;
 					};
-					EC717EAA1C87C68800C1888B = {
-						CreatedOnToolsVersion = 7.2.1;
-						TestTargetID = EC717E911C87C68800C1888B;
-					};
-					EC717EB51C87C68800C1888B = {
-						CreatedOnToolsVersion = 7.2.1;
-						TestTargetID = EC717E911C87C68800C1888B;
+					ECC9F2F224FB48EF000E8F0E = {
+						CreatedOnToolsVersion = 11.6;
+						TestTargetID = ECC9F2D724FB48ED000E8F0E;
 					};
 				};
 			};
-			buildConfigurationList = EC717E8D1C87C68800C1888B /* Build configuration list for PBXProject "iMoojigae" */;
+			buildConfigurationList = ECC9F2D324FB48ED000E8F0E /* Build configuration list for PBXProject "iMoojigae" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -426,37 +324,29 @@
 				en,
 				Base,
 			);
-			mainGroup = EC717E891C87C68800C1888B;
-			productRefGroup = EC717E931C87C68800C1888B /* Products */;
+			mainGroup = ECC9F2CF24FB48ED000E8F0E;
+			productRefGroup = ECC9F2D924FB48ED000E8F0E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EC717E911C87C68800C1888B /* iMoojigae */,
-				EC717EAA1C87C68800C1888B /* iMoojigaeTests */,
-				EC717EB51C87C68800C1888B /* iMoojigaeUITests */,
+				ECC9F2D724FB48ED000E8F0E /* iMoojigae */,
+				ECC9F2F224FB48EF000E8F0E /* iMoojigaeTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		EC717E901C87C68800C1888B /* Resources */ = {
+		ECC9F2D624FB48ED000E8F0E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECC846B11C915F3700CF47DA /* Main.storyboard in Resources */,
-				EC717EA51C87C68800C1888B /* LaunchScreen.storyboard in Resources */,
-				EC717EA21C87C68800C1888B /* Assets.xcassets in Resources */,
+				ECC9F2EB24FB48EF000E8F0E /* LaunchScreen.storyboard in Resources */,
+				ECC9F2E824FB48EF000E8F0E /* Assets.xcassets in Resources */,
+				ECC9F2E624FB48ED000E8F0E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EC717EA91C87C68800C1888B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EC717EB41C87C68800C1888B /* Resources */ = {
+		ECC9F2F124FB48EF000E8F0E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -466,46 +356,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		5B3E68FFBD7450137E23C7E7 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-iMoojigae-iMoojigaeUITests/Pods-iMoojigae-iMoojigaeUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-iMoojigae-iMoojigaeUITests/Pods-iMoojigae-iMoojigaeUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iMoojigae-iMoojigaeUITests/Pods-iMoojigae-iMoojigaeUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5FD857C905F1046D3D6C0A5B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-iMoojigae-iMoojigaeUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		64A49663C7EC3E609D83D57A /* [CP] Embed Pods Frameworks */ = {
+		54EA1447BC0A4EDDAADA6450 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -522,7 +373,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iMoojigae/Pods-iMoojigae-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7EDEFCDDA0440653D362D3F1 /* [CP] Check Pods Manifest.lock */ = {
+		56AA4F1FDC82089FDEC08459 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -544,7 +395,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		849A50D4194E63C556374496 /* [CP] Check Pods Manifest.lock */ = {
+		E02D8D813103D865C1964112 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -569,106 +420,96 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		EC717E8E1C87C68800C1888B /* Sources */ = {
+		ECC9F2D424FB48ED000E8F0E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC717F691C8AA71500C1888B /* RecentView.m in Sources */,
-				ECFCF9862349EE86003AD515 /* SetTokenStorage.m in Sources */,
-				EC717F2E1C882F3E00C1888B /* SetStorage.m in Sources */,
-				EC717F6F1C8AB6E600C1888B /* GoogleCalView.m in Sources */,
-				EC938BC41C90534E006BEF9E /* Utils.m in Sources */,
-				EC717E9D1C87C68800C1888B /* BoardView.m in Sources */,
-				EC717F511C89313400C1888B /* AboutView.m in Sources */,
-				EC717F531C89313400C1888B /* ItemsView.m in Sources */,
-				EC717F2F1C882F3E00C1888B /* SetView.m in Sources */,
-				EC3AA6381C994623006BFE5B /* RecentData.m in Sources */,
-				EC2080A31C954540006305A8 /* ArticleData.m in Sources */,
-				EC36787820C3736A00B02EF0 /* DBInterface.m in Sources */,
-				ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */,
-				EC717F721C8ACD6E00C1888B /* ArticleWriteView.m in Sources */,
-				EC36787120C36EC900B02EF0 /* GTMNSString+HTML.m in Sources */,
-				EC717F2D1C882F3E00C1888B /* SetInfoStorage.m in Sources */,
-				EC717E9A1C87C68800C1888B /* AppDelegate.m in Sources */,
-				EC21A6B81E7CE33200B2D138 /* WebLinkView.m in Sources */,
-				EC3AA62F1C990865006BFE5B /* MainData.m in Sources */,
-				EC36787220C36EC900B02EF0 /* NSString+HTML.m in Sources */,
-				EC717F2C1C882F3E00C1888B /* SetInfo.m in Sources */,
-				EC717F2B1C882F3E00C1888B /* LoginToService.m in Sources */,
-				EC3AA6351C993628006BFE5B /* ItemsData.m in Sources */,
-				EC3AA6321C992861006BFE5B /* BoardData.m in Sources */,
-				EC717E971C87C68800C1888B /* main.m in Sources */,
-				EC717F111C8811C500C1888B /* MainView.m in Sources */,
-				EC717F591C8969FE00C1888B /* ArticleView.m in Sources */,
+				ECC9F34524FB5255000E8F0E /* GoogleCalView.m in Sources */,
+				ECC9F34B24FB5255000E8F0E /* BoardData.m in Sources */,
+				ECC9F34824FB5255000E8F0E /* ArticleWriteView.m in Sources */,
+				ECC9F33524FB5255000E8F0E /* SetInfoStorage.m in Sources */,
+				ECC9F34424FB5255000E8F0E /* ItemsView.m in Sources */,
+				ECC9F34C24FB5255000E8F0E /* MainView.m in Sources */,
+				ECC9F33824FB5255000E8F0E /* RecentView.m in Sources */,
+				ECC9F34A24FB5255000E8F0E /* GTMNSString+HTML.m in Sources */,
+				ECC9F34D24FB5255000E8F0E /* SetView.m in Sources */,
+				ECC9F33A24FB5255000E8F0E /* NSString+HTML.m in Sources */,
+				ECC9F33F24FB5255000E8F0E /* Utils.m in Sources */,
+				ECC9F34324FB5255000E8F0E /* AboutView.m in Sources */,
+				ECC9F33924FB5255000E8F0E /* ItemsData.m in Sources */,
+				ECC9F34724FB5255000E8F0E /* MainData.m in Sources */,
+				ECC9F2DD24FB48ED000E8F0E /* AppDelegate.m in Sources */,
+				ECC9F34924FB5255000E8F0E /* BoardView.m in Sources */,
+				ECC9F34224FB5255000E8F0E /* ArticleData.m in Sources */,
+				ECC9F33624FB5255000E8F0E /* SetTokenStorage.m in Sources */,
+				ECC9F34624FB5255000E8F0E /* WebLinkView.m in Sources */,
+				ECC9F33724FB5255000E8F0E /* RecentData.m in Sources */,
+				ECC9F33C24FB5255000E8F0E /* DBInterface.m in Sources */,
+				ECC9F33E24FB5255000E8F0E /* SetInfo.m in Sources */,
+				ECC9F34024FB5255000E8F0E /* CommentWriteView.m in Sources */,
+				ECC9F2EE24FB48EF000E8F0E /* main.m in Sources */,
+				ECC9F34124FB5255000E8F0E /* LoginToService.m in Sources */,
+				ECC9F33B24FB5255000E8F0E /* ArticleView.m in Sources */,
+				ECC9F33D24FB5255000E8F0E /* SetStorage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EC717EA71C87C68800C1888B /* Sources */ = {
+		ECC9F2EF24FB48EF000E8F0E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC717EB01C87C68800C1888B /* iMoojigaeTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EC717EB21C87C68800C1888B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EC717EBB1C87C68800C1888B /* iMoojigaeUITests.m in Sources */,
+				ECC9F2F824FB48EF000E8F0E /* iMoojigaeTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		EC717EAD1C87C68800C1888B /* PBXTargetDependency */ = {
+		ECC9F2F524FB48EF000E8F0E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = EC717E911C87C68800C1888B /* iMoojigae */;
-			targetProxy = EC717EAC1C87C68800C1888B /* PBXContainerItemProxy */;
-		};
-		EC717EB81C87C68800C1888B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = EC717E911C87C68800C1888B /* iMoojigae */;
-			targetProxy = EC717EB71C87C68800C1888B /* PBXContainerItemProxy */;
+			target = ECC9F2D724FB48ED000E8F0E /* iMoojigae */;
+			targetProxy = ECC9F2F424FB48EF000E8F0E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		EC717EA31C87C68800C1888B /* LaunchScreen.storyboard */ = {
+		ECC9F2E424FB48ED000E8F0E /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				EC717EA41C87C68800C1888B /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		ECC846AF1C915F3700CF47DA /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				ECC846B01C915F3700CF47DA /* Base */,
+				ECC9F2E524FB48ED000E8F0E /* Base */,
 			);
 			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		ECC9F2E924FB48EF000E8F0E /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ECC9F2EA24FB48EF000E8F0E /* Base */,
+			);
+			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		EC3AA6391C9A7139006BFE5B /* Distribution */ = {
+		ECC9F2FA24FB48EF000E8F0E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -680,133 +521,14 @@
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "ad17f6f8-9e52-4b37-b4a6-7a16c098a20a";
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Distribution;
-		};
-		EC3AA63A1C9A7139006BFE5B /* Distribution */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AAB13529D7DFE2ED2092709A /* Pods-iMoojigae.distribution.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = iMoojigae/iMoojigae.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8PG9C7Q5V8;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/GoogleUtilities.xcframework/ios-armv7_arm64",
-					"$(PROJECT_DIR)/nanopb.xcframework/ios-armv7_arm64",
-					"$(PROJECT_DIR)/GoogleUtilities.xcframework/ios-i386_x86_64-simulator",
-					"$(PROJECT_DIR)/nanopb.xcframework/ios-i386_x86_64-simulator",
-				);
-				INFOPLIST_FILE = iMoojigae/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 3.17.2;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigae;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Distribution;
-		};
-		EC3AA63B1C9A7139006BFE5B /* Distribution */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = EC79C581B569150F8960A040 /* Pods-iMoojigaeTests.distribution.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = iMoojigaeTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigaeTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iMoojigae.app/iMoojigae";
-			};
-			name = Distribution;
-		};
-		EC3AA63C1C9A7139006BFE5B /* Distribution */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = FDCCE56EAA7296449B5C7F68 /* Pods-iMoojigae-iMoojigaeUITests.distribution.xcconfig */;
-			buildSettings = {
-				INFOPLIST_FILE = iMoojigaeUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigaeUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = iMoojigae;
-				USES_XCTRUNNER = YES;
-			};
-			name = Distribution;
-		};
-		EC717EBD1C87C68800C1888B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -820,30 +542,32 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
-				MTL_ENABLE_DEBUG_INFO = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "ad17f6f8-9e52-4b37-b4a6-7a16c098a20a";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		EC717EBE1C87C68800C1888B /* Release */ = {
+		ECC9F2FB24FB48EF000E8F0E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -855,14 +579,14 @@
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -870,89 +594,63 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "ad17f6f8-9e52-4b37-b4a6-7a16c098a20a";
+				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		EC717EC01C87C68800C1888B /* Debug */ = {
+		ECC9F2FD24FB48EF000E8F0E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C104A23A9CDCE5706837268A /* Pods-iMoojigae.debug.xcconfig */;
+			baseConfigurationReference = E09E1C8A58696C3C1129B65A /* Pods-iMoojigae.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = iMoojigae/iMoojigae.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8PG9C7Q5V8;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/GoogleUtilities.xcframework/ios-armv7_arm64",
-					"$(PROJECT_DIR)/nanopb.xcframework/ios-armv7_arm64",
-					"$(PROJECT_DIR)/GoogleUtilities.xcframework/ios-i386_x86_64-simulator",
-					"$(PROJECT_DIR)/nanopb.xcframework/ios-i386_x86_64-simulator",
-				);
 				INFOPLIST_FILE = iMoojigae/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 3.17.2;
-				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigae;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		EC717EC11C87C68800C1888B /* Release */ = {
+		ECC9F2FE24FB48EF000E8F0E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EC3333F1B78A7E5CF59B80A /* Pods-iMoojigae.release.xcconfig */;
+			baseConfigurationReference = 060319155B34A55127567590 /* Pods-iMoojigae.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = iMoojigae/iMoojigae.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8PG9C7Q5V8;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/GoogleUtilities.xcframework/ios-armv7_arm64",
-					"$(PROJECT_DIR)/nanopb.xcframework/ios-armv7_arm64",
-					"$(PROJECT_DIR)/GoogleUtilities.xcframework/ios-i386_x86_64-simulator",
-					"$(PROJECT_DIR)/nanopb.xcframework/ios-i386_x86_64-simulator",
-				);
 				INFOPLIST_FILE = iMoojigae/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 3.17.2;
-				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigae;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		EC717EC31C87C68800C1888B /* Debug */ = {
+		ECC9F30024FB48EF000E8F0E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 81FF9AA54190B57A0B3C2601 /* Pods-iMoojigaeTests.debug.xcconfig */;
+			baseConfigurationReference = A5198F5A841BE02E25703EC7 /* Pods-iMoojigaeTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8PG9C7Q5V8;
 				INFOPLIST_FILE = iMoojigaeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -960,16 +658,20 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigaeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iMoojigae.app/iMoojigae";
 			};
 			name = Debug;
 		};
-		EC717EC41C87C68800C1888B /* Release */ = {
+		ECC9F30124FB48EF000E8F0E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F248B2B50B553830D2BA7135 /* Pods-iMoojigaeTests.release.xcconfig */;
+			baseConfigurationReference = 82942B49665379305A9FB8C6 /* Pods-iMoojigaeTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8PG9C7Q5V8;
 				INFOPLIST_FILE = iMoojigaeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -977,88 +679,42 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigaeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iMoojigae.app/iMoojigae";
-			};
-			name = Release;
-		};
-		EC717EC61C87C68800C1888B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = A5A7B7309A61B7463B47576A /* Pods-iMoojigae-iMoojigaeUITests.debug.xcconfig */;
-			buildSettings = {
-				INFOPLIST_FILE = iMoojigaeUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigaeUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = iMoojigae;
-				USES_XCTRUNNER = YES;
-			};
-			name = Debug;
-		};
-		EC717EC71C87C68800C1888B /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F6DAE91B7FF050292D60304 /* Pods-iMoojigae-iMoojigaeUITests.release.xcconfig */;
-			buildSettings = {
-				INFOPLIST_FILE = iMoojigaeUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigaeUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = iMoojigae;
-				USES_XCTRUNNER = YES;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		EC717E8D1C87C68800C1888B /* Build configuration list for PBXProject "iMoojigae" */ = {
+		ECC9F2D324FB48ED000E8F0E /* Build configuration list for PBXProject "iMoojigae" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				EC717EBD1C87C68800C1888B /* Debug */,
-				EC717EBE1C87C68800C1888B /* Release */,
-				EC3AA6391C9A7139006BFE5B /* Distribution */,
+				ECC9F2FA24FB48EF000E8F0E /* Debug */,
+				ECC9F2FB24FB48EF000E8F0E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EC717EBF1C87C68800C1888B /* Build configuration list for PBXNativeTarget "iMoojigae" */ = {
+		ECC9F2FC24FB48EF000E8F0E /* Build configuration list for PBXNativeTarget "iMoojigae" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				EC717EC01C87C68800C1888B /* Debug */,
-				EC717EC11C87C68800C1888B /* Release */,
-				EC3AA63A1C9A7139006BFE5B /* Distribution */,
+				ECC9F2FD24FB48EF000E8F0E /* Debug */,
+				ECC9F2FE24FB48EF000E8F0E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EC717EC21C87C68800C1888B /* Build configuration list for PBXNativeTarget "iMoojigaeTests" */ = {
+		ECC9F2FF24FB48EF000E8F0E /* Build configuration list for PBXNativeTarget "iMoojigaeTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				EC717EC31C87C68800C1888B /* Debug */,
-				EC717EC41C87C68800C1888B /* Release */,
-				EC3AA63B1C9A7139006BFE5B /* Distribution */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		EC717EC51C87C68800C1888B /* Build configuration list for PBXNativeTarget "iMoojigaeUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EC717EC61C87C68800C1888B /* Debug */,
-				EC717EC71C87C68800C1888B /* Release */,
-				EC3AA63C1C9A7139006BFE5B /* Distribution */,
+				ECC9F30024FB48EF000E8F0E /* Debug */,
+				ECC9F30124FB48EF000E8F0E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = EC717E8A1C87C68800C1888B /* Project object */;
+	rootObject = ECC9F2D024FB48ED000E8F0E /* Project object */;
 }

@@ -2,8 +2,8 @@
 //  iMoojigaeTests.m
 //  iMoojigaeTests
 //
-//  Created by dykim on 2016. 3. 3..
-//  Copyright © 2016년 dykim. All rights reserved.
+//  Created by dykim on 2020/08/30.
+//  Copyright © 2020 dykim. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
@@ -15,13 +15,11 @@
 @implementation iMoojigaeTests
 
 - (void)setUp {
-    [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
 }
 
 - (void)testExample {

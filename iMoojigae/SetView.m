@@ -13,6 +13,10 @@
 
 @implementation SetView
 
+@synthesize labelId;
+@synthesize labelPwd;
+@synthesize labelNotice;
+
 @synthesize idField;
 @synthesize pwdField;
 @synthesize switchPush;
@@ -22,6 +26,11 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(contentSizeCategoryDidChangeNotification)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
 
 	UILabel *lblTitle = [[UILabel alloc] init];
 	lblTitle.text = @"설정";
@@ -48,6 +57,25 @@
 											   style:UIBarButtonItemStyleDone 
 											   target:self 
 											   action:@selector(ActionSave:)];
+    
+    [self setFont];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)contentSizeCategoryDidChangeNotification {
+    [self setFont];
+}
+
+- (void)setFont {
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    idField.font = titleFont;
+    pwdField.font = titleFont;
+    labelId.font = titleFont;
+    labelPwd.font = titleFont;
+    labelNotice.font = titleFont;
 }
 
 - (void)ActionSave:(id)sender

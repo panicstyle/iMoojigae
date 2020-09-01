@@ -35,13 +35,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(contentSizeCategoryDidChangeNotification)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    
 	UILabel *lblTitle = [[UILabel alloc] init];
 	lblTitle.text = @"무지개교육마을";
 	lblTitle.backgroundColor = [UIColor clearColor];
-//	lblTitle.textColor = [UIColor colorWithRed:77.0/255.0 green:77.0/255.0 blue:77.0/255.0 alpha:1.0];
-//	lblTitle.shadowColor = [UIColor whiteColor];
-//	lblTitle.shadowOffset = CGSizeMake(0, 1);
-//	lblTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0];
 	[lblTitle sizeToFit];
 	
 	self.navigationItem.titleView = lblTitle;
@@ -106,11 +107,21 @@
     }
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)contentSizeCategoryDidChangeNotification {
+    [self.tbView reloadData];
+}
+
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 44.0f;
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    CGFloat cellHeight = 44.0 - 17.0 + titleFont.pointSize;
+    return cellHeight;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -154,7 +165,7 @@
 	// Configure the cell...
 	cell.textLabel.text = [item valueForKey:@"title"];
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	
+    cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 	return cell;
 }
 

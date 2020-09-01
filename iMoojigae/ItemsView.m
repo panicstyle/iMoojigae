@@ -42,6 +42,11 @@
 {
 	[super viewDidLoad];
 	
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(contentSizeCategoryDidChangeNotification)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    
 	UILabel *lblTitle = [[UILabel alloc] init];
 	lblTitle.text = m_boardName;
 	lblTitle.backgroundColor = [UIColor clearColor];
@@ -77,6 +82,14 @@
     [tbView endUpdates];
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)contentSizeCategoryDidChangeNotification {
+    [self.tbView reloadData];
+}
+
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -110,6 +123,9 @@
 	static NSString *CellIdentifierItem = @"Item";
 	static NSString *CellIdentifierReItem = @"ReItem";
 	
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    UIFont *subFont = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    
 	UITableViewCell *cell;
 	if ([indexPath row] == [m_arrayItems count]) {
 		cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierMore];
@@ -122,7 +138,7 @@
 		[title1 setText:@"더  보  기"];
 		[title1 setTextAlignment:NSTextAlignmentCenter];
 		[title1 setBaselineAdjustment:UIBaselineAdjustmentAlignCenters];
-		[title1 setFont:[UIFont fontWithName:@"Helvetica" size:18.0f]];
+        [title1 setFont:titleFont];
 		[title1 setBackgroundColor:[UIColor clearColor]];
 		[cell addSubview:title1];
 		return cell;
@@ -175,6 +191,10 @@
 				labelComment.layer.borderColor = labelComment.textColor.CGColor;
 				labelComment.text = strComment;
 			}
+            // 환경설정에 따른 폰트 설정
+            [textSubject setFont:titleFont];
+            [labelName setFont:subFont];
+            [labelComment setFont:subFont];
 		} else {
 			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierReItem];
 			if (cell == nil) {
@@ -220,6 +240,10 @@
 				labelComment.layer.borderColor = labelComment.textColor.CGColor;
 				labelComment.text = strComment;
 			}
+            // 환경설정에 따른 폰트 설정
+            [textSubject setFont:titleFont];
+            [labelName setFont:subFont];
+            [labelComment setFont:subFont];
 		}
 		return cell;
 	}

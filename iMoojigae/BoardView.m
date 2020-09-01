@@ -28,6 +28,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(contentSizeCategoryDidChangeNotification)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    
     // Do any additional setup after loading the view, typically from a nib.
 	UILabel *lblTitle = [[UILabel alloc] init];
 	lblTitle.text = m_strCommTitle;
@@ -49,15 +55,24 @@
     [m_boardData fetchItems];
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)contentSizeCategoryDidChangeNotification {
+    [self.tbView reloadData];
+}
+
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 	if ([[item valueForKey:@"type"] isEqualToString:@"group"]) {
-		return 25.0f;
+        return 25.0f - 17.0 + titleFont.pointSize;
 	} else {
-		return 44.0f;
+        return 44.0f - 17.0 + titleFont.pointSize;
 	}
 }
 
@@ -102,7 +117,8 @@
     }
 	
 	cell.textLabel.text = [item valueForKey:@"title"];
-	
+    cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    
 	return cell;
 }
 

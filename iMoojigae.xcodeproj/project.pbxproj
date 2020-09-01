@@ -40,6 +40,8 @@
 		ECC9F34B24FB5255000E8F0E /* BoardData.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32F24FB5255000E8F0E /* BoardData.m */; };
 		ECC9F34C24FB5255000E8F0E /* MainView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F33324FB5255000E8F0E /* MainView.m */; };
 		ECC9F34D24FB5255000E8F0E /* SetView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F33424FB5255000E8F0E /* SetView.m */; };
+		ECC9F34F24FB6077000E8F0E /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ECC9F34E24FB6077000E8F0E /* Settings.bundle */; };
+		ECC9F35124FE1094000E8F0E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = ECC9F35024FE107A000E8F0E /* libsqlite3.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,6 +122,9 @@
 		ECC9F33224FB5255000E8F0E /* SetInfoStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetInfoStorage.h; sourceTree = "<group>"; };
 		ECC9F33324FB5255000E8F0E /* MainView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainView.m; sourceTree = "<group>"; };
 		ECC9F33424FB5255000E8F0E /* SetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetView.m; sourceTree = "<group>"; };
+		ECC9F34E24FB6077000E8F0E /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		ECC9F35024FE107A000E8F0E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		ECC9F35224FE1517000E8F0E /* iMoojigae.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iMoojigae.entitlements; sourceTree = "<group>"; };
 		F1B3D53748D79FB826CBF405 /* Pods_iMoojigae.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iMoojigae.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -128,6 +133,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ECC9F35124FE1094000E8F0E /* libsqlite3.tbd in Frameworks */,
 				09FFFB8FCD1975E9EE583479 /* Pods_iMoojigae.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -146,6 +152,7 @@
 		5758DFC051419F9507028511 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ECC9F35024FE107A000E8F0E /* libsqlite3.tbd */,
 				F1B3D53748D79FB826CBF405 /* Pods_iMoojigae.framework */,
 				57A80A78C2C22918FB268F12 /* Pods_iMoojigaeTests.framework */,
 			);
@@ -186,14 +193,18 @@
 		ECC9F2DA24FB48ED000E8F0E /* iMoojigae */ = {
 			isa = PBXGroup;
 			children = (
+				ECC9F35224FE1517000E8F0E /* iMoojigae.entitlements */,
 				ECC9F31924FB5254000E8F0E /* AboutView.h */,
 				ECC9F32024FB5254000E8F0E /* AboutView.m */,
+				ECC9F2DB24FB48ED000E8F0E /* AppDelegate.h */,
+				ECC9F2DC24FB48ED000E8F0E /* AppDelegate.m */,
 				ECC9F31F24FB5254000E8F0E /* ArticleData.h */,
 				ECC9F31E24FB5254000E8F0E /* ArticleData.m */,
 				ECC9F32324FB5254000E8F0E /* ArticleView.h */,
 				ECC9F31024FB5253000E8F0E /* ArticleView.m */,
 				ECC9F30E24FB5253000E8F0E /* ArticleWriteView.h */,
 				ECC9F32B24FB5255000E8F0E /* ArticleWriteView.m */,
+				ECC9F2E724FB48EF000E8F0E /* Assets.xcassets */,
 				ECC9F32624FB5254000E8F0E /* BoardData.h */,
 				ECC9F32F24FB5255000E8F0E /* BoardData.m */,
 				ECC9F31B24FB5254000E8F0E /* BoardView.h */,
@@ -207,12 +218,16 @@
 				ECC9F32724FB5254000E8F0E /* GoogleCalView.m */,
 				ECC9F32A24FB5255000E8F0E /* GTMNSString+HTML.h */,
 				ECC9F32E24FB5255000E8F0E /* GTMNSString+HTML.m */,
+				ECC9F2EC24FB48EF000E8F0E /* Info.plist */,
 				ECC9F32224FB5254000E8F0E /* ItemsData.h */,
 				ECC9F30A24FB5253000E8F0E /* ItemsData.m */,
 				ECC9F30724FB5253000E8F0E /* ItemsView.h */,
 				ECC9F32524FB5254000E8F0E /* ItemsView.m */,
+				ECC9F2E924FB48EF000E8F0E /* LaunchScreen.storyboard */,
 				ECC9F30F24FB5253000E8F0E /* LoginToService.h */,
 				ECC9F31D24FB5254000E8F0E /* LoginToService.m */,
+				ECC9F2ED24FB48EF000E8F0E /* main.m */,
+				ECC9F2E424FB48ED000E8F0E /* Main.storyboard */,
 				ECC9F30324FB5253000E8F0E /* MainData.h */,
 				ECC9F32924FB5255000E8F0E /* MainData.m */,
 				ECC9F31224FB5253000E8F0E /* MainView.h */,
@@ -229,6 +244,7 @@
 				ECC9F30224FB5253000E8F0E /* SetInfoStorage.m */,
 				ECC9F32424FB5254000E8F0E /* SetStorage.h */,
 				ECC9F31424FB5254000E8F0E /* SetStorage.m */,
+				ECC9F34E24FB6077000E8F0E /* Settings.bundle */,
 				ECC9F33124FB5255000E8F0E /* SetTokenStorage.h */,
 				ECC9F30424FB5253000E8F0E /* SetTokenStorage.m */,
 				ECC9F32D24FB5255000E8F0E /* SetView.h */,
@@ -237,13 +253,6 @@
 				ECC9F31A24FB5254000E8F0E /* Utils.m */,
 				ECC9F32124FB5254000E8F0E /* WebLinkView.h */,
 				ECC9F32824FB5255000E8F0E /* WebLinkView.m */,
-				ECC9F2DB24FB48ED000E8F0E /* AppDelegate.h */,
-				ECC9F2DC24FB48ED000E8F0E /* AppDelegate.m */,
-				ECC9F2E424FB48ED000E8F0E /* Main.storyboard */,
-				ECC9F2E724FB48EF000E8F0E /* Assets.xcassets */,
-				ECC9F2E924FB48EF000E8F0E /* LaunchScreen.storyboard */,
-				ECC9F2EC24FB48EF000E8F0E /* Info.plist */,
-				ECC9F2ED24FB48EF000E8F0E /* main.m */,
 			);
 			path = iMoojigae;
 			sourceTree = "<group>";
@@ -340,6 +349,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ECC9F34F24FB6077000E8F0E /* Settings.bundle in Resources */,
 				ECC9F2EB24FB48EF000E8F0E /* LaunchScreen.storyboard in Resources */,
 				ECC9F2E824FB48EF000E8F0E /* Assets.xcassets in Resources */,
 				ECC9F2E624FB48ED000E8F0E /* Main.storyboard in Resources */,
@@ -542,7 +552,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -594,7 +604,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -607,18 +617,20 @@
 			baseConfigurationReference = E09E1C8A58696C3C1129B65A /* Pods-iMoojigae.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iMoojigae/iMoojigae.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 8PG9C7Q5V8;
 				INFOPLIST_FILE = iMoojigae/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.17.2;
+				MARKETING_VERSION = 3.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigae;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -627,18 +639,20 @@
 			baseConfigurationReference = 060319155B34A55127567590 /* Pods-iMoojigae.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iMoojigae/iMoojigae.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 8PG9C7Q5V8;
 				INFOPLIST_FILE = iMoojigae/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.17.2;
+				MARKETING_VERSION = 3.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iMoojigae;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

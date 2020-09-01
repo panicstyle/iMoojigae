@@ -19,6 +19,11 @@
 {
     [super viewDidLoad];
 	
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(contentSizeCategoryDidChangeNotification)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    
 	UILabel *lblTitle = [[UILabel alloc] init];
 	lblTitle.text = @"앱정보";
 	lblTitle.backgroundColor = [UIColor clearColor];
@@ -34,6 +39,18 @@
     
 	msgAbout = [NSString stringWithFormat:@"무지개교육마을앱 for iOS\n버전 : %@\n개발자 : 호랑이\n문의메일 : panicstyle@gmail.com\n지원 페이지 : https://github.com/panicstyle/iMoojigae/wiki",  version];
     textView.text = msgAbout;
+    
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    textView.font = titleFont;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)contentSizeCategoryDidChangeNotification {
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    textView.font = titleFont;
 }
 
 @end

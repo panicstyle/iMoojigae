@@ -43,6 +43,11 @@
 {
 	[super viewDidLoad];
 	
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(contentSizeCategoryDidChangeNotification)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    
 	UILabel *lblTitle = [[UILabel alloc] init];
     if ([m_strType isEqualToString:@"list"]) {
         lblTitle.text = @"최신글보기";
@@ -79,6 +84,14 @@
     [tbView endUpdates];
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)contentSizeCategoryDidChangeNotification {
+    [self.tbView reloadData];
+}
+
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -99,6 +112,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *CellIdentifier = @"Item";
 	
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    UIFont *subFont = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    
 	UITableViewCell *cell;
 	cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil) {
@@ -145,7 +161,12 @@
 		labelComment.layer.borderColor = labelComment.textColor.CGColor;
 		labelComment.text = strComment;
 	}
-	
+    // 환경설정에 따른 폰트 설정
+    [textSubject setFont:titleFont];
+    [labelBoardName setFont:subFont];
+    [labelName setFont:subFont];
+    [labelComment setFont:subFont];
+    
 	return cell;
 
 }

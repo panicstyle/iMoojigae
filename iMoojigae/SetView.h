@@ -14,5 +14,7 @@
 @property (nonatomic, weak) IBOutlet UISwitch *switchPush;
 @property (nonatomic, strong) id target;
 @property SEL selector;
-
+@property (nonatomic, weak) IBOutlet UILabel *labelId;
+@property (nonatomic, weak) IBOutlet UILabel *labelPwd;
+@property (nonatomic, weak) IBOutlet UILabel *labelNotice;
 @end

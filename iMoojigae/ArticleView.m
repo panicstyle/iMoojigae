@@ -76,6 +76,11 @@
 {
 	[super viewDidLoad];
 	
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(contentSizeCategoryDidChangeNotification)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    
 	UILabel *lblTitle = [[UILabel alloc] init];
 	lblTitle.text = m_boardName;
 	lblTitle.backgroundColor = [UIColor clearColor];
@@ -233,6 +238,11 @@
                                                        [self DeleteArticleConfirm];
                                                    }];
     
+    UIAlertAction* showOnBrowser = [UIAlertAction actionWithTitle:@"웹브라우저로 보기" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       [self showOnBrowser];
+                                                   }];
+    
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"취소" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
         //action when pressed button
     }];
@@ -240,8 +250,19 @@
     [alert addAction:writecomment];
     [alert addAction:modify];
     [alert addAction:delete];
+    [alert addAction:showOnBrowser];
     [alert addAction:cancelAction];
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)contentSizeCategoryDidChangeNotification {
+    [m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
+
+    [self.tbView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -304,6 +325,9 @@
 	static NSString *CellIdentifierReply = @"Reply";
 	static NSString *CellIdentifierReReply = @"ReReply";
 	
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    UIFont *subFont = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    
 	long row = indexPath.row;
 	long section = indexPath.section;
 	
@@ -326,7 +350,8 @@
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@  %@명 읽음", m_strName, m_strDate, m_strHit];
 				
 				labelName.text = strNameDate;
-
+                [textSubject setFont:titleFont];
+                [labelName setFont:subFont];
 			} else if (row == 1){
 				m_contentCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierContent];
 				if (m_contentCell == nil) {
@@ -354,6 +379,9 @@
 				viewComment.text = [item valueForKey:@"comment"];
                 [viewComment sizeToFit];
 								
+                [labelName setFont:subFont];
+                [viewComment setFont:titleFont];
+                
 				UIButton *buttonDelete = (UIButton *)[cell viewWithTag:211];
 				[buttonDelete addTarget:self action:@selector(DeleteCommentConfirm:) forControlEvents:UIControlEventTouchUpInside];
 			} else {
@@ -373,6 +401,9 @@
 				viewComment.text = [item valueForKey:@"comment"];
                 [viewComment sizeToFit];
 				
+                [labelName setFont:subFont];
+                [viewComment setFont:titleFont];
+
 				UIButton *buttonDelete = (UIButton *)[cell viewWithTag:311];
 				[buttonDelete addTarget:self action:@selector(DeleteCommentConfirm:) forControlEvents:UIControlEventTouchUpInside];
 			}
@@ -385,9 +416,15 @@
 #pragma mark - WebView Delegate
 
 - (void) webViewDidFinishLoad:(UIWebView *)sender {
-	NSString *padding = @"document.body.style.padding='0px 8px 0px 8px';";
-	[sender stringByEvaluatingJavaScriptFromString:padding];
-	[self performSelector:@selector(calculateWebViewSize) withObject:nil afterDelay:0.1];
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    int pointSize = (titleFont.pointSize / 17.0f) * 100;
+    NSString *fontSize = [NSString stringWithFormat:@"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '%d%%'", pointSize];
+    NSString *padding = @"document.body.style.padding='0px 8px 0px 8px';";
+    [sender stringByEvaluatingJavaScriptFromString:padding];
+    [sender stringByEvaluatingJavaScriptFromString:fontSize];
+    [self performSelector:@selector(calculateWebViewSize) withObject:nil afterDelay:0.1];
+    [tbView beginUpdates];
+    [tbView endUpdates];
 }
 
 -(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
@@ -607,7 +644,14 @@
 	}
 }
 
-#pragma mark WriteComment
+#pragma mark User Function
+
+- (void)showOnBrowser {
+    NSString *url = [NSString stringWithFormat:@"%@/board-api-read.do?boardId=%@&boardNo=%@&command=READ&page=1&categoryId=-1&rid=20", WWW_SERVER, m_boardId, m_boardNo];
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{} completionHandler:nil];
+}
+
 - (void)CopyComment:(long)row
 {
     NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];

@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="PfV-XL-rbF">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -264,7 +263,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HRa-vo-njJ">
-                                <rect key="frame" x="97" y="56" width="297" height="30"/>
+                                <rect key="frame" x="144" y="56" width="250" height="30"/>
                                 <color key="backgroundColor" systemColor="secondarySystemFillColor" red="0.47058823529999999" green="0.47058823529999999" blue="0.50196078430000002" alpha="0.16" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="XCI-Ad-t8n"/>
@@ -273,17 +272,17 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="비밀번호" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JfG-Ps-xK4">
-                                <rect key="frame" x="20" y="104" width="69" height="21"/>
+                                <rect key="frame" x="20" y="104" width="116" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="U5i-IM-31p"/>
-                                    <constraint firstAttribute="width" constant="69" id="vPH-xQ-W4d"/>
+                                    <constraint firstAttribute="width" constant="116" id="vPH-xQ-W4d"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4mx-m9-RZR">
-                                <rect key="frame" x="97" y="100" width="297" height="30"/>
+                                <rect key="frame" x="144" y="100" width="250" height="30"/>
                                 <color key="backgroundColor" systemColor="secondarySystemFillColor" red="0.47058823529999999" green="0.47058823529999999" blue="0.50196078430000002" alpha="0.16" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="jwA-yP-2G5"/>
@@ -292,19 +291,19 @@
                                 <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="아이디" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fAc-cZ-aLs">
-                                <rect key="frame" x="20" y="60" width="69" height="21"/>
+                                <rect key="frame" x="20" y="60" width="116" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="F0n-gE-fLj"/>
-                                    <constraint firstAttribute="width" constant="69" id="mdL-fe-4Or"/>
+                                    <constraint firstAttribute="width" constant="116" id="mdL-fe-4Or"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="새글 알림 받기" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hJN-1y-Ht8">
-                                <rect key="frame" x="20" y="148" width="98" height="21"/>
+                                <rect key="frame" x="20" y="148" width="317" height="21"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="98" id="Ktd-nw-Dwa"/>
+                                    <constraint firstAttribute="width" constant="317" id="Ktd-nw-Dwa"/>
                                     <constraint firstAttribute="height" constant="21" id="tVd-mY-v3o"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -340,13 +339,16 @@
                     <navigationItem key="navigationItem" id="l4D-bh-WxO"/>
                     <connections>
                         <outlet property="idField" destination="HRa-vo-njJ" id="BQa-9W-Wpx"/>
+                        <outlet property="labelId" destination="fAc-cZ-aLs" id="gRT-2O-WZP"/>
+                        <outlet property="labelNotice" destination="hJN-1y-Ht8" id="tiE-IC-nlD"/>
+                        <outlet property="labelPwd" destination="JfG-Ps-xK4" id="2yC-Fh-t0B"/>
                         <outlet property="pwdField" destination="4mx-m9-RZR" id="19h-Pa-CMi"/>
                         <outlet property="switchPush" destination="Lci-ID-qPX" id="eGP-hP-62K"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w4L-Cb-twW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="749.5" y="-42.5"/>
+            <point key="canvasLocation" x="749.27536231884062" y="-43.206521739130437"/>
         </scene>
         <!--Items View-->
         <scene sceneID="q8D-3o-Ssg">
@@ -427,7 +429,7 @@
                                                 <constraint firstAttribute="trailing" secondItem="XaW-a9-Fnp" secondAttribute="trailing" constant="4" id="wgJ-cS-PQo"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" systemColor="secondarySystemFillColor" red="0.47058823529999999" green="0.47058823529999999" blue="0.50196078430000002" alpha="0.16" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <connections>
                                             <segue destination="OkL-kn-E4Z" kind="show" identifier="Article" id="fjI-1J-ra1"/>
                                         </connections>
@@ -487,6 +489,7 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </textView>
                                             </subviews>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="gyN-fm-gaM" secondAttribute="bottom" constant="4" id="014-zD-cNE"/>
                                                 <constraint firstItem="lqB-rZ-otK" firstAttribute="leading" secondItem="f94-HQ-amj" secondAttribute="trailing" constant="4" id="5Me-wE-BXz"/>
@@ -955,7 +958,7 @@
                                                     <color key="highlightedColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </label>
                                             </subviews>
-                                            <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                             <constraints>
                                                 <constraint firstItem="M4M-1N-eje" firstAttribute="top" secondItem="MTa-jb-ECA" secondAttribute="bottom" id="4a7-ex-qTh"/>
                                                 <constraint firstItem="ltr-ak-7Q2" firstAttribute="leading" secondItem="M4M-1N-eje" secondAttribute="trailing" constant="8" id="EzP-9m-utf"/>
@@ -973,7 +976,7 @@
                                                 <constraint firstAttribute="trailing" secondItem="ltr-ak-7Q2" secondAttribute="trailing" constant="8" id="ypT-XJ-CoJ"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" systemColor="secondarySystemFillColor" red="0.47058823529999999" green="0.47058823529999999" blue="0.50196078430000002" alpha="0.16" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <connections>
                                             <segue destination="OkL-kn-E4Z" kind="show" identifier="Article" id="zoG-b2-QE8"/>
                                         </connections>
@@ -1087,7 +1090,7 @@
     <inferredMetricsTieBreakers>
         <segue reference="Rjb-1d-YSx"/>
         <segue reference="wxT-9d-wBW"/>
-        <segue reference="fjI-1J-ra1"/>
+        <segue reference="zoG-b2-QE8"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="ic_image" width="24" height="24"/>

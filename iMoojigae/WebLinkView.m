@@ -10,11 +10,13 @@
 #import "env.h"
 #import "Utils.h"
 #import "Photos/Photos.h"
+#import "HttpSessionRequest.h"
 
-@interface WebLinkView () <UIScrollViewDelegate>  {
+@interface WebLinkView () <UIScrollViewDelegate, HttpSessionRequestDelegate>  {
 	NSMutableData *m_receiveData;
 	NSURLConnection *m_connection;
 }
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation WebLinkView
@@ -29,6 +31,10 @@
 {
 	[super viewDidLoad];
 
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    
 	UILabel *lblTitle = [[UILabel alloc] init];
 	lblTitle.text = @"이미지보기";
 	lblTitle.backgroundColor = [UIColor clearColor];
@@ -51,24 +57,11 @@
 
 - (void)viewDidLayoutSubviews
 {
-	if ([m_nFileType intValue] == FILE_TYPE_IMAGE) {
-		
-		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
-		
-//		[mainView addSubview:imageView];
-		
-		[NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:m_strLink]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-			imageView.image = [UIImage imageWithData:data];
-			imageView.contentMode = UIViewContentModeScaleAspectFit;
-		}];
-		
-		self.m_imageView = imageView;
-		mainView.maximumZoomScale = 3.0;
-		mainView.minimumZoomScale = 0.6;
-		mainView.clipsToBounds = YES;
-		mainView.delegate = self;
-		[mainView addSubview:m_imageView];
-
+	if ([m_nFileType intValue] == FILE_TYPE_IMAGE) {		
+        NSDictionary *dic = [[NSDictionary alloc] init];
+        NSString *escapedURL = [m_strLink stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        [self.httpSessionRequest requestURL:escapedURL withValues:dic];
+        
 	} else {
         if ([[m_strLink substringToIndex:4] isEqualToString:@"http"]) {
             UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
@@ -112,21 +105,60 @@
 }
 
 -(void)AlertSuccess {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"성공"
+                                                                       message:@"이미지가 사진보관함에 저장되었습니다."
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:alert animated:YES completion:^{}];
+    });
+/*
 	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"성공"
 													message:@"이미지가 사진보관함에 저장되었습니다." delegate:self cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
 	[alert performSelector:@selector(show)
 				  onThread:[NSThread mainThread]
 				withObject:nil
 			 waitUntilDone:NO];
+ */
 }
 
 -(void)AlertFail:(NSString *)errMsg {
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"오류"
-													message:errMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
-	[alert performSelector:@selector(show)
-				  onThread:[NSThread mainThread]
-				withObject:nil
-			 waitUntilDone:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"오류"
+                                                                       message:errMsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:alert animated:YES completion:^{}];
+    });
 }
 
+#pragma mark -
+#pragma mark HttpSessionRequestDelegate
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
+{
+}
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
+{
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
+    
+    imageView.image = [UIImage imageWithData:data];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+
+    self.m_imageView = imageView;
+    mainView.maximumZoomScale = 3.0;
+    mainView.minimumZoomScale = 0.6;
+    mainView.clipsToBounds = YES;
+    mainView.delegate = self;
+    [mainView addSubview:m_imageView];
+}
 @end

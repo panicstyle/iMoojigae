@@ -8,11 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+@class MainData;
+@protocol MainDataDelegate <NSObject>
+@optional
+
+- (void) mainData:(MainData *)mainData didFinishLodingData:(NSArray *)arrayItems withRecent:(NSString *)strRecent;
+@end
+
 @interface MainData : NSObject
-@property (strong, nonatomic) NSMutableArray *m_arrayItems;
-@property (strong, nonatomic) NSString *m_strRecent;
-@property id target;
-@property SEL selector;
 
 - (void)fetchItems;
+
+@property (nonatomic, assign) id <MainDataDelegate> delegate;
+@property (nonatomic, assign) int tag;                                      // tag 값
+
 @end

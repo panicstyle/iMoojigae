@@ -16,7 +16,7 @@
 #import "DBInterface.h"
 @import GoogleMobileAds;
 
-@interface ArticleView ()
+@interface ArticleView () <ArticleDataDelegate, ArticleWriteDelegate>
 {
 	UITableViewCell *m_contentCell;
 	UITableViewCell *m_imageCell;
@@ -67,8 +67,6 @@
 @synthesize m_boardId;
 @synthesize m_boardNo;
 @synthesize m_boardName;
-@synthesize target;
-@synthesize selector;
 
 #pragma mark - View lifecycle
 
@@ -117,12 +115,9 @@
 */
 	m_arrayItems = [[NSMutableArray alloc] init];
 
-	m_articleData = [[ArticleData alloc] init];
-	m_articleData.m_boardId = m_boardId;
-	m_articleData.m_boardNo = m_boardNo;
-	m_articleData.target = self;
-	m_articleData.selector = @selector(didFetchItems:);
-	[m_articleData fetchItems];
+    self.articleData = [[ArticleData alloc] init];
+    self.articleData.delegate = self;
+    [self.articleData fetchItemsWithBoardId:m_boardId withBoardNo:m_boardNo];
     
     // DB에 현재 읽는 글의 boardId, boardNo 를 insert
     DBInterface *db;
@@ -568,12 +563,11 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+#pragma mark - ArticleDataDelegate
 
-#pragma mark Data Function
-
-- (void)didFetchItems:(NSNumber *)result
+- (void) articleData:(ArticleData *)articleData withError:(NSNumber *)nError
 {
-	if ([result intValue] == RESULT_AUTH_FAIL) {
+	if ([nError intValue] == RESULT_AUTH_FAIL) {
 		NSLog(@"already login : auth fail");
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"권한오류"
 																	   message:@"게시판을 볼 권한이 없습니다."
@@ -584,7 +578,7 @@
 		
 		[alert addAction:defaultAction];
 		[self presentViewController:alert animated:YES completion:nil];
-	} else if ([result intValue] == RESULT_LOGIN_FAIL) {
+	} else if ([nError intValue] == RESULT_LOGIN_FAIL) {
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
 																	   message:@"로그인 정보가 없거나 잘못되었습니다. 설정에서 로그인정보를 입력하세요."
 																preferredStyle:UIAlertControllerStyleAlert];
@@ -594,44 +588,35 @@
 		
 		[alert addAction:defaultAction];
 		[self presentViewController:alert animated:YES completion:nil];
-	} else {
-		htmlString = m_articleData.m_strContent;
-		m_strEditableContent = m_articleData.m_strEditableContent;
-		m_strEditableTitle = m_articleData.m_strTitle;
-		m_strTitle = m_articleData.m_strTitle;
-		m_strName = m_articleData.m_strName;
-		m_strDate = m_articleData.m_strDate;
-		m_strHit = m_articleData.m_strHit;
-		
-		m_arrayItems = m_articleData.m_arrayItems;
-		m_dicAttach = m_articleData.m_dicAttach;
-		
-		NSLog(@"htmlString = [%@]", htmlString);
-		
-		m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
-		m_webView.delegate = self;
-		m_webView.scrollView.scrollEnabled = YES;
-		m_webView.scrollView.bounces = NO;
-        m_webView.dataDetectorTypes = UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber;
-		[m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
-
-		[self.tbView reloadData];
 	}
 }
 
-- (void) calculateWebViewSize {
-	NSUInteger contentHeight = [[m_webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.body.scrollHeight;"]] intValue];
-	m_lContentHeight = contentHeight;
-	
-	CGRect contentRect = m_contentCell.frame;
-	contentRect.size.height = m_lContentHeight;
-	m_contentCell.frame = contentRect;
+- (void) articleData:(ArticleData *)articleData didFinishLodingData:(NSString *)strTitle
+            withName:(NSString *)strName withDate:(NSString *)strDate withHit:(NSString *)strHit
+         withContent:(NSString *)strContent withEditableContent:(NSString *)strEditableContent
+    withCommentItems:(NSArray *)arrayItems withAttach:(NSDictionary *)dicAttach
+{
+    htmlString = strContent;
+    m_strEditableContent = strEditableContent;
+    m_strEditableTitle = strTitle;
+    m_strTitle = strTitle;
+    m_strName = strName;
+    m_strDate = strDate;
+    m_strHit = strHit;
+    
+    m_arrayItems = [[NSMutableArray alloc] initWithArray:arrayItems];
+    m_dicAttach = dicAttach;
+    
+    NSLog(@"htmlString = [%@]", htmlString);
+    
+    m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
+    m_webView.delegate = self;
+    m_webView.scrollView.scrollEnabled = YES;
+    m_webView.scrollView.bounces = NO;
+    m_webView.dataDetectorTypes = UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber;
+    [m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
 
-	CGRect webRect = m_webView.frame;
-	webRect.size.height = m_lContentHeight;
-	m_webView.frame = webRect;
-
-	[self.tbView reloadData];
+    [self.tbView reloadData];
 }
 
 #pragma mark Navigation Controller
@@ -645,6 +630,21 @@
 }
 
 #pragma mark User Function
+
+- (void) calculateWebViewSize {
+    NSUInteger contentHeight = [[m_webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.body.scrollHeight;"]] intValue];
+    m_lContentHeight = contentHeight;
+    
+    CGRect contentRect = m_contentCell.frame;
+    contentRect.size.height = m_lContentHeight;
+    m_contentCell.frame = contentRect;
+
+    CGRect webRect = m_webView.frame;
+    webRect.size.height = m_lContentHeight;
+    m_webView.frame = webRect;
+
+    [self.tbView reloadData];
+}
 
 - (void)showOnBrowser {
     NSString *url = [NSString stringWithFormat:@"%@/board-api-read.do?boardId=%@&boardNo=%@&command=READ&page=1&categoryId=-1&rid=20", WWW_SERVER, m_boardId, m_boardNo];
@@ -758,7 +758,7 @@
 	m_strCommentNo = [item valueForKey:@"no"];
 	NSString *strCommentNo = m_strCommentNo;
 	
-	bool result = [m_articleData DeleteComment:m_boardId articleNo:m_boardNo commentNo:strCommentNo];
+    bool result = [self.articleData DeleteComment:m_boardId articleNo:m_boardNo commentNo:strCommentNo];
 
 	if (result == false) {
 		NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
@@ -807,8 +807,7 @@
         viewController.m_boardNo = m_boardNo;
         viewController.m_strTitle = m_strEditableTitle;
         viewController.m_strContent = m_strEditableContent;
-        viewController.target = self;
-        viewController.selector = @selector(didWrite:);
+        viewController.delegate = self;
         
         [self.navigationController pushViewController:viewController animated:YES];
     }
@@ -840,7 +839,7 @@
 	NSLog(@"DeleteArticleConfirm start");
 	NSLog(@"boardID=[%@], boardNo=[%@]", m_boardId, m_boardNo);
 	
-	bool result = [m_articleData DeleteArticle:m_boardId articleNo:m_boardNo];
+    bool result = [self.articleData DeleteArticle:m_boardId articleNo:m_boardNo];
 	
 	if (result == false) {
         NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
@@ -853,13 +852,13 @@
 															  handler:^(UIAlertAction * action) {}];
 		
 		[alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
     NSLog(@"delete article success");
-	if (target != nil) {
-		[target performSelector:selector withObject:nil afterDelay:0];
-	}
+    if ([self.delegate respondsToSelector:@selector(articleView:didWrite:)] == YES)
+        [self.delegate articleView:self didWrite:self];
     [[self navigationController] popViewControllerAnimated:YES];
 }
 
@@ -868,7 +867,7 @@
 {
 	[m_arrayItems removeAllObjects];
 	[self.tbView reloadData];
-	[m_articleData fetchItems];
+    [self.articleData fetchItemsWithBoardId:m_boardId withBoardNo:m_boardNo];
 }
 
 #pragma mark - Navigation

@@ -12,19 +12,19 @@
 #import "LoginToService.h"
 #import "Utils.h"
 #import "NSString+HTML.h"
+#import "HttpSessionRequest.h"
 
-@interface ArticleData () {
-	NSMutableData *m_receiveData;
-	NSURLConnection *m_connection;
-	BOOL m_isConn;
+@interface ArticleData ()  <HttpSessionRequestDelegate>
+{
 	BOOL m_isLogin;
 	LoginToService *m_login;
+    NSString *m_boardId;
+    NSString *m_boardNo;
 }
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation ArticleData
-@synthesize m_boardId;
-@synthesize m_boardNo;
 @synthesize m_strTitle;
 @synthesize m_strName;
 @synthesize m_strDate;
@@ -34,44 +34,44 @@
 @synthesize m_strEditableContent;
 @synthesize m_arrayItems;
 @synthesize m_dicAttach;
-@synthesize target;
-@synthesize selector;
 
-- (void)fetchItems
+- (void)fetchItemsWithBoardId:(NSString *)boardId withBoardNo:(NSString *)boardNo
 {
-	m_isConn = TRUE;
-	m_isLogin = FALSE;
+    NSString *url = [NSString stringWithFormat:@"%@/board-api-read.do", WWW_SERVER];
+    NSLog(@"query = [%@]", url);
+    
+    m_boardId = boardId;
+    m_boardNo = boardNo;
+    
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:boardId, @"boardId",
+                         boardNo, @"boardNo",
+                         @"READ", @"command",
+                         @"1", @"page",
+                         @"-1", @"categoryId",
+                         @"20", @"rid", nil];
+    
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
+    
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
 	m_dicAttach = [[NSMutableDictionary alloc] init];
-	m_receiveData = [[NSMutableData alloc] init];
-	
-	[self fetchItems2];
 }
 
-- (void)fetchItems2
-{
-	NSString *url = [NSString stringWithFormat:@"%@/board-api-read.do?boardId=%@&boardNo=%@&command=READ&page=1&categoryId=-1&rid=20", WWW_SERVER, m_boardId, m_boardNo];
+#pragma mark -
+#pragma mark HttpSessionRequestDelegate
 
-	m_connection = [[NSURLConnection alloc]
-			initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
-	
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
+{
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
 {
-	[m_receiveData appendData:data];
-	NSLog(@"didReceiveData = [%lu][%lu]", (unsigned long)[m_receiveData length], (unsigned long)[data length]);
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-	[self doFetch];
-}
-
-- (void)doFetch
-{
-	m_strHtml = [[NSString alloc] initWithData:m_receiveData encoding:NSUTF8StringEncoding];
+	m_strHtml = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 	
 	NSLog(@"html = [%lu]", (unsigned long)[m_strHtml length]);
 	
@@ -86,20 +86,22 @@
 			if (result) {
 				NSLog(@"login ok");
 				m_isLogin = TRUE;
-				[self fetchItems2];
+				[self fetchItemsWithBoardId:m_boardId withBoardNo:m_boardNo];
 				return;
 			} else {
-				[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_LOGIN_FAIL] afterDelay:0];
-				return;
+                if ([self.delegate respondsToSelector:@selector(articleData:withError:)] == YES)
+                    [self.delegate articleData:self withError:[NSNumber numberWithInt:RESULT_LOGIN_FAIL]];
+                return;
 			}
 		} else {
-			[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_LOGIN_FAIL] afterDelay:0];
-			return;
+            if ([self.delegate respondsToSelector:@selector(articleData:withError:)] == YES)
+                [self.delegate articleData:self withError:[NSNumber numberWithInt:RESULT_LOGIN_FAIL]];
+            return;
 		}
 	}
 	
 	NSError *localError = nil;
-	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
+	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
 	
 	if (localError != nil) {
 		return;
@@ -232,8 +234,8 @@
 					strProfile,
 					strBottom];
 	
-	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
-	return;
+    if ([self.delegate respondsToSelector:@selector(articleData:didFinishLodingData:withName:withDate:withHit:withContent:withEditableContent:withCommentItems:withAttach:)] == YES)
+        [self.delegate articleData:self didFinishLodingData:m_strTitle withName:m_strName withDate:m_strDate withHit:m_strHit withContent:m_strContent withEditableContent:m_strEditableContent withCommentItems:m_arrayItems withAttach:m_dicAttach];
 }
 
 - (bool)DeleteArticle:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo

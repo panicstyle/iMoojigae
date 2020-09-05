@@ -8,65 +8,49 @@
 
 #import "BoardData.h"
 #import "env.h"
+#import "HttpSessionRequest.h"
 
-@interface BoardData () {
-	NSMutableData *m_receiveData;
-	NSURLConnection *m_connection;
-}
+@interface BoardData () <HttpSessionRequestDelegate>
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation BoardData
-@synthesize m_strCommNo;
-@synthesize m_strRecent;
-@synthesize m_arrayItems;
-@synthesize target;
-@synthesize selector;
 
-- (void)fetchItems
+- (void)fetchItemsWithCommNo:(NSString *)strCommNo
 {
-	m_arrayItems = [[NSMutableArray alloc] init];
-	
-	[self fetchItems2];
+    NSString *url = [NSString stringWithFormat:@"%@/board-api-menu.do", WWW_SERVER];
+    NSLog(@"query = [%@]", url);
+    
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:strCommNo, @"comm", nil];
+    
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
 }
 
-- (void)fetchItems2
-{
-	NSLog(@"fetchItems2");
-	m_receiveData = [[NSMutableData alloc] init];
+#pragma mark -
+#pragma mark HttpSessionRequestDelegate
 
-	NSString *url;
-	url = [NSString stringWithFormat:@"%@/board-api-menu.do?comm=%@", WWW_SERVER, m_strCommNo];
-	
-	NSLog(@"query = [%@]", url);
-	
-	m_connection = [[NSURLConnection alloc]
-				  initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
-	NSLog(@"fetchItems 3");
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
+{
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
 {
-	NSLog(@"didReceiveData");
-	[m_receiveData appendData:data];
-	NSLog(@"didReceiveData receiveData=[%lu], data=[%lu]", (unsigned long)[m_receiveData length], (unsigned long)[data length]);
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-	NSLog(@"ListView receiveData Size = [%lu]", (unsigned long)[m_receiveData length]);
-	
-//	NSString *html = [[NSString alloc] initWithData:m_receiveData encoding:NSUTF8StringEncoding];
-//	NSLog(@"html=[%@]", html);
-	
 	NSError *localError = nil;
-	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
+	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
 	
 	if (localError != nil) {
 		return;
 	}
-	
-	m_strRecent = [parsedObject valueForKey:@"recent"];
-	NSLog(@"m_strRecent %@", m_strRecent);
+    
+    NSMutableArray *arrayItems = [[NSMutableArray alloc] init];
+
+	NSString *strRecent = [parsedObject valueForKey:@"recent"];
+	NSLog(@"strRecent %@", strRecent);
 	
 	NSString *strNew = [parsedObject valueForKey:@"new"];
 	NSLog(@"strNew %@", strNew);
@@ -92,12 +76,12 @@
 		NSString *strBoardId = [jsonItem valueForKey:@"boardId"];
 		[currItem setValue:strBoardId forKey:@"boardId"];
 		
-		[m_arrayItems addObject:currItem];
+		[arrayItems addObject:currItem];
 	}
 	
 	// icon_new 찾기. 게시판 이름을 찾아서 그 다음에 icon_new가 있는지 확인
-	for (int i = 0; i < [m_arrayItems count]; i++) {
-		NSMutableDictionary *item = [m_arrayItems objectAtIndex:i];
+	for (int i = 0; i < [arrayItems count]; i++) {
+		NSMutableDictionary *item = [arrayItems objectAtIndex:i];
 		NSString *link = [item valueForKey:@"boardId"];
 		link = [NSString stringWithFormat:@"[%@]", link];
 
@@ -108,8 +92,9 @@
 			[item setValue:[NSNumber numberWithInt:0] forKey:@"isNew"];
 		}
 	}
-	
-	[target performSelector:selector withObject:nil afterDelay:0];
+        
+    if ([self.delegate respondsToSelector:@selector(boardData:didFinishLodingData:withRecent:)] == YES)
+        [self.delegate boardData:self didFinishLodingData:arrayItems withRecent:strRecent];
 }
 
 @end

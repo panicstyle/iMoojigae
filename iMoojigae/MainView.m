@@ -19,11 +19,10 @@
 #import "DBInterface.h"
 @import GoogleMobileAds;
 
-@interface MainView ()
+@interface MainView () <MainDataDelegate>
 {
 	NSMutableArray *m_arrayItems;
 	LoginToService *m_login;
-	MainData *m_mainData;
 	NSString *m_strRecent;
 }
 @end
@@ -73,10 +72,10 @@
 
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
-	m_mainData = [[MainData alloc] init];
-	m_mainData.target = self;
-	m_mainData.selector = @selector(didFetchItems);
-    
+    self.mainData = [[MainData alloc] init];
+    self.mainData.delegate = self;
+    [self.mainData fetchItems];
+
     // DB에 6개월 지난 데이터는 삭제
     DBInterface *db;
     db = [[DBInterface alloc] init];
@@ -101,9 +100,7 @@
 			[alert addAction:defaultAction];
 			[self presentViewController:alert animated:YES completion:nil];
 		}
-        [m_mainData fetchItems];
     } else {
-        
     }
 }
 
@@ -208,22 +205,23 @@
 	// Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Data Function
+#pragma mark - MainDataDelegate
 
-- (void)didFetchItems
+- (void) mainData:(MainData *)mainData didFinishLodingData:(NSArray *)arrayItems withRecent:(NSString *)strRecent;
 {
-	m_strRecent = m_mainData.m_strRecent;
-	
-	m_arrayItems = [NSMutableArray arrayWithArray:m_mainData.m_arrayItems];
+	m_strRecent = strRecent;
+	m_arrayItems = [NSMutableArray arrayWithArray:arrayItems];
 	[self.tbView reloadData];
 }
+
+#pragma mark - SetViewDelegate
 
 - (void)didChangedSetting:(NSNumber *)result
 {
 	if ([result boolValue]) {
 		[m_arrayItems removeAllObjects];
 		[self.tbView reloadData];
-		[m_mainData fetchItems];
+        [self.mainData fetchItems];
 	}
 }
 @end

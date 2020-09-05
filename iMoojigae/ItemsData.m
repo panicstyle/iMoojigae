@@ -12,78 +12,61 @@
 #import "Utils.h"
 #import "NSString+HTML.h"
 #import "DBInterface.h"
+#import "HttpSessionRequest.h"
 
-@interface ItemsData () {
-	NSMutableData *m_receiveData;
-	NSURLConnection *m_connection;
+@interface ItemsData () <HttpSessionRequestDelegate>
+{
 	BOOL m_isConn;
 	BOOL m_isLogin;
+    NSString *m_boardId;
 	int m_nPage;
 	LoginToService *m_login;
 }
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation ItemsData
 
-@synthesize m_strCommNo;
-@synthesize m_boardId;
-@synthesize m_arrayItems;
-@synthesize target;
-@synthesize selector;
-
-- (void)fetchItems:(int) nPage
+- (id)init
 {
-	m_arrayItems = [[NSMutableArray alloc] init];
-
-	m_isConn = TRUE;
-	m_isLogin = FALSE;
-	m_nPage = nPage;
-	
-	[self fetchItems2];
+    self = [super init];
+    if (self)
+    {
+        self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+        self.httpSessionRequest.delegate = self;
+        self.httpSessionRequest.timeout = 30;
+    }
+    
+    return self;
 }
 
-- (void)fetchItems2
+- (void)fetchItemsWithBoardId:(NSString *)boardId withPage:(int)nPage
 {
-	NSString *url = [NSString stringWithFormat:@"%@/board-api-list.do?boardId=%@&page=%d", WWW_SERVER, m_boardId, m_nPage];
-
-	m_receiveData = [[NSMutableData alloc] init];
-	
-	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-	NSString *strReferer = [NSString stringWithFormat:@"%@/board-list.do", WWW_SERVER];
-	
-	[request setURL:[NSURL URLWithString:url]];
-	[request setHTTPMethod:@"POST"];
-	[request addValue:strReferer forHTTPHeaderField:@"Referer"];
-	[request addValue:@"gzip,deflate,sxdch" forHTTPHeaderField:@"Accept-Encoding"];
-	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
-	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
-	
-	NSData *body = [[NSData alloc] initWithData:[@"" dataUsingEncoding:NSUTF8StringEncoding]];
-	
-	[request setHTTPBody:body];
-	
-	m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-	
-	NSLog(@"fetchItems 2");
+    NSString *url = [NSString stringWithFormat:@"%@/board-api-list.do", WWW_SERVER];
+    NSLog(@"query = [%@]", url);
+    
+    m_boardId = boardId;
+    m_nPage = nPage;
+    
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:boardId, @"boardId",
+                         [NSString stringWithFormat:@"%d", nPage], @"page", nil];
+    
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+#pragma mark -
+#pragma mark HttpSessionRequestDelegate
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
 {
-	NSLog(@"didReceiveData");
-	if (m_isConn) {
-		[m_receiveData appendData:data];
-		NSLog(@"didReceiveData receiveData=[%lu], data=[%lu]", (unsigned long)[m_receiveData length], (unsigned long)[data length]);
-	} else {
-		NSLog(@"connect finish");
-	}
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
 {
-	m_isConn = FALSE;
-	NSLog(@"ListView receiveData Size = [%lu]", (unsigned long)[m_receiveData length]);
+    m_isConn = FALSE;
 	
-	NSString *str = [[NSString alloc] initWithData:m_receiveData
+	NSString *str = [[NSString alloc] initWithData:data
 										  encoding:NSUTF8StringEncoding];
 	
 	if ([Utils numberOfMatches:str regex:@"./img/common/board/alert.gif"] > 0) {
@@ -96,25 +79,29 @@
 			if (result) {
 				NSLog(@"login ok");
 				m_isLogin = TRUE;
-				[self fetchItems2];
+				[self fetchItemsWithBoardId:m_boardId withPage:m_nPage];
 				return;
 			} else {
-				[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_LOGIN_FAIL] afterDelay:0];
+                if ([self.delegate respondsToSelector:@selector(itemsData:withError:)] == YES)
+                    [self.delegate itemsData:self withError:[NSNumber numberWithInt:RESULT_LOGIN_FAIL]];
 				return;
 			}
 		} else {
-			[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_LOGIN_FAIL] afterDelay:0];
-			return;
+            if ([self.delegate respondsToSelector:@selector(itemsData:withError:)] == YES)
+                [self.delegate itemsData:self withError:[NSNumber numberWithInt:RESULT_LOGIN_FAIL]];
+            return;
 		}
 	}
 	
 	NSError *localError = nil;
-	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
+	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
 	
 	if (localError != nil) {
 		return;
 	}
 	
+    NSMutableArray *arrayItems = [[NSMutableArray alloc] init];
+    
 	NSArray *jsonItems = [parsedObject valueForKey:@"item"];
 	
 	NSMutableDictionary *currItem;
@@ -181,11 +168,11 @@
             [currItem setValue:[NSNumber numberWithInt:0] forKey:@"read"];
         }
 
-		[m_arrayItems addObject:currItem];
+		[arrayItems addObject:currItem];
 	}
 	
-	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+    if ([self.delegate respondsToSelector:@selector(itemsData:didFinishLodingData:)] == YES)
+        [self.delegate itemsData:self didFinishLodingData:arrayItems];
 }
-
 
 @end

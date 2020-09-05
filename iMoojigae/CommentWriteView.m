@@ -268,9 +268,16 @@
 		NSString *errmsg2 = [Utils findStringRegex:returnString regex:@"(?<=<b>시스템 메세지입니다</b></font><br>).*?(?=<br>)"];
 		errmsg = [NSString stringWithFormat:@"댓글 작성중 오류가 발생했습니다. 잠시후 다시 해보세요.[%@]", errmsg2];
 		
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"댓글 작성 오류"
-														message:errmsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
-		[alert show];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"댓글 작성 오류"
+                                                                       message:errmsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        
 		return false;
 	}
 	return true;

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ItemsData.h"
 
 @import GoogleMobileAds;
 
@@ -16,4 +17,7 @@
 @property (strong, nonatomic) NSString *m_strCommNo;
 @property (strong, nonatomic) NSString *m_boardId;
 @property (strong, nonatomic) NSString *m_boardName;
+
+@property (nonatomic, strong) ItemsData *itemsData;
+
 @end

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		09FFFB8FCD1975E9EE583479 /* Pods_iMoojigae.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1B3D53748D79FB826CBF405 /* Pods_iMoojigae.framework */; };
 		2AEE46B177E9ACB07502B2CF /* Pods_iMoojigaeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57A80A78C2C22918FB268F12 /* Pods_iMoojigaeTests.framework */; };
+		EC84505C24FF6A25007D27E4 /* HttpSessionRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = EC84505B24FF6A25007D27E4 /* HttpSessionRequest.m */; };
 		ECC9F2DD24FB48ED000E8F0E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F2DC24FB48ED000E8F0E /* AppDelegate.m */; };
 		ECC9F2E624FB48ED000E8F0E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC9F2E424FB48ED000E8F0E /* Main.storyboard */; };
 		ECC9F2E824FB48EF000E8F0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECC9F2E724FB48EF000E8F0E /* Assets.xcassets */; };
@@ -60,6 +61,8 @@
 		82942B49665379305A9FB8C6 /* Pods-iMoojigaeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigaeTests.release.xcconfig"; path = "Target Support Files/Pods-iMoojigaeTests/Pods-iMoojigaeTests.release.xcconfig"; sourceTree = "<group>"; };
 		A5198F5A841BE02E25703EC7 /* Pods-iMoojigaeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigaeTests.debug.xcconfig"; path = "Target Support Files/Pods-iMoojigaeTests/Pods-iMoojigaeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E09E1C8A58696C3C1129B65A /* Pods-iMoojigae.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMoojigae.debug.xcconfig"; path = "Target Support Files/Pods-iMoojigae/Pods-iMoojigae.debug.xcconfig"; sourceTree = "<group>"; };
+		EC84505A24FF6A25007D27E4 /* HttpSessionRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpSessionRequest.h; sourceTree = "<group>"; };
+		EC84505B24FF6A25007D27E4 /* HttpSessionRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpSessionRequest.m; sourceTree = "<group>"; };
 		ECC9F2D824FB48ED000E8F0E /* iMoojigae.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iMoojigae.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECC9F2DB24FB48ED000E8F0E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		ECC9F2DC24FB48ED000E8F0E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -193,7 +196,6 @@
 		ECC9F2DA24FB48ED000E8F0E /* iMoojigae */ = {
 			isa = PBXGroup;
 			children = (
-				ECC9F35224FE1517000E8F0E /* iMoojigae.entitlements */,
 				ECC9F31924FB5254000E8F0E /* AboutView.h */,
 				ECC9F32024FB5254000E8F0E /* AboutView.m */,
 				ECC9F2DB24FB48ED000E8F0E /* AppDelegate.h */,
@@ -218,6 +220,9 @@
 				ECC9F32724FB5254000E8F0E /* GoogleCalView.m */,
 				ECC9F32A24FB5255000E8F0E /* GTMNSString+HTML.h */,
 				ECC9F32E24FB5255000E8F0E /* GTMNSString+HTML.m */,
+				EC84505A24FF6A25007D27E4 /* HttpSessionRequest.h */,
+				EC84505B24FF6A25007D27E4 /* HttpSessionRequest.m */,
+				ECC9F35224FE1517000E8F0E /* iMoojigae.entitlements */,
 				ECC9F2EC24FB48EF000E8F0E /* Info.plist */,
 				ECC9F32224FB5254000E8F0E /* ItemsData.h */,
 				ECC9F30A24FB5253000E8F0E /* ItemsData.m */,
@@ -450,6 +455,7 @@
 				ECC9F34724FB5255000E8F0E /* MainData.m in Sources */,
 				ECC9F2DD24FB48ED000E8F0E /* AppDelegate.m in Sources */,
 				ECC9F34924FB5255000E8F0E /* BoardView.m in Sources */,
+				EC84505C24FF6A25007D27E4 /* HttpSessionRequest.m in Sources */,
 				ECC9F34224FB5255000E8F0E /* ArticleData.m in Sources */,
 				ECC9F33624FB5255000E8F0E /* SetTokenStorage.m in Sources */,
 				ECC9F34624FB5255000E8F0E /* WebLinkView.m in Sources */,

@@ -8,13 +8,21 @@
 
 #import <Foundation/Foundation.h>
 
-@interface RecentData : NSObject
-@property (nonatomic, strong) NSString *m_strRecent;
-@property (strong, nonatomic) NSString *m_strType;
-@property (strong, nonatomic) NSMutableArray *m_arrayItems;
-@property id target;
-@property SEL selector;
+@class RecentData;
+@protocol RecentDataDelegate <NSObject>
+@optional
 
-- (void)fetchItems;
+- (void) recentData:(RecentData *)recentData withError:(NSNumber *)nError;
+
+- (void) recentData:(RecentData *)recentData didFinishLodingData:(NSArray *)arrayItems;
+
+@end
+
+@interface RecentData : NSObject
+
+- (void)fetchItemsWithType:(NSString *)strType withRecent:(NSString *)strRecent;
+
+@property (nonatomic, assign) id <RecentDataDelegate> delegate;
+@property (nonatomic, assign) int tag;
 
 @end

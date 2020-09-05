@@ -163,8 +163,7 @@
 		viewController.m_boardId = boardId;
 		viewController.m_boardNo = boardNo;
 		viewController.m_boardName = boardName;
-		viewController.target = nil;
-		viewController.selector = nil;
+		viewController.delegate = nil;
 	} else {
 		return;
 	}

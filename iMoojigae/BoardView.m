@@ -14,7 +14,7 @@
 #import "BoardData.h"
 @import GoogleMobileAds;
 
-@interface BoardView ()
+@interface BoardView () <BoardDataDelegate>
 {
     NSMutableArray *m_arrayItems;
 	BoardData *m_boardData;
@@ -48,11 +48,9 @@
     
 	m_arrayItems = [[NSMutableArray alloc] init];
 
-	m_boardData = [[BoardData alloc] init];
-	m_boardData.m_strCommNo = m_strCommNo;
-	m_boardData.target = self;
-	m_boardData.selector = @selector(didFetchItems);
-    [m_boardData fetchItems];
+    self.boardData = [[BoardData alloc] init];
+    self.boardData.delegate = self;
+    [self.boardData fetchItemsWithCommNo:m_strCommNo];
 }
 
 - (void)dealloc {
@@ -166,13 +164,12 @@
 	}
 }
 
-#pragma mark - Board Data Function
+#pragma mark - BoardDataDelegate
 
-- (void)didFetchItems
+- (void) boardData:(BoardData *)boardData didFinishLodingData:(NSArray *)arrayItems withRecent:(NSString *)strRecent;
 {
-	m_strRecent = m_boardData.m_strRecent;
-	
-	m_arrayItems = [NSMutableArray arrayWithArray:m_boardData.m_arrayItems];
+	m_strRecent = strRecent;
+	m_arrayItems = [NSMutableArray arrayWithArray:arrayItems];
 	[self.tbView reloadData];
 }
 @end

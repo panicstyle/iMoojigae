@@ -14,7 +14,7 @@
 #import "ItemsData.h"
 @import GoogleMobileAds;
 
-@interface ItemsView ()
+@interface ItemsView () <ItemsDataDelegate, ArticleViewDelegate, ArticleWriteDelegate>
 {
 	NSMutableArray *m_arrayItems;
 	NSString *m_strTitle;
@@ -65,15 +65,9 @@
     
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
-	m_itemsData = [[ItemsData alloc] init];
-	m_itemsData.m_strCommNo = m_strCommNo;
-	m_itemsData.m_boardId = m_boardId;
-	m_itemsData.target = self;
-	m_itemsData.selector = @selector(didFetchItems:);
-	m_nPage = 1;
-	[m_itemsData fetchItems:m_nPage];
-
-	
+    self.itemsData = [[ItemsData alloc] init];
+    self.itemsData.delegate = self;
+    [self.itemsData fetchItemsWithBoardId:m_boardId withPage:m_nPage];
 }
 
 - (void)textViewDidChange:(UITextView *)textView;
@@ -253,7 +247,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if ([indexPath row] == [m_arrayItems count]) {
 		m_nPage++;
-		[m_itemsData fetchItems:m_nPage];
+        [self.itemsData fetchItemsWithBoardId:m_boardId withPage:m_nPage];
     } else {
         NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
         [item setValue:[NSNumber numberWithInt:1] forKey:@"read"];
@@ -282,8 +276,7 @@
 		view.m_boardId = m_boardId;
 		view.m_boardNo = [item valueForKey:@"boardNo"];
 		view.m_boardName = m_boardName;
-		view.target = self;
-		view.selector = @selector(didWrite:);
+		view.delegate = self;
 	} else 	if ([[segue identifier] isEqualToString:@"ArticleWrite"]) {
 		ArticleWriteView *view = [segue destinationViewController];
 		view.m_nMode = [NSNumber numberWithInt:ArticleWrite];
@@ -291,8 +284,7 @@
 		view.m_boardNo = @"";
 		view.m_strTitle = @"";
 		view.m_strContent = @"";
-		view.target = self;
-		view.selector = @selector(didWrite:);
+		view.delegate = self;
 	}
 }
 
@@ -322,42 +314,47 @@
 	return fullScreenRect;
 }
 
-#pragma mark Data Function
+#pragma mark - ItemsDataDelegate
 
-- (void)didFetchItems:(NSNumber *)result
+- (void) itemsData:(ItemsData *)itemsData withError:(NSNumber *)nError
 {
-	if ([result intValue] == RESULT_AUTH_FAIL) {
-		NSLog(@"already login : auth fail");
-		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"권한오류"
-																	   message:@"게시판을 볼 권한이 없습니다."
-																preferredStyle:UIAlertControllerStyleAlert];
-		
-		UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-															  handler:^(UIAlertAction * action) {}];
-		
-		[alert addAction:defaultAction];
-		[self presentViewController:alert animated:YES completion:nil];
-	} else if ([result intValue] == RESULT_LOGIN_FAIL) {
-		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
-																	   message:@"로그인 정보가 없거나 잘못되었습니다. 설정에서 로그인정보를 입력하세요."
-																preferredStyle:UIAlertControllerStyleAlert];
-		
-		UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-															  handler:^(UIAlertAction * action) {}];
-		
-		[alert addAction:defaultAction];
-		[self presentViewController:alert animated:YES completion:nil];
-	} else {
-		if (m_nPage == 1) {
-			m_arrayItems = [NSMutableArray arrayWithArray:m_itemsData.m_arrayItems];
-		} else {
-			[m_arrayItems addObjectsFromArray:m_itemsData.m_arrayItems];
-		}
-		[self.tbView reloadData];
-	}
+    if ([nError intValue] == RESULT_AUTH_FAIL) {
+        NSLog(@"already login : auth fail");
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"권한오류"
+                                                                       message:@"게시판을 볼 권한이 없습니다."
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    } else if ([nError intValue] == RESULT_LOGIN_FAIL) {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
+                                                                       message:@"로그인 정보가 없거나 잘못되었습니다. 설정에서 로그인정보를 입력하세요."
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
-- (void)didWrite:(id)sender
+- (void) itemsData:(ItemsData *)itemsData didFinishLodingData:(NSArray *)arrayItems
+{
+    if (m_nPage == 1) {
+        m_arrayItems = [NSMutableArray arrayWithArray:arrayItems];
+    } else {
+        [m_arrayItems addObjectsFromArray:arrayItems];
+    }
+    [self.tbView reloadData];
+}
+
+#pragma mark - ArticleViewDelegate
+
+- (void) articleView:(ArticleView *)articleView didWrite:(id)sender
 {
 	NSLog(@"didWrite");
 	
@@ -365,8 +362,20 @@
 	[self.tbView reloadData];
 	
 	m_nPage = 1;
-	
-	[m_itemsData fetchItems:1];
-	
+    [self.itemsData fetchItemsWithBoardId:m_boardId withPage:m_nPage];
 }
+
+#pragma mark - ArticleWriteDelegate
+
+- (void) articleWrite:(ArticleWriteView *)articleWrite didWrite:(id)sender
+{
+    NSLog(@"didWrite");
+    
+    [m_arrayItems removeAllObjects];
+    [self.tbView reloadData];
+    
+    m_nPage = 1;
+    [self.itemsData fetchItemsWithBoardId:m_boardId withPage:m_nPage];
+}
+
 @end

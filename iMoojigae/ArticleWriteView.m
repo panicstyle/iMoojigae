@@ -14,7 +14,7 @@
 {
 	int m_bUpMode;
 	long m_lContentHeight;
-	UIAlertView *alertWait;
+	UIAlertController *alertWait;
 	int m_selectedImage;
 	int m_ImageStatus[5];
 	int m_nAttachCount;
@@ -40,8 +40,6 @@
 @synthesize m_boardNo;
 @synthesize m_strTitle;
 @synthesize m_strContent;
-@synthesize target;
-@synthesize selector;
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -194,15 +192,20 @@
 
 - (void)AlertShow
 {
-	alertWait = [[UIAlertView alloc] initWithTitle:@"저장중입니다." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-	[alertWait show];
-	
+	alertWait = [UIAlertController
+                                  alertControllerWithTitle:@"저장중입니다."
+                                  message:nil
+                                  preferredStyle:UIAlertControllerStyleAlert];
+
+
+	[self presentViewController:alertWait animated:YES completion:nil];
+
 	UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 	
 	// Adjust the indicator so it is up a few pixels from the bottom of the alert
-	indicator.center = CGPointMake(alertWait.bounds.size.width / 2, alertWait.bounds.size.height - 50);
+    indicator.center = CGPointMake(alertWait.view.bounds.size.width / 2, alertWait.view.bounds.size.height - 50);
 	[indicator startAnimating];
-	[alertWait addSubview:indicator];
+    [alertWait.view addSubview:indicator];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
@@ -210,7 +213,7 @@
 - (void)AlertDismiss
 {
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	[alertWait dismissWithClickedButtonIndex:0 animated:YES];
+    [alertWait dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void) cancelEditing:(id)sender
@@ -223,13 +226,15 @@
 {
 	if (viewTitle.text.length <= 0 || viewContent.text.length <= 0) {
 		// 쓰여진 내용이 없으므로 저장하지 않는다.
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"확인"
-														message:@"입력된 내용이 없습니다."
-													   delegate:nil
-											  cancelButtonTitle:nil
-											  otherButtonTitles:nil];
-		[alert addButtonWithTitle:@"확인"];
-		[alert show];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"확인"
+                                                                       message:@"입력된 내용이 없습니다."
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
 		return;
 	}
 	if (m_ImageStatus[0] == 1 || m_ImageStatus[1] == 1 || m_ImageStatus[2] == 1 || m_ImageStatus[3] == 1 || m_ImageStatus[4] == 1) {
@@ -355,17 +360,30 @@
 		errmsg = [Utils findStringRegex:str regex:@"(?<=var message = ').*?(?=';)"];
 		errmsg = [Utils replaceStringHtmlTag:errmsg];
 		
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"글 작성 오류"
-														message:errmsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
-		[alert show];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 작성 오류"
+                                                                       message:errmsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        
 		return;
 	}
 	
 	if (![self parseAttachResult:str]) {
 		NSString *errmsg = @"첨부파일에서 오류가 발생했습니다.";
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"글 작성 오류"
-														message:errmsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
-		[alert show];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 작성 오류"
+                                                                       message:errmsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
 		return;
 	}
 	
@@ -468,17 +486,26 @@
 		NSString *errmsg2 = [Utils findStringRegex:returnString regex:@"(?<=<b>시스템 메세지입니다</b></font><br>).*?(?=<br>)"];
 		errmsg = [NSString stringWithFormat:@"글 작성중 오류가 발생했습니다. 잠시후 다시 해보세요.[%@]", errmsg2];
 		
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"글 작성 오류"
-														message:errmsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
-		[alert show];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 작성 오류"
+                                                                       message:errmsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+
 		return;
 	}
 	
 	NSLog(@"write article success");
-	[target performSelector:selector withObject:nil];
+    if ([self.delegate respondsToSelector:@selector(articleWrite:didWrite:)] == YES)
+        [self.delegate articleWrite:self didWrite:self];
 	
 	[[self navigationController] popViewControllerAnimated:YES];
 }
+
 - (IBAction)AddImage:(id)sender {
 	NSLog(@"AddImage Push");
 }

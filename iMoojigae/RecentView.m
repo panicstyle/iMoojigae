@@ -13,7 +13,7 @@
 #import "RecentData.h"
 @import GoogleMobileAds;
 
-@interface RecentView ()
+@interface RecentView ()  <RecentDataDelegate>
 {
 	NSMutableArray *m_arrayItems;
 	RecentData *m_recentData;
@@ -70,12 +70,9 @@
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
-	m_recentData = [[RecentData alloc] init];
-    m_recentData.m_strRecent = m_strRecent;
-    m_recentData.m_strType = m_strType;
-	m_recentData.target = self;
-	m_recentData.selector = @selector(didFetchItems:);
-	[m_recentData fetchItems];
+    self.recentData = [[RecentData alloc] init];
+    self.recentData.delegate = self;
+    [self.recentData fetchItemsWithType:m_strType withRecent:m_strRecent];
 }
 
 - (void)textViewDidChange:(UITextView *)textView;
@@ -230,11 +227,11 @@
 	return fullScreenRect;
 }
 
-#pragma mark WriteArticle
+#pragma mark - RecentDataDelegate
 
-- (void)didFetchItems:(NSNumber *)result
+- (void) recentData:(RecentData *)recentData withError:(NSNumber *)nError
 {
-	if ([result intValue] == RESULT_AUTH_FAIL) {
+	if ([nError intValue] == RESULT_AUTH_FAIL) {
 		NSLog(@"already login : auth fail");
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"권한오류"
 																	   message:@"게시판을 볼 권한이 없습니다."
@@ -245,7 +242,7 @@
 		
 		[alert addAction:defaultAction];
 		[self presentViewController:alert animated:YES completion:nil];
-	} else if ([result intValue] == RESULT_LOGIN_FAIL) {
+	} else if ([nError intValue] == RESULT_LOGIN_FAIL) {
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
 																	   message:@"로그인 정보가 없거나 잘못되었습니다. 설정에서 로그인정보를 입력하세요."
 																preferredStyle:UIAlertControllerStyleAlert];
@@ -255,9 +252,13 @@
 		
 		[alert addAction:defaultAction];
 		[self presentViewController:alert animated:YES completion:nil];
-	} else {
-		m_arrayItems = [NSMutableArray arrayWithArray:m_recentData.m_arrayItems];
-		[self.tbView reloadData];
 	}
 }
+    
+- (void) recentData:(RecentData *)recentData didFinishLodingData:(NSArray *)arrayItems
+{
+    m_arrayItems = [NSMutableArray arrayWithArray:arrayItems];
+    [self.tbView reloadData];
+}
+
 @end

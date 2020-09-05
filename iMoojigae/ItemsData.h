@@ -8,13 +8,21 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ItemsData : NSObject
-@property (nonatomic, strong) NSString *m_strCommNo;
-@property (nonatomic, strong) NSString *m_boardId;
-@property (strong, nonatomic) NSMutableArray *m_arrayItems;
-@property id target;
-@property SEL selector;
+@class ItemsData;
+@protocol ItemsDataDelegate <NSObject>
+@optional
 
-- (void)fetchItems:(int) nPage;
+- (void) itemsData:(ItemsData *)itemsData withError:(NSNumber *)nError;
+
+- (void) itemsData:(ItemsData *)itemsData didFinishLodingData:(NSArray *)arrayItems;
+
+@end
+
+@interface ItemsData : NSObject
+
+- (void)fetchItemsWithBoardId:(NSString *)boardId withPage:(int)nPage;
+
+@property (nonatomic, assign) id <ItemsDataDelegate> delegate;
+@property (nonatomic, assign) int tag;                                      // tag 값
 
 @end

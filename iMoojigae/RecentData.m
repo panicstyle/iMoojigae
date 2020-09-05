@@ -11,87 +11,65 @@
 #import "LoginToService.h"
 #import "NSString+HTML.h"
 #import "DBInterface.h"
+#import "HttpSessionRequest.h"
 
-@interface RecentData () {
-	NSMutableData *m_receiveData;
-	NSURLConnection *m_connection;
-	BOOL m_isConn;
+@interface RecentData ()  <HttpSessionRequestDelegate>
+{
 	BOOL m_isLogin;
 	LoginToService *m_login;
 }
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation RecentData
 
-@synthesize m_strRecent;
-@synthesize m_strType;
-@synthesize m_arrayItems;
-@synthesize target;
-@synthesize selector;
-
-- (void)fetchItems
+- (void)fetchItemsWithType:(NSString *)strType withRecent:(NSString *)strRecent
 {
-	m_arrayItems = [[NSMutableArray alloc] init];
-
-	NSString *url;
     NSString *doLink;
-    if ([m_strType isEqualToString:@"list"]) {
+    if ([strType isEqualToString:@"list"]) {
         doLink = @"board-api-recent.do";
     } else {
         doLink = @"board-api-recent-memo.do";
     }
+
+    NSString *url = [NSString stringWithFormat:@"%@/%@", WWW_SERVER, doLink];
+    NSLog(@"query = [%@]", url);
     
-	url = [NSString stringWithFormat:@"%@/%@?part=index&rid=50&pid=%@", WWW_SERVER, doLink, m_strRecent];
-
-	NSLog(@"fetchItems");
-	m_receiveData = [[NSMutableData alloc] init];
-	
-	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-	[request setURL:[NSURL URLWithString:url]];
-	[request setHTTPMethod:@"POST"];
-	[request addValue:@"gzip,deflate,sxdch" forHTTPHeaderField:@"Accept-Encoding"];
-	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
-	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
-	
-	NSData *body = [[NSData alloc] initWithData:[@"" dataUsingEncoding:NSUTF8StringEncoding]];
-	
-	[request setHTTPBody:body];
-	
-	m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-	
-	NSLog(@"fetchItems 2");
-	m_isConn = TRUE;
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:@"index", @"part",
+                         @"50", @"rid",
+                         strRecent, @"pid", nil];
+    
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+#pragma mark -
+#pragma mark HttpSessionRequestDelegate
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
 {
-	NSLog(@"didReceiveData");
-	if (m_isConn) {
-		[m_receiveData appendData:data];
-		NSLog(@"didReceiveData receiveData=[%lu], data=[%lu]", (unsigned long)[m_receiveData length], (unsigned long)[data length]);
-	} else {
-		NSLog(@"connect finish");
-	}
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
 {
-	m_isConn = FALSE;
-	NSLog(@"ListView receiveData Size = [%lu]", (unsigned long)[m_receiveData length]);
-	
-	if ([m_receiveData length] < 1800) {
-		[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
+	if ([data length] < 1800) {
+        if ([self.delegate respondsToSelector:@selector(recentData:withError:)] == YES)
+            [self.delegate recentData:self withError:[NSNumber numberWithInt:RESULT_AUTH_FAIL]];
 	}
 	
-//	NSString *str = [[NSString alloc] initWithData:m_receiveData encoding:NSUTF8StringEncoding];
-
 	NSError *localError = nil;
-	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:m_receiveData options:0 error:&localError];
+	NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
 	
 	if (localError != nil) {
 		return;
 	}
 	
+    NSMutableArray *arrayItems = [[NSMutableArray alloc] init];
+    
 	NSArray *jsonItems = [parsedObject valueForKey:@"item"];
 	
 	NSMutableDictionary *currItem;
@@ -162,9 +140,9 @@
             [currItem setValue:[NSNumber numberWithInt:0] forKey:@"read"];
         }
 
-		[m_arrayItems addObject:currItem];
+		[arrayItems addObject:currItem];
 	}
-	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
-}
+    if ([self.delegate respondsToSelector:@selector(recentData:didFinishLodingData:)] == YES)
+        [self.delegate recentData:self didFinishLodingData:arrayItems];}
 
 @end

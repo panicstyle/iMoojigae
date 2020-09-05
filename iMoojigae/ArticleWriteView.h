@@ -9,6 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "env.h"
 
+@class ArticleWriteView;
+@protocol ArticleWriteDelegate <NSObject>
+@optional
+
+- (void) articleWrite:(ArticleWriteView *)articleWrite didWrite:(id)sender;
+
+@end
+
 @interface ArticleWriteView : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (nonatomic, weak) IBOutlet UITextField *viewTitle;
 @property (nonatomic, weak) IBOutlet UITextView *viewContent;
@@ -23,6 +31,8 @@
 @property (nonatomic, strong) NSString *m_boardNo;
 @property (nonatomic, strong) NSString *m_strTitle;
 @property (nonatomic, strong) NSString *m_strContent;
-@property id target;
-@property SEL selector;
+
+@property (nonatomic, assign) id <ArticleWriteDelegate> delegate;
+@property (nonatomic, assign) int tag;
+
 @end

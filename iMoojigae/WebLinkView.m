@@ -60,7 +60,7 @@
 	if ([m_nFileType intValue] == FILE_TYPE_IMAGE) {		
         NSDictionary *dic = [[NSDictionary alloc] init];
         NSString *escapedURL = [m_strLink stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-        [self.httpSessionRequest requestURL:escapedURL withValues:dic];
+        [self.httpSessionRequest requestURL:escapedURL withValues:dic withReferer:@""];
         
 	} else {
         if ([[m_strLink substringToIndex:4] isEqualToString:@"http"]) {

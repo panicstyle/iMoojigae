@@ -56,10 +56,10 @@
     NSString *m_strHtml;
     NSString *m_strContent;
     BOOL m_isLogin;
-    LoginToService *m_login;
     long m_rowComment;
 }
 @property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
+@property (nonatomic, strong) LoginToService *m_login;
 @end
 
 @implementation ArticleView
@@ -533,6 +533,8 @@
     self.httpSessionRequest = [[HttpSessionRequest alloc] init];
     self.httpSessionRequest.delegate = self;
     self.httpSessionRequest.timeout = 30;
+    self.httpSessionRequest.httpMethod = @"GET";
+    self.httpSessionRequest.tag = READ_ARTICLE;
     
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:boardId, @"boardId",
                          boardNo, @"boardNo",
@@ -542,7 +544,7 @@
                          @"20", @"rid", nil];
     
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic withReferer:@""];
     
     
     m_arrayItems = [[NSMutableArray alloc] init];
@@ -566,7 +568,7 @@
     NSString *postString = [NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&time=1334217622773&returnBoardNo=%@&boardNo=%@&command=DELETE&totalPage=0&totalRecords=0&serialBadNick=&serialBadContent=&htmlImage=%%2Fout&thumbnailSize=50&memoWriteable=true&list_yn=N&replyList_yn=N&defaultBoardSkin=default&boardWidth=710&multiView_yn=Y&titleCategory_yn=N&category_yn=N&titleNo_yn=Y&titleIcon_yn=N&titlePoint_yn=N&titleMemo_yn=Y&titleNew_yn=Y&titleThumbnail_yn=N&titleNick_yn=Y&titleTag_yn=Y&anonymity_yn=N&titleRead_yn=Y&boardModel_cd=A&titleDate_yn=Y&tag_yn=Y&thumbnailSize=50&readOver_color=%%23336699&boardSerialBadNick=&boardSerialBadContent=&userPw=&userNick=&memoContent=&memoSeq=&pollSeq=&returnURI=&beforeCommand=&starPoint=&provenance=board-read.do&tagsName=&pageScale=&searchOrKey=&searchType=&tag=1", strBoardNo, strArticleNo, strArticleNo];
 
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValueString:postString];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:postString withReferer:@""];
 }
 
 - (void)DeleteComment:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo
@@ -586,7 +588,7 @@
     NSString *postString = [NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&time=&returnBoardNo=%@&boardNo=%@&command=MEMO_DELETE&totalPage=0&totalRecords=0&serialBadNick=&serialBadContent=&htmlImage=%%2Fout&thumbnailSize=50&memoWriteable=true&list_yn=N&replyList_yn=N&defaultBoardSkin=default&boardWidth=710&multiView_yn=Y&titleCategory_yn=N&category_yn=N&titleNo_yn=Y&titleIcon_yn=N&titlePoint_yn=N&titleMemo_yn=Y&titleNew_yn=Y&titleThumbnail_yn=N&titleNick_yn=Y&titleTag_yn=Y&anonymity_yn=N&titleRead_yn=Y&boardModel_cd=A&titleDate_yn=Y&tag_yn=Y&thumbnailSize=50&readOver_color=%%23336699&boardSerialBadNick=&boardSerialBadContent=&userPw=&userNick=&memoContent=&memoSeq=%@&pollSeq=&returnURI=&beforeCommand=&starPoint=&provenance=board-read.do&tagsName=&pageScale=&searchOrKey=&searchType=&tag=1", strBoardNo, strArticleNo, strArticleNo, strCommentNo];
 
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValueString:postString];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:postString withReferer:@""];
 }
 
 - (void) calculateWebViewSize {
@@ -832,9 +834,9 @@
         if (m_isLogin == FALSE) {
             NSLog(@"retry login");
             // 저장된 로그인 정보를 이용하여 로그인
-            m_login = [[LoginToService alloc] init];
-            m_login.delegate = self;
-            [m_login LoginToService];
+            self.m_login = [[LoginToService alloc] init];
+            self.m_login.delegate = self;
+            [self.m_login LoginToService];
         } else {
             [self alertWithError:[NSNumber numberWithInt:RESULT_LOGIN_FAIL]];
         }
@@ -974,6 +976,20 @@
                     strProfile,
                     strBottom];
     
+    htmlString = m_strContent;
+    m_strEditableTitle = m_strTitle;
+/*
+    htmlString = m_articleData.m_strContent;
+    m_strEditableContent = m_articleData.m_strEditableContent;
+    m_strEditableTitle = m_articleData.m_strTitle;
+    m_strTitle = m_articleData.m_strTitle;
+    m_strName = m_articleData.m_strName;
+    m_strDate = m_articleData.m_strDate;
+    m_strHit = m_articleData.m_strHit;
+    
+    m_arrayItems = m_articleData.m_arrayItems;
+    m_dicAttach = m_articleData.m_dicAttach;
+  */
     NSLog(@"htmlString = [%@]", htmlString);
     
     m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];

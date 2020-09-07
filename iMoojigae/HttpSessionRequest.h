@@ -42,7 +42,7 @@
  */
 @interface HttpSessionRequest : NSObject
 
-- (void)requestURL:(NSString *)url withMultipartBody:(NSData *)body withBoundary:(NSString *)boundary;
+- (void)requestURL:(NSString *)url withMultipartBody:(NSData *)body withBoundary:(NSString *)boundary withReferer:(NSString *)referer;
 
 /*
     파라미터 url과 values로 URL 요청을 한다.
@@ -54,7 +54,7 @@
         fileName : Multipart 로 전달할 파일명
         filePath : Muttipart 로 전달할 파일의 경로명
  */
-- (void)requestURL:(NSString *)url withValues:(NSDictionary *)values withFileName:(NSString *)fileName withFilePath:(NSString *)filePath;
+- (void)requestURL:(NSString *)url withValues:(NSDictionary *)values withFileName:(NSString *)fileName withFilePath:(NSString *)filePath withReferer:(NSString *)referer;
 
 /*
     파라미터 url과 values로 URL 요청을 한다.
@@ -64,7 +64,7 @@
         url : 요청할 URL
         values : 요청시 전달할 데이터
  */
-- (void)requestURL:(NSString *)url withValues:(NSDictionary *)values;
+- (void)requestURL:(NSString *)url withValues:(NSDictionary *)values withReferer:(NSString *)referer;
 
 /*
     파라미터 json 데이터를 서버에 보낸댜.
@@ -74,7 +74,7 @@
         url : 요청할 URL
         jsonString : 보낼 json 데이터
  */
-- (void)requestURL:(NSString *)url withJsonString:(NSString *)jsonString;
+- (void)requestURL:(NSString *)url withJsonString:(NSString *)jsonString withReferer:(NSString *)referer;
 
 /*
     파라미터 json 데이터를 서버에 보낸댜.
@@ -84,7 +84,7 @@
         url : 요청할 URL
         valueString : 보낼 value 데이터
  */
-- (void)requestURL:(NSString *)url withValueString:(NSString *)valueString;
+- (void)requestURL:(NSString *)url withValueString:(NSString *)valueString withReferer:(NSString *)referer;
 
 /*
     헤더 정보를 요청한다.

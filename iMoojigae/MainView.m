@@ -205,7 +205,7 @@
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:@"moo_menu", @"comm", nil];
     
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic withReferer:@""];
 }
 
 #pragma mark - HttpSessionRequestDelegate
@@ -223,7 +223,7 @@
         return;
     }
 
-    NSString *m_strRecent = [parsedObject valueForKey:@"recent"];
+    m_strRecent = [parsedObject valueForKey:@"recent"];
     NSLog(@"m_strRecent %@", m_strRecent);
 
     NSArray *jsonItems = [parsedObject valueForKey:@"menu"];

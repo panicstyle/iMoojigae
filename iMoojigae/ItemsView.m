@@ -22,7 +22,6 @@
 	NSMutableArray *m_arrayItems;
 	NSString *m_strTitle;
 	int m_nPage;
-    LoginToService *m_login;
     BOOL m_isLogin;
     
 	CGRect m_rectScreen;
@@ -34,6 +33,7 @@
 //	BOOL m_isConn;
 }
 @property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
+@property (nonatomic, strong) LoginToService *m_login;
 @end
 
 @implementation ItemsView
@@ -391,7 +391,7 @@
                          [NSString stringWithFormat:@"%d", nPage], @"page", nil];
     
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic withReferer:@""];
 }
 
 #pragma mark -
@@ -410,9 +410,9 @@
         if (m_isLogin == FALSE) {
             NSLog(@"retry login");
             // 저장된 로그인 정보를 이용하여 로그인
-            m_login = [[LoginToService alloc] init];
-            m_login.delegate = self;
-            [m_login LoginToService];
+            self.m_login = [[LoginToService alloc] init];
+            self.m_login.delegate = self;
+            [self.m_login LoginToService];
         } else {
             [self alertWithError:[NSNumber numberWithInt:RESULT_LOGIN_FAIL]];
         }

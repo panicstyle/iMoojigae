@@ -43,13 +43,12 @@
 	}
     
     NSLog(@"Before Logout");
-   [self Logout];
+//   [self Logout];
     NSLog(@"After Logout");
 	
-	NSString *url;
-	url = [NSString stringWithFormat:@"%@/login-process.do", WWW_SERVER];
-	////NSLog(@"url = [%@]", url);
-	
+	NSString *url = [NSString stringWithFormat:@"%@/login-process.do", WWW_SERVER];
+    NSString *strReferer = [NSString stringWithFormat:@"%@/MLogin.do", WWW_SERVER];
+
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 
 	NSString *uid = [userid stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
@@ -64,7 +63,7 @@
     self.httpSessionRequest.tag = LOGIN_TO_SERVER;
     
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValueString:postString];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:postString withReferer:strReferer];
 }
 
 - (void)PushRegister
@@ -122,7 +121,7 @@
     self.httpSessionRequest.tag = PUSH_REGISTER;
     
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValueString:postString];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:postString withReferer:@""];
 }
 
 - (void)PushUpdate
@@ -182,7 +181,7 @@
     self.httpSessionRequest.tag = PUSH_UPDATER;
     
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValueString:postString];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:postString withReferer:@""];
 }
 
 - (void)Logout
@@ -197,7 +196,7 @@
     self.httpSessionRequest.tag = LOGOUT_TO_SERVER;
     
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValueString:@""];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:@"" withReferer:@""];
 }
 
 #pragma mark - HttpSessionRequestDelegate
@@ -217,7 +216,7 @@
         
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         
-        if (returnString != nil && [returnString rangeOfString:@"<script language=javascript>moveTop()</script>"].location == NSNotFound) {
+        if (returnString != nil && [returnString rangeOfString:@"<script language=javascript>moveTop()</script>"].location != NSNotFound) {
             AppDelegate *getVar = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             getVar.strUserId = userid;
             if (switchPush == nil) {

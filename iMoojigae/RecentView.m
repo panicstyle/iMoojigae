@@ -278,7 +278,7 @@
                          strRecent, @"pid", nil];
     
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic withReferer:@""];
 }
 
 #pragma mark - HttpSessionRequestDelegate

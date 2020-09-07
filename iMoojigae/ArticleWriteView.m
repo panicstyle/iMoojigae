@@ -249,6 +249,8 @@
 	[self AlertShow];
 	//		/cafe.php?mode=up&sort=354&p1=tuntun&p2=HTTP/1.1
 	NSString *url = [NSString stringWithFormat:@"%@/uploadManager", WWW_SERVER];
+    NSString *strReferer = [NSString stringWithFormat:@"%@/board-edit.do", WWW_SERVER];
+
 	
 	// 사진첨부됨, Multipart message로 전송
 	//        NSData *imageData = UIImagePNGRepresentation(addPicture.image);
@@ -342,7 +344,7 @@
 	[body appendData:[[NSString stringWithFormat:@"--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
 	
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withMultipartBody:body withBoundary:boundary];
+    [self.httpSessionRequest requestURL:escapedURL withMultipartBody:body withBoundary:boundary withReferer:strReferer];
 }
 
 - (BOOL)parseAttachResult:(NSString *)str {
@@ -365,7 +367,8 @@
 	
 	NSString *url = [NSString stringWithFormat:@"%@/board-save.do",
 					 WWW_SERVER];
-	
+    NSString *strReferer = [NSString stringWithFormat:@"%@/board-edit.do", WWW_SERVER];
+
 	/*
 	 Accept-Encoding: gzip,deflate,sdch
 	 Accept-Language: ko,en-US;q=0.8,en;q=0.6
@@ -419,7 +422,7 @@
     self.httpSessionRequest.tag = POST_DATA;
 
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValueString:bodyString];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:bodyString withReferer:strReferer];
 }
 
 - (IBAction)AddImage:(id)sender {

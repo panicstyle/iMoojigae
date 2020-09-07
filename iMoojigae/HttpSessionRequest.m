@@ -45,7 +45,7 @@
     }
 }
 
-- (void)requestURL:(NSString *)url withValues:(NSDictionary *)values withFileName:(NSString *)fileName withFilePath:(NSString *)filePath
+- (void)requestURL:(NSString *)url withValues:(NSDictionary *)values withFileName:(NSString *)fileName withFilePath:(NSString *)filePath withReferer:(NSString *)referer
 {
     _url = url;
     
@@ -107,6 +107,9 @@
         [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
         [request setValue:@"Mozilla/4.0 (compatible;)" forHTTPHeaderField:@"User-Agent"];
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        if (referer != nil && referer.length > 0) {
+            [request setValue:referer forHTTPHeaderField:@"Referer"];
+        }
         [request setHTTPBody:body];
     }
     
@@ -117,7 +120,7 @@
     [_sessionDataTask resume];
 }
 
-- (void)requestURL:(NSString *)url withMultipartBody:(NSData *)body withBoundary:(NSString *)boundary
+- (void)requestURL:(NSString *)url withMultipartBody:(NSData *)body withBoundary:(NSString *)boundary withReferer:(NSString *)referer
 {
     _url = url;
     
@@ -156,6 +159,9 @@
         NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
         [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
         [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
+        if (referer != nil && referer.length > 0) {
+            [request setValue:referer forHTTPHeaderField:@"Referer"];
+        }
         [request setHTTPBody:body];
     }
     
@@ -167,7 +173,7 @@
 }
 
 
-- (void)requestURL:(NSString *)url withJsonString:(NSString *)jsonString
+- (void)requestURL:(NSString *)url withJsonString:(NSString *)jsonString withReferer:(NSString *)referer
 {
     _url = url;
     
@@ -203,6 +209,9 @@
     [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
     [request setValue:@"Mozilla/4.0 (compatible;)" forHTTPHeaderField:@"User-Agent"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    if (referer != nil && referer.length > 0) {
+        [request setValue:referer forHTTPHeaderField:@"Referer"];
+    }
     [request setHTTPBody:postData];
     
     
@@ -212,7 +221,7 @@
     [_sessionDataTask resume];
 }
 
-- (void)requestURL:(NSString *)url withValues:(NSDictionary *)values
+- (void)requestURL:(NSString *)url withValues:(NSDictionary *)values withReferer:(NSString *)referer
 {
     _url = url;
     
@@ -297,6 +306,9 @@
         [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
         [request setValue:@"Mozilla/4.0 (compatible;)" forHTTPHeaderField:@"User-Agent"];
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        if (referer != nil && referer.length > 0) {
+            [request setValue:referer forHTTPHeaderField:@"Referer"];
+        }
         [request setHTTPBody:postData];
     }
         
@@ -306,7 +318,7 @@
     [_sessionDataTask resume];
 }
 
-- (void)requestURL:(NSString *)url withValueString:(NSString *)valueString
+- (void)requestURL:(NSString *)url withValueString:(NSString *)valueString withReferer:(NSString *)referer
 {
     _url = url;
     
@@ -361,6 +373,9 @@
         [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
         [request setValue:@"Mozilla/4.0 (compatible;)" forHTTPHeaderField:@"User-Agent"];
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        if (referer != nil && referer.length > 0) {
+            [request setValue:referer forHTTPHeaderField:@"Referer"];
+        }
         [request setHTTPBody:postData];
     }
         

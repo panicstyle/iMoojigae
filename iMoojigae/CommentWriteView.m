@@ -178,16 +178,16 @@
 
 	NSString *strContent = self.m_textView.text;
 	
-	NSString *url;
-	url = [NSString stringWithFormat:@"%@/memo-save.do", WWW_SERVER];
+	NSString *url = [NSString stringWithFormat:@"%@/memo-save.do", WWW_SERVER];
+
 	NSLog(@"url = [%@]", url);
     
-    NSString *referer;
+    NSString *strReferer;
     
     if ([m_nMode intValue] == CommentReply) {
-        referer = [NSString stringWithFormat:@"%@/board-api-read.do", WWW_SERVER];
+        strReferer = [NSString stringWithFormat:@"%@/board-api-read.do", WWW_SERVER];
     } else {		// CommentWrite
-        referer = [NSString stringWithFormat:@"%@/board-api-read.do?boardId=%@&boardNo=%@&command=READ&page=1&categoryId=-1", WWW_SERVER, m_boardId, m_boardNo];
+        strReferer = [NSString stringWithFormat:@"%@/board-api-read.do?boardId=%@&boardNo=%@&command=READ&page=1&categoryId=-1", WWW_SERVER, m_boardId, m_boardNo];
     }
     
     NSError *error = NULL;
@@ -215,7 +215,7 @@
     self.httpSessionRequest.httpMethod = @"POST";
     
     NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [self.httpSessionRequest requestURL:escapedURL withValueString:bodyString];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:bodyString withReferer:strReferer];
 }
 
 - (void)didReceiveMemoryWarning {

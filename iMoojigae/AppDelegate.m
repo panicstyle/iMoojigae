@@ -13,10 +13,11 @@
 #import "SetTokenStorage.h"
 @import GoogleMobileAds;
 
-@interface AppDelegate ()
+@interface AppDelegate () <LoginToServiceDelegate>
 {
 	NSDictionary *dUserInfo; //To storage the push data
 }
+@property (nonatomic, strong) LoginToService *m_login;
 @end
 
 @implementation AppDelegate
@@ -29,21 +30,29 @@
 	// Override point for customization after application launch.
 	[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
 //	[[UIApplication sharedApplication] cancelAllLocalNotifications];
-	
+/*
 	// Register for Remote Notifications
 	BOOL pushEnable = NO;
 	if ([[UIApplication sharedApplication] respondsToSelector:@selector(isRegisteredForRemoteNotifications)]) {
 		pushEnable = [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
 	}
-	
+*/
 	// 푸시 아이디를 달라고 폰에다가 요청하는 함수
-//	UIApplication *application = [UIApplication sharedApplication];
-	if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)]) {
-		NSLog(@"upper ios8");
-		// iOS 8 Notifications
-		[application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-		[application registerForRemoteNotifications];
-	}
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    center.delegate = self;
+    [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error) {
+      if ( !error ) {
+          // required to get the app to do anything at all about push notifications
+          dispatch_async(dispatch_get_main_queue(), ^{
+              [[UIApplication sharedApplication] registerForRemoteNotifications];
+              NSLog( @"Push registration success." );
+          });
+      } else {
+          NSLog( @"Push registration FAILED" );
+          NSLog( @"ERROR: %@ - %@", error.localizedFailureReason, error.localizedDescription );
+          NSLog( @"SUGGESTIONS: %@ - %@", error.localizedRecoveryOptions, error.localizedRecoverySuggestion );
+      }
+      }];
 
 	// 앱이 완전히 종료된 상태에서 푸쉬 알림을 받으면 해당 푸쉬 알림 메시지가 launchOptions 에 포함되어서 실행된다.
 	if (launchOptions) {
@@ -95,8 +104,9 @@
     storage.token = strDevice;
     [NSKeyedArchiver archiveRootObject:storage toFile:myPath];
     
-	LoginToService *login = [[LoginToService alloc] init];
-	[login PushRegister];
+    self.m_login = [[LoginToService alloc] init];
+    self.m_login.delegate = self;
+    [self.m_login PushRegister];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
@@ -104,7 +114,7 @@
 	NSLog(@"%@, %@", error, error.localizedDescription);
 	
 }
-
+/*
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo  {
 	NSLog(@"remote notification: %@",[userInfo description]);
 	
@@ -112,7 +122,7 @@
 		NSLog(@"%@",userInfo);
 		dUserInfo = userInfo;
 	}
-
+*/
 /*	앱이 실행중일때 아래 코드를 추가하면 푸쉬 알림을 받아 바로 해당 글로 이동한다. 
 	중간에 새로운 글이 추가되었다고 해당 글을 보겠느냐는 알림을 보여준 뒤 	이동해야 할 것 같음.
 */
@@ -121,8 +131,9 @@
 		[self moveToViewController];
 	}
 */
+/*
 }
-
+*/
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
 	NSLog(@"applicationDidBecomeActive");

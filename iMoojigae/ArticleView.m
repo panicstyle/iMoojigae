@@ -946,7 +946,7 @@
     [strHeader appendString:@"<html><head>"];
     [strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
     [strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
-    [strHeader appendString:@"<style>body {font-family:\"고딕\";font-size:medium;}.title{text-margin:10px 0px;font-size:large}.name{color:gray;margin:10px 0px;font-size:small}.content{}.profile {text-align:left;color:gray;margin:10px 0px;font-size:small}.comment_header{text-align:left;color:white;background: lightgray;padding:20px 0px 10px 10px;font-size:small}.reply{border-bottom:1px solid gray;margin:10px 0px}.reply_header {color:gray;;font-size:small}.reply_content {margin:10px 0px}.re_reply{border-bottom:1px solid gray;margin:10px 0px 0px 20px;background:lightgray}</style>"];
+//    [strHeader appendString:@"<style>body {font-family:\"고딕\";font-size:medium;}.title{text-margin:10px 0px;font-size:large}.name{color:gray;margin:10px 0px;font-size:small}.content{}.profile {text-align:left;color:gray;margin:10px 0px;font-size:small}.comment_header{text-align:left;color:white;background: lightgray;padding:20px 0px 10px 10px;font-size:small}.reply{border-bottom:1px solid gray;margin:10px 0px}.reply_header {color:gray;;font-size:small}.reply_content {margin:10px 0px}.re_reply{border-bottom:1px solid gray;margin:10px 0px 0px 20px;background:lightgray}</style>"];
     [strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
     [strHeader appendString:@"</head>"];
     
@@ -967,7 +967,7 @@
     NSString *strBody = @"<body>";
     
     /* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
-    m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@%@%@",
+    m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@<hr>%@%@",
                     strHeader,
                     strBody,
                     [strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
@@ -978,18 +978,6 @@
     
     htmlString = m_strContent;
     m_strEditableTitle = m_strTitle;
-/*
-    htmlString = m_articleData.m_strContent;
-    m_strEditableContent = m_articleData.m_strEditableContent;
-    m_strEditableTitle = m_articleData.m_strTitle;
-    m_strTitle = m_articleData.m_strTitle;
-    m_strName = m_articleData.m_strName;
-    m_strDate = m_articleData.m_strDate;
-    m_strHit = m_articleData.m_strHit;
-    
-    m_arrayItems = m_articleData.m_arrayItems;
-    m_dicAttach = m_articleData.m_dicAttach;
-  */
     NSLog(@"htmlString = [%@]", htmlString);
     
     m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];

@@ -9,8 +9,9 @@
 #import <Photos/Photos.h>
 #import "ArticleWriteView.h"
 #import "Utils.h"
+#import "HttpSessionRequest.h"
 
-@interface ArticleWriteView ()
+@interface ArticleWriteView () <HttpSessionRequestDelegate>
 {
 	int m_bUpMode;
 	long m_lContentHeight;
@@ -24,7 +25,7 @@
 	NSString *m_errorMsg;
 	NSString *m_strImageFileName[5];
 }
-
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation ArticleWriteView
@@ -248,22 +249,18 @@
 	[self AlertShow];
 	//		/cafe.php?mode=up&sort=354&p1=tuntun&p2=HTTP/1.1
 	NSString *url = [NSString stringWithFormat:@"%@/uploadManager", WWW_SERVER];
-	NSString *strReferer = [NSString stringWithFormat:@"%@/board-edit.do", WWW_SERVER];
-	
-	NSData *respData;
 	
 	// 사진첨부됨, Multipart message로 전송
 	//        NSData *imageData = UIImagePNGRepresentation(addPicture.image);
 	//	NSData *imageData = UIImageJPEGRepresentation(addPicture.image, 0.5f);
 	
-	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-	[request setURL:[NSURL URLWithString:url]];
-	[request setHTTPMethod:@"POST"];
-	
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    self.httpSessionRequest.httpMethod = @"POST";
+    self.httpSessionRequest.tag = POST_FILE;
+    
 	NSString *boundary = @"0xKhTmLbOuNdArY";  // important!!!
-	NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
-	[request addValue:contentType forHTTPHeaderField: @"Content-Type"];
-	[request addValue:strReferer forHTTPHeaderField: @"Referer"];
 	
 	NSMutableData *body = [NSMutableData data];
 	
@@ -344,51 +341,8 @@
 
 	[body appendData:[[NSString stringWithFormat:@"--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
 	
-//	NSString *strCheck = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
-//	NSLog(@"strCheck = %@", strCheck);
-
-	[request setHTTPBody:body];
-	
-	respData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-	
-	NSString *str = [[NSString alloc] initWithData:respData
-										  encoding:NSUTF8StringEncoding];
-	[self AlertDismiss];
-
-	if ([Utils numberOfMatches:str regex:@"fileNameArray\\[0\\] ="] <= 0) {
-		NSString *errmsg;
-		errmsg = [Utils findStringRegex:str regex:@"(?<=var message = ').*?(?=';)"];
-		errmsg = [Utils replaceStringHtmlTag:errmsg];
-		
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 작성 오류"
-                                                                       message:errmsg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction * action) {}];
-        
-        [alert addAction:defaultAction];
-        [self presentViewController:alert animated:YES completion:nil];
-        
-		return;
-	}
-	
-	if (![self parseAttachResult:str]) {
-		NSString *errmsg = @"첨부파일에서 오류가 발생했습니다.";
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 작성 오류"
-                                                                       message:errmsg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction * action) {}];
-        
-        [alert addAction:defaultAction];
-        [self presentViewController:alert animated:YES completion:nil];
-		return;
-	}
-	
-	
-	[self postDo];
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withMultipartBody:body withBoundary:boundary];
 }
 
 - (BOOL)parseAttachResult:(NSString *)str {
@@ -411,17 +365,6 @@
 	
 	NSString *url = [NSString stringWithFormat:@"%@/board-save.do",
 					 WWW_SERVER];
-	
-	//        NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
-	NSString *strReferer = [NSString stringWithFormat:@"%@/board-edit.do", WWW_SERVER];
-	
-	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-	[request setURL:[NSURL URLWithString:url]];
-	[request setHTTPMethod:@"POST"];
-	[request addValue:strReferer forHTTPHeaderField:@"Referer"];
-	[request addValue:@"gzip,deflate,sdch" forHTTPHeaderField:@"Accept-Encoding"];
-	[request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
-	[request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
 	
 	/*
 	 Accept-Encoding: gzip,deflate,sdch
@@ -469,41 +412,14 @@
 	
 	NSLog(@"bodyString = [%@]", bodyString);
 	
-	NSData *body = [[NSData alloc] initWithData:[bodyString dataUsingEncoding:NSUTF8StringEncoding]];
-	
-	[request setHTTPBody:body];
-	
-	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-	//        NSString *returnString = [[[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding] autorelease];
-	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
-	
-	NSLog(@"returnString = [%@]", returnString);
-	
-	[self AlertDismiss];
-	
-	if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
-		NSString *errmsg;
-		NSString *errmsg2 = [Utils findStringRegex:returnString regex:@"(?<=<b>시스템 메세지입니다</b></font><br>).*?(?=<br>)"];
-		errmsg = [NSString stringWithFormat:@"글 작성중 오류가 발생했습니다. 잠시후 다시 해보세요.[%@]", errmsg2];
-		
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 작성 오류"
-                                                                       message:errmsg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction * action) {}];
-        
-        [alert addAction:defaultAction];
-        [self presentViewController:alert animated:YES completion:nil];
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    self.httpSessionRequest.httpMethod = @"POST";
+    self.httpSessionRequest.tag = POST_DATA;
 
-		return;
-	}
-	
-	NSLog(@"write article success");
-    if ([self.delegate respondsToSelector:@selector(articleWrite:didWrite:)] == YES)
-        [self.delegate articleWrite:self didWrite:self];
-	
-	[[self navigationController] popViewControllerAnimated:YES];
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:bodyString];
 }
 
 - (IBAction)AddImage:(id)sender {
@@ -635,4 +551,82 @@
 	return newImage;
 }
 
+#pragma mark - HttpSessionRequestDelegate
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
+{
+}
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
+{
+    if (httpSessionRequest.tag == POST_FILE) {
+        NSString *str = [[NSString alloc] initWithData:data
+                                              encoding:NSUTF8StringEncoding];
+        [self AlertDismiss];
+
+        if ([Utils numberOfMatches:str regex:@"fileNameArray\\[0\\] ="] <= 0) {
+            NSString *errmsg;
+            errmsg = [Utils findStringRegex:str regex:@"(?<=var message = ').*?(?=';)"];
+            errmsg = [Utils replaceStringHtmlTag:errmsg];
+            
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 작성 오류"
+                                                                           message:errmsg
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {}];
+            
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:nil];
+            
+            return;
+        }
+        
+        if (![self parseAttachResult:str]) {
+            NSString *errmsg = @"첨부파일에서 오류가 발생했습니다.";
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 작성 오류"
+                                                                           message:errmsg
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {}];
+            
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:nil];
+            return;
+        }
+        [self postDo];
+    } else if (httpSessionRequest.tag == POST_DATA) {
+        NSString *returnString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        
+        NSLog(@"returnString = [%@]", returnString);
+        
+        [self AlertDismiss];
+        
+        if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
+            NSString *errmsg;
+            NSString *errmsg2 = [Utils findStringRegex:returnString regex:@"(?<=<b>시스템 메세지입니다</b></font><br>).*?(?=<br>)"];
+            errmsg = [NSString stringWithFormat:@"글 작성중 오류가 발생했습니다. 잠시후 다시 해보세요.[%@]", errmsg2];
+            
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 작성 오류"
+                                                                           message:errmsg
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {}];
+            
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:nil];
+
+            return;
+        }
+        
+        NSLog(@"write article success");
+        if ([self.delegate respondsToSelector:@selector(articleWrite:didWrite:)] == YES)
+            [self.delegate articleWrite:self didWrite:self];
+        
+        [[self navigationController] popViewControllerAnimated:YES];
+    }
+}
+    
 @end

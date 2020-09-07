@@ -12,16 +12,15 @@
 #import "SetTokenStorage.h"
 #import "AppDelegate.h"
 #import "Utils.h"
-//#import "HTTPRequest.h"
+#import "HttpSessionRequest.h"
+
+@interface LoginToService () <HttpSessionRequestDelegate>
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
+@end
 
 @implementation LoginToService
 
-//@synthesize respData;
-//@synthesize target;
-//@synthesize selector;
-
-
-- (BOOL)LoginToService
+- (void)LoginToService
 {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
@@ -40,13 +39,12 @@
 	
 	if (userid == nil || [userid isEqualToString:@""] || userpwd == nil || [userpwd isEqualToString:@""]) {
         NSLog(@"userid and userpw is not set");
-        return FALSE;
+        return;
 	}
     
     NSLog(@"Before Logout");
    [self Logout];
     NSLog(@"After Logout");
-//    [self GetMain];
 	
 	NSString *url;
 	url = [NSString stringWithFormat:@"%@/login-process.do", WWW_SERVER];
@@ -54,46 +52,19 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-	NSString *strReferer = [NSString stringWithFormat:@"%@/MLogin.do", WWW_SERVER];
-	
-    [request setURL:[NSURL URLWithString:url]];
-    [request setHTTPMethod:@"POST"];
-    [request addValue:strReferer forHTTPHeaderField:@"Referer"];
- 
-	NSString *uid = [userid stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
-    NSString *upwd = [userpwd stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	NSString *uid = [userid stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *upwd = [userpwd stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
-    NSMutableData *body = [NSMutableData data];
-    [body appendData:[[NSString stringWithFormat:@"userId=%@&userPw=%@&boardId=&boardNo=&page=1&categoryId=-1&returnURI=&returnBoardNo=&beforeCommand=&command=LOGIN", uid, upwd]  dataUsingEncoding:NSUTF8StringEncoding]];
+    NSString *postString = [NSString stringWithFormat:@"userId=%@&userPw=%@&boardId=&boardNo=&page=1&categoryId=-1&returnURI=&returnBoardNo=&beforeCommand=&command=LOGIN", uid, upwd];
  
-    [request setHTTPBody:body];
- 
-    NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    self.httpSessionRequest.httpMethod = @"POST";
+    self.httpSessionRequest.tag = LOGIN_TO_SERVER;
     
-    NSLog(@"returnString = [%@]", returnString);
-    
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	
-    if (returnString && [returnString rangeOfString:@"<script language=javascript>moveTop()</script>"].location != NSNotFound) {
-		AppDelegate *getVar = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-		getVar.strUserId = userid;
-		if (switchPush == nil) {
-			switchPush = [NSNumber numberWithBool:true];
-		}
-		getVar.switchPush = switchPush;
-		
-        return TRUE;
-    } else {
-		if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
-			return FALSE;
-		} else {
-			return TRUE;
-		}
-    }
-
-    return FALSE;
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:postString];
 }
 
 - (void)PushRegister
@@ -142,16 +113,16 @@
 	
 	NSLog(@"URL : %@", url);
 	
-	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-	[request setURL:[NSURL URLWithString:url]];
-	[request setHTTPMethod:@"POST"];
-	
-	NSMutableData *body = [NSMutableData data];
-	[body appendData:[[NSString stringWithFormat:@"{\"type\":\"iOS\",\"push_yn\":\"%@\",\"uuid\":\"%@\",\"userid\":\"%@\"}", strPushYN, tokenDevice, userId]  dataUsingEncoding:NSUTF8StringEncoding]];
+	NSString *postString = [NSString stringWithFormat:@"{\"type\":\"iOS\",\"push_yn\":\"%@\",\"uuid\":\"%@\",\"userid\":\"%@\"}", strPushYN, tokenDevice, userId];
  
-	[request setHTTPBody:body];
-
-	[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    self.httpSessionRequest.httpMethod = @"POST";
+    self.httpSessionRequest.tag = PUSH_REGISTER;
+    
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:postString];
 }
 
 - (void)PushUpdate
@@ -202,19 +173,16 @@
 	
 	NSLog(@"URL : %@", url);
 	
-	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-	[request setURL:[NSURL URLWithString:url]];
-	[request setHTTPMethod:@"POST"];
-	
-	NSMutableData *body = [NSMutableData data];
-	[body appendData:[[NSString stringWithFormat:@"{\"type\":\"iOS\",\"push_yn\":\"%@\",\"uuid\":\"%@\",\"userid\":\"%@\"}", strPushYN, tokenDevice, userId]  dataUsingEncoding:NSUTF8StringEncoding]];
+	NSString *postString = [NSString stringWithFormat:@"{\"type\":\"iOS\",\"push_yn\":\"%@\",\"uuid\":\"%@\",\"userid\":\"%@\"}", strPushYN, tokenDevice, userId];
  
-	[request setHTTPBody:body];
-	
-	[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-//	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-//	NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
-//	NSLog(@"returnString = [%@]", returnString);
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    self.httpSessionRequest.httpMethod = @"POST";
+    self.httpSessionRequest.tag = PUSH_UPDATER;
+    
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:postString];
 }
 
 - (void)Logout
@@ -222,51 +190,57 @@
 	NSString *url;
 	url = [NSString stringWithFormat:@"%@/logout.do", WWW_SERVER];
     
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString:url]];
-    [request setHTTPMethod:@"GET"];
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    self.httpSessionRequest.httpMethod = @"GET";
+    self.httpSessionRequest.tag = LOGOUT_TO_SERVER;
     
-    NSMutableData *body = [NSMutableData data];
-    [request setHTTPBody:body];
-    [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:@""];
 }
 
-- (void)GetMain
+#pragma mark - HttpSessionRequestDelegate
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
 {
-	NSString *url;
-	url = [NSString stringWithFormat:@"%@/MLogin.do", WWW_SERVER];
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString:url]];
-    [request setHTTPMethod:@"GET"];
-    
-    NSMutableData *body = [NSMutableData data];
-    [request setHTTPBody:body];
-    [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    if ([self.delegate respondsToSelector:@selector(loginToService:withFail:)] == YES)
+        [self.delegate loginToService:self withFail:@""];
 }
 
-/*
-- (void)didReceiveFinished:(NSString *)result
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
 {
-	NSString *resultStr;
-	
-	resultStr = [NSString stringWithString:result];
-	
-	NSLog(@"login result = [%@]", resultStr);
-	
-    if(target)
-    {
-        [target performSelector:selector withObject:resultStr];
+    if (httpSessionRequest.tag == LOGIN_TO_SERVER) {
+        NSString *returnString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        
+        NSLog(@"returnString = [%@]", returnString);
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        
+        if (returnString != nil && [returnString rangeOfString:@"<script language=javascript>moveTop()</script>"].location == NSNotFound) {
+            AppDelegate *getVar = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            getVar.strUserId = userid;
+            if (switchPush == nil) {
+                switchPush = [NSNumber numberWithBool:true];
+            }
+            getVar.switchPush = switchPush;
+            
+            if ([self.delegate respondsToSelector:@selector(loginToService:withSuccess:)] == YES)
+                [self.delegate loginToService:self withSuccess:@""];
+            return;
+        } else {
+            if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
+                if ([self.delegate respondsToSelector:@selector(loginToService:withFail:)] == YES)
+                    [self.delegate loginToService:self withFail:@""];
+            } else {
+                if ([self.delegate respondsToSelector:@selector(loginToService:withSuccess:)] == YES)
+                    [self.delegate loginToService:self withSuccess:@""];
+            }
+            return;
+        }
+    } else if (httpSessionRequest.tag == PUSH_REGISTER) {
+        
     }
-    [httpRequest release];
 }
-
-- (void)setDelegate:(id)aTarget selector:(SEL)aSelector
-{
-    // 데이터 수신이 완료된 이후에 호출될 메서드의 정보를 담고 있는 셀렉터 설정
-    self.target = aTarget;
-    self.selector = aSelector;
-}
-*/
-
 @end
+

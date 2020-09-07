@@ -11,16 +11,20 @@
 #import "LoginToService.h"
 #import "ArticleView.h"
 #import "ArticleWriteView.h"
-#import "ItemsData.h"
+#import "HttpSessionRequest.h"
+#import "Utils.h"
+#import "DBInterface.h"
+#import "NSString+HTML.h"
 @import GoogleMobileAds;
 
-@interface ItemsView () <ItemsDataDelegate, ArticleViewDelegate, ArticleWriteDelegate>
+@interface ItemsView () <HttpSessionRequestDelegate, ArticleViewDelegate, ArticleWriteDelegate, LoginToServiceDelegate>
 {
 	NSMutableArray *m_arrayItems;
 	NSString *m_strTitle;
 	int m_nPage;
-	ItemsData *m_itemsData;
-
+    LoginToService *m_login;
+    BOOL m_isLogin;
+    
 	CGRect m_rectScreen;
 	
 //	BOOL m_isLogin;
@@ -29,6 +33,7 @@
 //	NSURLConnection *m_conn;
 //	BOOL m_isConn;
 }
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation ItemsView
@@ -53,6 +58,8 @@
 	[lblTitle sizeToFit];
 	self.navigationItem.titleView = lblTitle;
 
+    m_isLogin = FALSE;
+    
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
     
     tbView.estimatedRowHeight = 150.0f;
@@ -65,9 +72,7 @@
     
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
-    self.itemsData = [[ItemsData alloc] init];
-    self.itemsData.delegate = self;
-    [self.itemsData fetchItemsWithBoardId:m_boardId withPage:m_nPage];
+    [self fetchItemsWithBoardId:m_boardId withPage:m_nPage];
 }
 
 - (void)textViewDidChange:(UITextView *)textView;
@@ -247,7 +252,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if ([indexPath row] == [m_arrayItems count]) {
 		m_nPage++;
-        [self.itemsData fetchItemsWithBoardId:m_boardId withPage:m_nPage];
+        [self fetchItemsWithBoardId:m_boardId withPage:m_nPage];
     } else {
         NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
         [item setValue:[NSNumber numberWithInt:1] forKey:@"read"];
@@ -316,7 +321,7 @@
 
 #pragma mark - ItemsDataDelegate
 
-- (void) itemsData:(ItemsData *)itemsData withError:(NSNumber *)nError
+- (void) alertWithError:(NSNumber *)nError
 {
     if ([nError intValue] == RESULT_AUTH_FAIL) {
         NSLog(@"already login : auth fail");
@@ -342,16 +347,6 @@
     }
 }
 
-- (void) itemsData:(ItemsData *)itemsData didFinishLodingData:(NSArray *)arrayItems
-{
-    if (m_nPage == 1) {
-        m_arrayItems = [NSMutableArray arrayWithArray:arrayItems];
-    } else {
-        [m_arrayItems addObjectsFromArray:arrayItems];
-    }
-    [self.tbView reloadData];
-}
-
 #pragma mark - ArticleViewDelegate
 
 - (void) articleView:(ArticleView *)articleView didWrite:(id)sender
@@ -362,7 +357,7 @@
 	[self.tbView reloadData];
 	
 	m_nPage = 1;
-    [self.itemsData fetchItemsWithBoardId:m_boardId withPage:m_nPage];
+    [self fetchItemsWithBoardId:m_boardId withPage:m_nPage];
 }
 
 #pragma mark - ArticleWriteDelegate
@@ -375,7 +370,153 @@
     [self.tbView reloadData];
     
     m_nPage = 1;
-    [self.itemsData fetchItemsWithBoardId:m_boardId withPage:m_nPage];
+    [self fetchItemsWithBoardId:m_boardId withPage:m_nPage];
 }
 
+#pragma mark - User Function
+
+- (void)fetchItemsWithBoardId:(NSString *)boardId withPage:(int)nPage
+{
+    NSString *url = [NSString stringWithFormat:@"%@/board-api-list.do", WWW_SERVER];
+    NSLog(@"query = [%@]", url);
+    
+    m_boardId = boardId;
+    m_nPage = nPage;
+    
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:boardId, @"boardId",
+                         [NSString stringWithFormat:@"%d", nPage], @"page", nil];
+    
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
+}
+
+#pragma mark -
+#pragma mark HttpSessionRequestDelegate
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
+{
+}
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
+{
+    NSString *str = [[NSString alloc] initWithData:data
+                                          encoding:NSUTF8StringEncoding];
+    
+    if ([Utils numberOfMatches:str regex:@"./img/common/board/alert.gif"] > 0) {
+        if (m_isLogin == FALSE) {
+            NSLog(@"retry login");
+            // 저장된 로그인 정보를 이용하여 로그인
+            m_login = [[LoginToService alloc] init];
+            m_login.delegate = self;
+            [m_login LoginToService];
+        } else {
+            [self alertWithError:[NSNumber numberWithInt:RESULT_LOGIN_FAIL]];
+        }
+        return;
+    }
+    
+    NSError *localError = nil;
+    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+    
+    if (localError != nil) {
+        return;
+    }
+    
+    NSMutableArray *arrayItems = [[NSMutableArray alloc] init];
+    
+    NSArray *jsonItems = [parsedObject valueForKey:@"item"];
+    
+    NSMutableDictionary *currItem;
+    
+    // DB에 현재 읽는 글의 boardId, boardNo 를 insert
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+
+    for (int i = 0; i < [jsonItems count]; i++) {
+        NSDictionary *jsonItem = [jsonItems objectAtIndex:i];
+        
+        currItem = [[NSMutableDictionary alloc] init];
+        
+        // boardNo
+        NSString *boardNo = [jsonItem valueForKey:@"boardNo"];
+        [currItem setValue:boardNo forKey:@"boardNo"];
+        
+        // isNew
+        NSString *isNew = [jsonItem valueForKey:@"recentArticle"];
+        if ([isNew isEqualToString:@"Y"]) {
+            [currItem setValue:[NSNumber numberWithInt:1] forKey:@"isNew"];
+        } else {
+            [currItem setValue:[NSNumber numberWithInt:0] forKey:@"isNew"];
+        }
+        
+        // isUpdated
+        NSString *isUpdated = [jsonItem valueForKey:@"updatedArticle"];
+        if ([isUpdated isEqualToString:@"Y"]) {
+            [currItem setValue:[NSNumber numberWithInt:1] forKey:@"isUpdated"];
+        } else {
+            [currItem setValue:[NSNumber numberWithInt:0] forKey:@"isUpdated"];
+        }
+        
+        // 답변글 여부
+        [currItem setValue:[jsonItem valueForKey:@"boardDep"] forKey:@"isRe"];
+        
+        // boardId
+        NSString *boardId = [jsonItem valueForKey:@"boardId"];
+        [currItem setValue:boardId forKey:@"boardId"];
+        
+        // subject
+        NSString *subject = [jsonItem valueForKey:@"boardTitle"];
+        subject = [subject stringByDecodingHTMLEntities];
+        [currItem setValue:[NSString stringWithString:subject] forKey:@"subject"];
+        
+        // writer
+        [currItem setValue:[jsonItem valueForKey:@"userNick"] forKey:@"name"];
+        
+        // Comment
+        [currItem setValue:[jsonItem valueForKey:@"boardMemo_cnt"] forKey:@"comment"];
+        
+        // Hit
+        [currItem setValue:[jsonItem valueForKey:@"boardRead_cnt"] forKey:@"hit"];
+        
+        // date
+        [currItem setValue:[jsonItem valueForKey:@"boardRegister_dt"] forKey:@"date"];
+        
+        [currItem setValue:[NSNumber numberWithFloat:77.0f] forKey:@"height"];
+        
+        int checked = [db searchWithBoardId:boardId BoardNo:boardNo];
+        if (checked > 0) {
+            [currItem setValue:[NSNumber numberWithInt:1] forKey:@"read"];
+        } else {
+            [currItem setValue:[NSNumber numberWithInt:0] forKey:@"read"];
+        }
+
+        [arrayItems addObject:currItem];
+    }
+    
+    if (m_nPage == 1) {
+        m_arrayItems = [NSMutableArray arrayWithArray:arrayItems];
+    } else {
+        [m_arrayItems addObjectsFromArray:arrayItems];
+    }
+    [self.tbView reloadData];
+}
+
+#pragma mark -
+#pragma mark LoginToServiceDelegate
+
+- (void) loginToService:(LoginToService *)loginToService withFail:(NSString *)result
+{
+    [self alertWithError:[NSNumber numberWithInt:RESULT_LOGIN_FAIL]];
+}
+
+- (void) loginToService:(LoginToService *)loginToService withSuccess:(NSString *)result
+{
+    m_isLogin = TRUE;
+    [self fetchItemsWithBoardId:m_boardId withPage:m_nPage];
+}
+    
 @end

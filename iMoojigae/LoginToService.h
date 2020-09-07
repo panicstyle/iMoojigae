@@ -8,24 +8,27 @@
 
 #import <UIKit/UIKit.h>
 
+@class LoginToService;
+@protocol LoginToServiceDelegate <NSObject>
+@optional
+
+- (void) loginToService:(LoginToService *)loginToService withFail:(NSString *)result;
+
+- (void) loginToService:(LoginToService *)loginToService withSuccess:(NSString *)result;
+
+@end
+
 @interface LoginToService : NSObject {
-//	NSString *respData;
-//	id target;
-//	SEL selector;
-//    HTTPRequest *httpRequest;
 	NSString *userid;
     NSString *userpwd;
 	NSNumber *switchPush;
 }
-- (BOOL)LoginToService;
+- (void)LoginToService;
 - (void)Logout;
-- (void)GetMain;
 - (void)PushRegister;
 - (void)PushUpdate;
-//- (void)setDelegate:(id)aTarget selector:(SEL)aSelector;
-//- (void)didReceiveFinished:(NSString *)result;
 
-//@property (nonatomic, assign) NSString *respData;
-//@property (nonatomic, assign) id target;
-//@property (nonatomic, assign) SEL selector;
+@property (nonatomic, assign) id <LoginToServiceDelegate> delegate;
+@property (nonatomic, assign) int tag;
+
 @end

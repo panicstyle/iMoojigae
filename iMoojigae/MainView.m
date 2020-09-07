@@ -14,22 +14,26 @@
 #import "SetInfo.h"
 #import "LoginToService.h"
 #import "env.h"
-#import "MainData.h"
 #import "GoogleCalView.h"
 #import "DBInterface.h"
+#import "HttpSessionRequest.h"
+
 @import GoogleMobileAds;
 
-@interface MainView () <MainDataDelegate>
+@interface MainView () <HttpSessionRequestDelegate, LoginToServiceDelegate, SetViewDelegate>
 {
 	NSMutableArray *m_arrayItems;
 	LoginToService *m_login;
 	NSString *m_strRecent;
 }
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation MainView
 @synthesize tbView;
 @synthesize loginButton;
+
+#pragma mark - ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -71,10 +75,8 @@
 	}
 
 	m_arrayItems = [[NSMutableArray alloc] init];
-	
-    self.mainData = [[MainData alloc] init];
-    self.mainData.delegate = self;
-    [self.mainData fetchItems];
+
+    [self fetchItems];
 
     // DB에 6개월 지난 데이터는 삭제
     DBInterface *db;
@@ -82,25 +84,10 @@
     [db delete];
 	
 	if (m_login == nil) {
-		
 		// 저장된 로그인 정보를 이용하여 로그인
 		m_login = [[LoginToService alloc] init];
-		BOOL result = [m_login LoginToService];
-		
-		if (result) {
-			[m_login PushRegister];			
-		} else {
-			UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
-																		   message:@"로그인 정보가 없거나 잘못되었습니다. 설정에서 로그인정보를 입력하세요."
-																	preferredStyle:UIAlertControllerStyleAlert];
-			
-			UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
-																  handler:^(UIAlertAction * action) {}];
-			
-			[alert addAction:defaultAction];
-			[self presentViewController:alert animated:YES completion:nil];
-		}
-    } else {
+        m_login.delegate = self;
+		[m_login LoginToService];
     }
 }
 
@@ -195,8 +182,7 @@
 		viewController.m_strCommTitle = [item valueForKey:@"title"];
 	} else if ([[segue identifier] isEqualToString:@"SetLogin"]) {
 		SetView *viewController = [segue destinationViewController];
-		viewController.target = self;
-		viewController.selector = @selector(didChangedSetting:);
+		viewController.delegate = self;
 	}
 }
 
@@ -205,23 +191,103 @@
 	// Dispose of any resources that can be recreated.
 }
 
-#pragma mark - MainDataDelegate
+#pragma mark - User Function
 
-- (void) mainData:(MainData *)mainData didFinishLodingData:(NSArray *)arrayItems withRecent:(NSString *)strRecent;
+- (void)fetchItems
 {
-	m_strRecent = strRecent;
-	m_arrayItems = [NSMutableArray arrayWithArray:arrayItems];
-	[self.tbView reloadData];
+    NSString *url = [NSString stringWithFormat:@"%@/board-api-menu.do", WWW_SERVER];
+    NSLog(@"query = [%@]", url);
+    
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:@"moo_menu", @"comm", nil];
+    
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
 }
+
+#pragma mark - HttpSessionRequestDelegate
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
+{
+}
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
+{
+    NSError *localError = nil;
+    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+    
+    if (localError != nil) {
+        return;
+    }
+
+    NSString *m_strRecent = [parsedObject valueForKey:@"recent"];
+    NSLog(@"m_strRecent %@", m_strRecent);
+
+    NSArray *jsonItems = [parsedObject valueForKey:@"menu"];
+    
+    NSMutableDictionary *currItem;
+    
+    for (int i = 0; i < [jsonItems count]; i++) {
+        NSDictionary *jsonItem = [jsonItems objectAtIndex:i];
+        
+        currItem = [[NSMutableDictionary alloc] init];
+        
+        // title
+        NSString *strTitle = [jsonItem valueForKey:@"title"];
+        [currItem setValue:strTitle forKey:@"title"];
+        
+        // type
+        NSString *strType = [jsonItem valueForKey:@"type"];
+        [currItem setValue:strType forKey:@"type"];
+        
+        // boardId
+        NSString *strValue = [jsonItem valueForKey:@"value"];
+        [currItem setValue:strValue forKey:@"value"];
+        
+        [m_arrayItems addObject:currItem];
+    }
+        
+    [self.tbView reloadData];
+}
+
+#pragma mark - LoginToServiceDelegate
+
+- (void) loginToService:(LoginToService *)loginToService withFail:(NSString *)result
+{
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
+                                                                   message:@"로그인 정보가 없거나 잘못되었습니다. 설정에서 로그인정보를 입력하세요."
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void) loginToService:(LoginToService *)loginToService withSuccess:(NSString *)result
+{
+    m_login = [[LoginToService alloc] init];
+    m_login.delegate = self;
+    [m_login PushRegister];
+}
+
 
 #pragma mark - SetViewDelegate
 
-- (void)didChangedSetting:(NSNumber *)result
+- (void) setView:(SetView *)setView withFail:(NSString *)result
 {
-	if ([result boolValue]) {
-		[m_arrayItems removeAllObjects];
-		[self.tbView reloadData];
-        [self.mainData fetchItems];
-	}
+    
 }
+
+- (void) setView:(SetView *)setView withSuccess:(NSString *)result
+{
+    [m_arrayItems removeAllObjects];
+    [self.tbView reloadData];
+    [self fetchItems];
+}
+
 @end

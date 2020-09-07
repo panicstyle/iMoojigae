@@ -11,18 +11,18 @@
 #import "ArticleWriteView.h"
 #import "env.h"
 #import "Utils.h"
-#import "ArticleData.h"
 #import "WebLinkView.h"
 #import "DBInterface.h"
+#import "NSString+HTML.h"
+#import "HttpSessionRequest.h"
+#import "LoginToService.h"
 @import GoogleMobileAds;
 
-@interface ArticleView () <ArticleDataDelegate, ArticleWriteDelegate>
+@interface ArticleView () <ArticleWriteDelegate, HttpSessionRequestDelegate, LoginToServiceDelegate>
 {
 	UITableViewCell *m_contentCell;
 	UITableViewCell *m_imageCell;
 	UITableViewCell *m_replyCell;
-	
-	CGRect m_rectScreen;
 	
 	NSMutableArray *m_arrayItems;
 	NSDictionary *m_dicAttach;
@@ -30,7 +30,6 @@
 	float m_fTitleHeight;
 	
 	UIWebView *m_webView;
-	ArticleData *m_articleData;
 	
 	NSMutableData *receiveData;
 	NSString *paramTitle;
@@ -54,7 +53,13 @@
 	NSString *m_strWebLink;
 	int m_nFileType;
 	
+    NSString *m_strHtml;
+    NSString *m_strContent;
+    BOOL m_isLogin;
+    LoginToService *m_login;
+    long m_rowComment;
 }
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation ArticleView
@@ -89,7 +94,6 @@
 	buttonArticleMenu.action = @selector(ArticleMenu);
 	
 	m_lContentHeight = 300;
-	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 	
     m_fTitleHeight = 77.0f;
     
@@ -115,9 +119,7 @@
 */
 	m_arrayItems = [[NSMutableArray alloc] init];
 
-    self.articleData = [[ArticleData alloc] init];
-    self.articleData.delegate = self;
-    [self.articleData fetchItemsWithBoardId:m_boardId withBoardNo:m_boardNo];
+    [self fetchItemsWithBoardId:m_boardId withBoardNo:m_boardNo];
     
     // DB에 현재 읽는 글의 boardId, boardNo 를 insert
     DBInterface *db;
@@ -125,89 +127,6 @@
     [db insertWithBoardId:m_boardId BoardNo:m_boardNo];
 }
 
-- (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	[super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
-//	[self.tbView beginUpdates];
-//	[self.tbView endUpdates];
-	[self.tbView reloadData];
-}
-
-- (CGRect)getScreenFrameForCurrentOrientation {
-	return [self getScreenFrameForOrientation:[UIApplication sharedApplication].statusBarOrientation];
-}
-
-- (CGRect)getScreenFrameForOrientation:(UIInterfaceOrientation)orientation {
-	
-	CGRect fullScreenRect = [[UIScreen mainScreen] bounds];
-	
-	// implicitly in Portrait orientation.
-	if (UIInterfaceOrientationIsLandscape(orientation)) {
-		CGRect temp = CGRectZero;
-		temp.size.width = fullScreenRect.size.height;
-		temp.size.height = fullScreenRect.size.width;
-		fullScreenRect = temp;
-	}
-	
-	CGFloat statusBarHeight = 20; // Needs a better solution, FYI statusBarFrame reports wrong in some cases..
-	fullScreenRect.size.height -= statusBarHeight;
-	fullScreenRect.size.height -= self.navigationController.navigationBar.frame.size.height;
-	fullScreenRect.size.height -= 40 + 40;
-	
-	return fullScreenRect;
-}
-/*
-- (CGFloat)measureHeightOfUITextView:(UITextView *)textView
-{
-	if ([textView respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)])
-	{
-		// This is the code for iOS 7. contentSize no longer returns the correct value, so
-		// we have to calculate it.
-		//
-		// This is partly borrowed from HPGrowingTextView, but I've replaced the
-		// magic fudge factors with the calculated values (having worked out where
-		// they came from)
-		
-		CGRect frame = textView.bounds;
-		
-		// Take account of the padding added around the text.
-		
-		UIEdgeInsets textContainerInsets = textView.textContainerInset;
-		UIEdgeInsets contentInsets = textView.contentInset;
-		
-		CGFloat leftRightPadding = textContainerInsets.left + textContainerInsets.right + textView.textContainer.lineFragmentPadding * 2 + contentInsets.left + contentInsets.right;
-		CGFloat topBottomPadding = textContainerInsets.top + textContainerInsets.bottom + contentInsets.top + contentInsets.bottom;
-		
-		frame.size.width -= leftRightPadding;
-		frame.size.height -= topBottomPadding;
-		
-		NSString *textToMeasure = textView.text;
-		if ([textToMeasure hasSuffix:@"\n"])
-		{
-			textToMeasure = [NSString stringWithFormat:@"%@-", textView.text];
-		}
-		
-		// NSString class method: boundingRectWithSize:options:attributes:context is
-		// available only on ios7.0 sdk.
-		
-		NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-		[paragraphStyle setLineBreakMode:NSLineBreakByWordWrapping];
-		
-		NSDictionary *attributes = @{ NSFontAttributeName: textView.font, NSParagraphStyleAttributeName : paragraphStyle };
-		
-		CGRect size = [textToMeasure boundingRectWithSize:CGSizeMake(CGRectGetWidth(frame), MAXFLOAT)
-												  options:NSStringDrawingUsesLineFragmentOrigin
-											   attributes:attributes
-												  context:nil];
-		
-		CGFloat measuredHeight = ceilf(CGRectGetHeight(size) + topBottomPadding);
-		return measuredHeight;
-	}
-	else
-	{
-		return textView.contentSize.height;
-	}
-}
-*/
 - (void)textViewDidChange:(UITextView *)textView;
 {
     [tbView beginUpdates];
@@ -462,7 +381,7 @@
 			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
 			return NO;
 		} else {
-			[[UIApplication sharedApplication] openURL:[request URL]];
+            [[UIApplication sharedApplication] openURL:[request URL] options:@{} completionHandler:nil];
 		}
 			
 		return NO;
@@ -477,7 +396,7 @@
 			NSLog(@"requestString = [%@]", requestString);
 			NSLog(@"functionName = [%@]", functionName);
 			
-			NSString *fileName = [functionName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+			NSString *fileName = [functionName stringByRemovingPercentEncoding];
 			NSLog(@"fileName = [%@]", fileName);
 			
 			m_nFileType = FILE_TYPE_IMAGE;
@@ -565,7 +484,7 @@
 
 #pragma mark - ArticleDataDelegate
 
-- (void) articleData:(ArticleData *)articleData withError:(NSNumber *)nError
+- (void) alertWithError:(NSNumber *)nError
 {
 	if ([nError intValue] == RESULT_AUTH_FAIL) {
 		NSLog(@"already login : auth fail");
@@ -591,34 +510,6 @@
 	}
 }
 
-- (void) articleData:(ArticleData *)articleData didFinishLodingData:(NSString *)strTitle
-            withName:(NSString *)strName withDate:(NSString *)strDate withHit:(NSString *)strHit
-         withContent:(NSString *)strContent withEditableContent:(NSString *)strEditableContent
-    withCommentItems:(NSArray *)arrayItems withAttach:(NSDictionary *)dicAttach
-{
-    htmlString = strContent;
-    m_strEditableContent = strEditableContent;
-    m_strEditableTitle = strTitle;
-    m_strTitle = strTitle;
-    m_strName = strName;
-    m_strDate = strDate;
-    m_strHit = strHit;
-    
-    m_arrayItems = [[NSMutableArray alloc] initWithArray:arrayItems];
-    m_dicAttach = dicAttach;
-    
-    NSLog(@"htmlString = [%@]", htmlString);
-    
-    m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
-    m_webView.delegate = self;
-    m_webView.scrollView.scrollEnabled = YES;
-    m_webView.scrollView.bounces = NO;
-    m_webView.dataDetectorTypes = UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber;
-    [m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
-
-    [self.tbView reloadData];
-}
-
 #pragma mark Navigation Controller
 
 -(void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
@@ -629,7 +520,74 @@
 	}
 }
 
-#pragma mark User Function
+#pragma mark - User Function
+
+- (void)fetchItemsWithBoardId:(NSString *)boardId withBoardNo:(NSString *)boardNo
+{
+    NSString *url = [NSString stringWithFormat:@"%@/board-api-read.do", WWW_SERVER];
+    NSLog(@"query = [%@]", url);
+    
+    m_boardId = boardId;
+    m_boardNo = boardNo;
+    
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:boardId, @"boardId",
+                         boardNo, @"boardNo",
+                         @"READ", @"command",
+                         @"1", @"page",
+                         @"-1", @"categoryId",
+                         @"20", @"rid", nil];
+    
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
+    
+    
+    m_arrayItems = [[NSMutableArray alloc] init];
+    m_dicAttach = [[NSMutableDictionary alloc] init];
+}
+
+- (void)DeleteArticle:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo
+{
+    NSLog(@"DeleteArticleConfirm start");
+    NSLog(@"boardID=[%@], boardNo=[%@]", strBoardNo, strArticleNo);
+
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    self.httpSessionRequest.httpMethod = @"POST";
+    self.httpSessionRequest.tag = DELETE_ARTICLE;
+    
+    NSString *url = [NSString stringWithFormat:@"%@/board-save.do", WWW_SERVER];
+    NSLog(@"url = [%@]", url);
+
+    NSString *postString = [NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&time=1334217622773&returnBoardNo=%@&boardNo=%@&command=DELETE&totalPage=0&totalRecords=0&serialBadNick=&serialBadContent=&htmlImage=%%2Fout&thumbnailSize=50&memoWriteable=true&list_yn=N&replyList_yn=N&defaultBoardSkin=default&boardWidth=710&multiView_yn=Y&titleCategory_yn=N&category_yn=N&titleNo_yn=Y&titleIcon_yn=N&titlePoint_yn=N&titleMemo_yn=Y&titleNew_yn=Y&titleThumbnail_yn=N&titleNick_yn=Y&titleTag_yn=Y&anonymity_yn=N&titleRead_yn=Y&boardModel_cd=A&titleDate_yn=Y&tag_yn=Y&thumbnailSize=50&readOver_color=%%23336699&boardSerialBadNick=&boardSerialBadContent=&userPw=&userNick=&memoContent=&memoSeq=&pollSeq=&returnURI=&beforeCommand=&starPoint=&provenance=board-read.do&tagsName=&pageScale=&searchOrKey=&searchType=&tag=1", strBoardNo, strArticleNo, strArticleNo];
+
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:postString];
+}
+
+- (void)DeleteComment:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo
+{
+    NSLog(@"DeleteArticleConfirm start");
+    NSLog(@"boardID=[%@], boardNo=[%@]", strBoardNo, strArticleNo);
+
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    self.httpSessionRequest.httpMethod = @"POST";
+    self.httpSessionRequest.tag = DELETE_ARTICLE;
+    
+    NSString *url = [NSString stringWithFormat:@"%@/memo-save.do", WWW_SERVER];
+    NSLog(@"url = [%@]", url);
+
+    NSString *postString = [NSString stringWithFormat:@"boardId=%@&page=1&categoryId=-1&time=&returnBoardNo=%@&boardNo=%@&command=MEMO_DELETE&totalPage=0&totalRecords=0&serialBadNick=&serialBadContent=&htmlImage=%%2Fout&thumbnailSize=50&memoWriteable=true&list_yn=N&replyList_yn=N&defaultBoardSkin=default&boardWidth=710&multiView_yn=Y&titleCategory_yn=N&category_yn=N&titleNo_yn=Y&titleIcon_yn=N&titlePoint_yn=N&titleMemo_yn=Y&titleNew_yn=Y&titleThumbnail_yn=N&titleNick_yn=Y&titleTag_yn=Y&anonymity_yn=N&titleRead_yn=Y&boardModel_cd=A&titleDate_yn=Y&tag_yn=Y&thumbnailSize=50&readOver_color=%%23336699&boardSerialBadNick=&boardSerialBadContent=&userPw=&userNick=&memoContent=&memoSeq=%@&pollSeq=&returnURI=&beforeCommand=&starPoint=&provenance=board-read.do&tagsName=&pageScale=&searchOrKey=&searchType=&tag=1", strBoardNo, strArticleNo, strArticleNo, strCommentNo];
+
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:postString];
+}
 
 - (void) calculateWebViewSize {
     NSUInteger contentHeight = [[m_webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.body.scrollHeight;"]] intValue];
@@ -758,22 +716,8 @@
 	m_strCommentNo = [item valueForKey:@"no"];
 	NSString *strCommentNo = m_strCommentNo;
 	
-    bool result = [self.articleData DeleteComment:m_boardId articleNo:m_boardNo commentNo:strCommentNo];
-
-	if (result == false) {
-		NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
-		
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"글 삭제 오류"
-														message:errmsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
-		[alert show];
-		return;
-	}
-
-	// 삭제된 코멘트를 TableView에서 삭제한다.
-	[m_arrayItems removeObjectAtIndex:row];
-	[self.tbView reloadData];
-
-	NSLog(@"delete article success");
+    m_rowComment = row;
+    [self DeleteComment:m_boardId articleNo:m_boardNo commentNo:strCommentNo];
 }
 
 - (void)WriteReComment:(long)row
@@ -839,19 +783,227 @@
 	NSLog(@"DeleteArticleConfirm start");
 	NSLog(@"boardID=[%@], boardNo=[%@]", m_boardId, m_boardNo);
 	
-    bool result = [self.articleData DeleteArticle:m_boardId articleNo:m_boardNo];
-	
-	if (result == false) {
+    [self DeleteArticle:m_boardId articleNo:m_boardNo];
+}
+
+- (void)didWrite:(id)sender
+{
+	[m_arrayItems removeAllObjects];
+	[self.tbView reloadData];
+    [self fetchItemsWithBoardId:m_boardId withBoardNo:m_boardNo];
+}
+
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([[segue identifier] isEqualToString:@"WebLink"]) {
+		WebLinkView *view = [segue destinationViewController];
+		view.m_nFileType = [NSNumber numberWithInt:m_nFileType];
+		view.m_strLink = m_strWebLink;
+	}
+}
+
+#pragma mark - HttpSessionRequestDelegate
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
+{
+}
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
+{
+    if (httpSessionRequest.tag == READ_ARTICLE) {
+        [self readArticle:data];
+    } else if (httpSessionRequest.tag == DELETE_ARTICLE) {
+        [self deleteArticle:data];
+    } else if (httpSessionRequest.tag == DELETE_COMMENT) {
+        [self deleteComment:data];
+    }
+}
+
+- (void) readArticle:(NSData *)data
+{
+    m_strHtml = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    
+    NSLog(@"html = [%lu]", (unsigned long)[m_strHtml length]);
+    
+    // ./img/common/board/alert.gif 가 포함되어 있으면 다시 로그인해야 함.
+    if ([Utils numberOfMatches:m_strHtml regex:@"./img/common/board/alert.gif"] > 0) {
+        if (m_isLogin == FALSE) {
+            NSLog(@"retry login");
+            // 저장된 로그인 정보를 이용하여 로그인
+            m_login = [[LoginToService alloc] init];
+            m_login.delegate = self;
+            [m_login LoginToService];
+        } else {
+            [self alertWithError:[NSNumber numberWithInt:RESULT_LOGIN_FAIL]];
+        }
+    }
+    
+    NSError *localError = nil;
+    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+    
+    if (localError != nil) {
+        return;
+    }
+    
+    // Title, Name, Date, Hit
+    
+    m_strTitle = [parsedObject valueForKey:@"boardTitle"];
+    m_strTitle = [m_strTitle stringByDecodingHTMLEntities];
+
+    m_strName = [parsedObject valueForKey:@"userNick"];
+    
+    m_strDate = [parsedObject valueForKey:@"boardRegister_dt"];
+    
+    m_strHit = [parsedObject valueForKey:@"boardRead_cnt"];
+    
+    NSString *strContent = [parsedObject valueForKey:@"boardContent"];;
+    
+    m_strEditableContent = [Utils makeEditableContent:strContent];
+    
+    NSArray *imageItems = [parsedObject valueForKey:@"image"];
+    
+    NSMutableString *strImage = [[NSMutableString alloc]init];
+    [strImage appendString:@""];
+    
+    for (int i = 0; i < [imageItems count]; i++) {
+        NSDictionary *jsonItem = [imageItems objectAtIndex:i];
+        NSString *fileName = [jsonItem valueForKey:@"fileName"];
+        NSString *link = [jsonItem valueForKey:@"link"];
+
+        /* 이미지 파일목록중 파일명이 이미지인 것들만 이미지에 포함시킨다. */
+        fileName = [fileName lowercaseString];
+        if ([fileName containsString:@".jpg"]
+            || [fileName containsString:@".jpeg"]
+            || [fileName containsString:@".png"]
+            || [fileName containsString:@".gif"]
+            ) {
+            [strImage appendString:link];
+        }
+    }
+    
+    NSMutableString *strAttach = [[NSMutableString alloc]init];
+    [strAttach appendString:@""];
+
+    NSArray *attachItems = [parsedObject valueForKey:@"attachment"];
+    
+    if ([attachItems count] > 0) {
+        [strAttach appendString:@"<table boader=1><tr><th>첨부파일</th></tr>"];
+    }
+    for (int i = 0; i < [attachItems count]; i++) {
+        NSDictionary *jsonItem = [attachItems objectAtIndex:i];
+        NSString *link = [jsonItem valueForKey:@"link"];
+        [strAttach appendString:@"<tr><td>"];
+        [strAttach appendString:link];
+        [strAttach appendString:@"</td></tr>"];
+        
+        NSString *n = [jsonItem valueForKey:@"fileSeq"];
+        NSString *f = [jsonItem valueForKey:@"fileName"];
+
+        [m_dicAttach setValue:f forKey:n];
+    }
+    if ([attachItems count] > 0) {
+        [strAttach appendString:@"</tr></table>"];
+    }
+
+    NSString *strProfile = [NSString stringWithFormat:@"<div class='profile'>%@</div>", [parsedObject valueForKey:@"userComment"]];
+    
+    NSArray *memoItems = [parsedObject valueForKey:@"memo"];
+
+    NSMutableDictionary *currItem;
+    
+    for (int i = 0; i < [memoItems count]; i++) {
+        NSDictionary *jsonItem = [memoItems objectAtIndex:i];
+        currItem = [[NSMutableDictionary alloc] init];
+        
+        // ieRe
+        [currItem setValue:[jsonItem valueForKey:@"memoDep"] forKey:@"isRe"];
+
+        // no
+        [currItem setValue:[jsonItem valueForKey:@"memoSeq"] forKey:@"no"];
+        
+        // Name
+        [currItem setValue:[jsonItem valueForKey:@"userNick"] forKey:@"name"];
+        
+        // Date
+        [currItem setValue:[jsonItem valueForKey:@"memoRegister_dt"] forKey:@"date"];
+        
+        // Comment
+        NSString *strComm = [jsonItem valueForKey:@"memoContent"];
+        strComm = [Utils replaceStringHtmlTag:strComm];
+        [currItem setValue:strComm forKey:@"comment"];
+        
+        [currItem setValue:[NSNumber numberWithFloat:80.0f] forKey:@"height"];
+        
+        [m_arrayItems addObject:currItem];
+    }
+    
+    NSMutableString *strHeader = [[NSMutableString alloc] init];
+    [strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
+    [strHeader appendString:@"<html><head>"];
+    [strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
+    [strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
+    [strHeader appendString:@"<style>body {font-family:\"고딕\";font-size:medium;}.title{text-margin:10px 0px;font-size:large}.name{color:gray;margin:10px 0px;font-size:small}.content{}.profile {text-align:left;color:gray;margin:10px 0px;font-size:small}.comment_header{text-align:left;color:white;background: lightgray;padding:20px 0px 10px 10px;font-size:small}.reply{border-bottom:1px solid gray;margin:10px 0px}.reply_header {color:gray;;font-size:small}.reply_content {margin:10px 0px}.re_reply{border-bottom:1px solid gray;margin:10px 0px 0px 20px;background:lightgray}</style>"];
+    [strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
+    [strHeader appendString:@"</head>"];
+    
+//    [strHeader appendString:@"<script> \
+        function imageResize() { \
+            var boardWidth = window.innerWidth - 30; \
+            if (document.cashcow && document.cashcow.boardWidth) \
+                boardWidth = document.cashcow.boardWidth.value - 70; \
+            var obj = document.getElementsByName('unicornimage'); \
+            for (var i = 0; i < obj.length; i++) { \
+                if (obj[i].width > boardWidth) \
+                    obj[i].width = boardWidth; \
+            } \
+        }</script>"];
+//     [strHeader appendString:@"<script>window.onload=imageResize;</script></head>"];
+    NSString *strBottom = @"</body></html>";
+    //        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
+    NSString *strBody = @"<body>";
+    
+    /* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
+    m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@%@%@",
+                    strHeader,
+                    strBody,
+                    [strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+                    [strImage stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+                    strAttach,
+                    strProfile,
+                    strBottom];
+    
+    NSLog(@"htmlString = [%@]", htmlString);
+    
+    m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
+    m_webView.delegate = self;
+    m_webView.scrollView.scrollEnabled = YES;
+    m_webView.scrollView.bounces = NO;
+    m_webView.dataDetectorTypes = UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber;
+    [m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
+
+    [self.tbView reloadData];
+}
+
+- (void) deleteArticle:(NSData *)data
+{
+    NSString *str = [[NSString alloc] initWithData:data
+                                          encoding:NSUTF8StringEncoding];
+    //history.go(-1);
+    NSLog(@"returnData = [%@]", str);
+    
+    if ([Utils numberOfMatches:str regex:@"<b>시스템 메세지입니다</b>"] > 0) {
         NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
-		
-		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 삭제 오류"
-																	   message:errmsg
-																preferredStyle:UIAlertControllerStyleAlert];
-		
-		UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
-															  handler:^(UIAlertAction * action) {}];
-		
-		[alert addAction:defaultAction];
+        
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 삭제 오류"
+                                                                       message:errmsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
@@ -862,74 +1014,46 @@
     [[self navigationController] popViewControllerAnimated:YES];
 }
 
-
-- (void)didWrite:(id)sender
+- (void) deleteComment:(NSData *)data
 {
-	[m_arrayItems removeAllObjects];
-	[self.tbView reloadData];
-    [self.articleData fetchItemsWithBoardId:m_boardId withBoardNo:m_boardNo];
+    NSString *str = [[NSString alloc] initWithData:data
+                                          encoding:NSUTF8StringEncoding];
+    //history.go(-1);
+    NSLog(@"returnData = [%@]", str);
+    
+    if ([Utils numberOfMatches:str regex:@"<b>시스템 메세지입니다</b>"] > 0) {
+        NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
+        
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"글 삭제 오류"
+                                                                       message:errmsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        return;
+    }
+
+    // 삭제된 코멘트를 TableView에서 삭제한다.
+    [m_arrayItems removeObjectAtIndex:m_rowComment];
+    [self.tbView reloadData];
+
+    NSLog(@"delete article success");
 }
 
-#pragma mark - Navigation
+#pragma mark -
+#pragma mark LoginToServiceDelegate
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-	// Get the new view controller using [segue destinationViewController].
-	// Pass the selected object to the new view controller.
-/*	if ([[segue identifier] isEqualToString:@"Comment"]) {
-		CommentWriteView *view = [segue destinationViewController];
-		view.m_nMode = [NSNumber numberWithInt:CommentWrite];
-		view.m_boardId = m_boardId;
-		view.m_boardNo = m_boardNo;
-		view.m_strCommentNo = @"";
-		view.m_strComment = @"";
-		view.target = self;
-		view.selector = @selector(didWrite:);
-	} else if ([[segue identifier] isEqualToString:@"CommentModify"]) {
-		UITableViewCell *clickedCell = (UITableViewCell *)[[sender superview] superview];
-		NSIndexPath *clickedButtonPath = [self.tbView indexPathForCell:clickedCell];
-//		[self tableView:self.tbView didSelectRowAtIndexPath:clickedButtonPath];
-		
-		CommentWriteView *view = [segue destinationViewController];
-//		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
-		long row = clickedButtonPath.row;
-		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		view.m_nMode = [NSNumber numberWithInt:CommentModify];
-		view.m_boardId = m_boardId;
-		view.m_boardNo = m_boardNo;
-		view.m_strCommentNo = [item valueForKey:@"no"];
-		view.m_strComment = [item valueForKey:@"comment"];
-		view.target = self;
-		view.selector = @selector(didWrite:);
-	} else if ([[segue identifier] isEqualToString:@"CommentReply"]) {
-		UITableViewCell *clickedCell = (UITableViewCell *)[[sender superview] superview];
-		NSIndexPath *clickedButtonPath = [self.tbView indexPathForCell:clickedCell];
-//		[self tableView:self.tbView didSelectRowAtIndexPath:clickedButtonPath];
+- (void) loginToService:(LoginToService *)loginToService withFail:(NSString *)result
+{
+    [self alertWithError:[NSNumber numberWithInt:RESULT_LOGIN_FAIL]];
+}
 
-		CommentWriteView *view = [segue destinationViewController];
-//		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
-		long row = clickedButtonPath.row;
-		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		view.m_nMode = [NSNumber numberWithInt:CommentReply];
-		view.m_boardId = m_boardId;
-		view.m_boardNo = m_boardNo;
-		view.m_strCommentNo = [item valueForKey:@"no"];
-		view.m_strComment = @"";
-		view.target = self;
-		view.selector = @selector(didWrite:);
-	} else if ([[segue identifier] isEqualToString:@"ArticleModify"]) {
-		ArticleWriteView *view = [segue destinationViewController];
-		view.m_nMode = [NSNumber numberWithInt:ArticleModify];
-		view.m_boardId = m_boardId;
-		view.m_boardNo = m_boardNo;
-		view.m_strTitle = m_strEditableTitle;
-		view.m_strContent = m_strEditableContent;
-		view.target = self;
-		view.selector = @selector(didWrite:);
-	} else */ if ([[segue identifier] isEqualToString:@"WebLink"]) {
-		WebLinkView *view = [segue destinationViewController];
-		view.m_nFileType = [NSNumber numberWithInt:m_nFileType];
-		view.m_strLink = m_strWebLink;
-	}
+- (void) loginToService:(LoginToService *)loginToService withSuccess:(NSString *)result
+{
+    m_isLogin = TRUE;
+    [self fetchItemsWithBoardId:m_boardId withBoardNo:m_boardNo];
 }
 @end

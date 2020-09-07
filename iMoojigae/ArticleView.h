@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ArticleData.h"
 
 @import GoogleMobileAds;
 
@@ -31,8 +30,6 @@
 @property (strong, nonatomic) NSString *m_boardNo;
 @property (strong, nonatomic) NSString *m_boardName;
 @property (nonatomic, retain) UIDocumentInteractionController *doic;
-
-@property (nonatomic, strong) ArticleData *articleData;
 
 @property (nonatomic, assign) id <ArticleViewDelegate> delegate;
 @property (nonatomic, assign) int tag;

@@ -8,14 +8,11 @@
 @import GoogleMobileAds;
 
 #import <UIKit/UIKit.h>
-#import "MainData.h"
 
 @interface MainView : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
 @property (nonatomic, strong) IBOutlet GADBannerView *bannerView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *loginButton;
-
-@property (nonatomic, strong) MainData *mainData;
 
 @end

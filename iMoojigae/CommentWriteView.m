@@ -10,13 +10,15 @@
 #import "CommentWriteView.h"
 #import "Utils.h"
 #import "env.h"
+#import "HttpSessionRequest.h"
 
-@interface CommentWriteView () {
+@interface CommentWriteView () <HttpSessionRequestDelegate> {
 	int m_bUpMode;
 	NSString *m_strErrorMsg;
 	long m_lContentHeight;
-	UIAlertView *alertWait;
+    UIAlertController *alertWait;
 }
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation CommentWriteView
@@ -132,31 +134,7 @@
 	[UIView commitAnimations];
 	m_bUpMode = up;
 }
-/*
-- (CGRect)getScreenFrameForCurrentOrientation {
-	return [self getScreenFrameForOrientation:[UIApplication sharedApplication].statusBarOrientation];
-}
 
-- (CGRect)getScreenFrameForOrientation:(UIInterfaceOrientation)orientation {
-	
-	CGRect fullScreenRect = [[UIScreen mainScreen] bounds];
-	
-	// implicitly in Portrait orientation.
-	if (UIInterfaceOrientationIsLandscape(orientation)) {
-		CGRect temp = CGRectZero;
-		temp.size.width = fullScreenRect.size.height;
-		temp.size.height = fullScreenRect.size.width;
-		fullScreenRect = temp;
-	}
-	
-	CGFloat statusBarHeight = 20; // Needs a better solution, FYI statusBarFrame reports wrong in some cases..
-	fullScreenRect.size.height -= statusBarHeight;
-	fullScreenRect.size.height -= self.navigationController.navigationBar.frame.size.height;
-	fullScreenRect.size.height -= 40 + 40;
-	
-	return fullScreenRect;
-}
-*/
 - (void) cancelEditing:(id)sender
 {
 	//	[contentView resignFirstResponder];
@@ -165,45 +143,36 @@
 
 - (void)AlertShow
 {
-    alertWait = [[UIAlertView alloc] initWithTitle:@"저장중입니다." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-    [alertWait show];
-    
+    alertWait = [UIAlertController
+                                  alertControllerWithTitle:@"저장중입니다."
+                                  message:nil
+                                  preferredStyle:UIAlertControllerStyleAlert];
+
+
+    [self presentViewController:alertWait animated:YES completion:nil];
+
     UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     
     // Adjust the indicator so it is up a few pixels from the bottom of the alert
-    indicator.center = CGPointMake(alertWait.bounds.size.width / 2, alertWait.bounds.size.height - 50);
+    indicator.center = CGPointMake(alertWait.view.bounds.size.width / 2, alertWait.view.bounds.size.height - 50);
     [indicator startAnimating];
-    [alertWait addSubview:indicator];
-	
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [alertWait.view addSubview:indicator];
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
 
 - (void)AlertDismiss
 {
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    [alertWait dismissWithClickedButtonIndex:0 animated:YES];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [alertWait dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)doneEditing:(id)sender
 {
-	BOOL result = [self writeComment];
-	
-	if (result) {
-		[target performSelector:selector withObject:nil afterDelay:0];
-		[[self navigationController] popViewControllerAnimated:YES];
-	} else {
-		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"댓글 쓰기 오류"
-																	   message:m_strErrorMsg
-																preferredStyle:UIAlertControllerStyleAlert];
-		
-		UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
-															  handler:^(UIAlertAction * action) {}];
-		
-		[alert addAction:defaultAction];
-	}
+    [self writeComment];
 }
 
-- (BOOL)writeComment
+- (void)writeComment
 {
 	[self AlertShow];
 
@@ -221,22 +190,11 @@
         referer = [NSString stringWithFormat:@"%@/board-api-read.do?boardId=%@&boardNo=%@&command=READ&page=1&categoryId=-1", WWW_SERVER, m_boardId, m_boardNo];
     }
     
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString:url]];
-    [request setHTTPMethod:@"POST"];
-    [request addValue:referer forHTTPHeaderField:@"Referer"];
-    [request addValue:@"gzip,deflate,sdch" forHTTPHeaderField:@"Accept-Encoding"];
-    [request addValue:@"ko,en-US;q=0.8,en;q=0.6" forHTTPHeaderField:@"Accept-Language"];
-    [request addValue:@"windows-949,utf-8;q=0.7,*;q=0.3" forHTTPHeaderField:@"Accept-Charset"];
-
     NSError *error = NULL;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\n" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
     NSString *newContent = [regex stringByReplacingMatchesInString:strContent options:0 range:NSMakeRange(0, [strContent length]) withTemplate:@"<br />"];
     NSString *escapedContent = [newContent stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
 
-    NSMutableData *body = [NSMutableData data];
-    // usetag = n
-    
     NSString *strCommand;
     if ([m_nMode intValue] == CommentReply) {
         strCommand = @"MEMO_REPLY";
@@ -251,23 +209,41 @@
     
     NSLog(@"bodyString = [%@]", bodyString);
     
-    [body appendData:[bodyString dataUsingEncoding:NSUTF8StringEncoding]];
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    self.httpSessionRequest.httpMethod = @"POST";
     
-    [request setHTTPBody:body];
-    
-    NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValueString:bodyString];
+}
 
-    NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
+- (void)didReceiveMemoryWarning {
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc that aren't in use.
+}
+
+#pragma mark - HttpSessionRequestDelegate
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
+{
+}
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
+{
+    NSString *returnString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
     NSLog(@"returnString = [%@]", returnString);
     
-	[self AlertDismiss];
-	
-	if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
-		NSString *errmsg;
-		NSString *errmsg2 = [Utils findStringRegex:returnString regex:@"(?<=<b>시스템 메세지입니다</b></font><br>).*?(?=<br>)"];
-		errmsg = [NSString stringWithFormat:@"댓글 작성중 오류가 발생했습니다. 잠시후 다시 해보세요.[%@]", errmsg2];
-		
+    [self AlertDismiss];
+    
+    if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
+        NSString *errmsg;
+        NSString *errmsg2 = [Utils findStringRegex:returnString regex:@"(?<=<b>시스템 메세지입니다</b></font><br>).*?(?=<br>)"];
+        errmsg = [NSString stringWithFormat:@"댓글 작성중 오류가 발생했습니다. 잠시후 다시 해보세요.[%@]", errmsg2];
+        
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"댓글 작성 오류"
                                                                        message:errmsg
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -278,15 +254,10 @@
         [alert addAction:defaultAction];
         [self presentViewController:alert animated:YES completion:nil];
         
-		return false;
-	}
-	return true;
+        return;
+    }
+    [target performSelector:selector withObject:nil afterDelay:0];
+    [[self navigationController] popViewControllerAnimated:YES];
 }
 
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
 @end

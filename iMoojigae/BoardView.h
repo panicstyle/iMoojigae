@@ -9,15 +9,11 @@
 @import GoogleMobileAds;
 
 #import <UIKit/UIKit.h>
-#import "BoardData.h"
 
 @interface BoardView : UIViewController  <UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
 @property(nonatomic, strong) IBOutlet GADBannerView *bannerView;
 @property (strong, nonatomic) NSString *m_strCommNo;
 @property (strong, nonatomic) NSString *m_strCommTitle;
-
-@property (nonatomic, strong) BoardData *boardData;
-
 @end
 

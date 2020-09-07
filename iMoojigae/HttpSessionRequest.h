@@ -41,6 +41,9 @@
     HTTP 통신 객체(10.9이상 지원)
  */
 @interface HttpSessionRequest : NSObject
+
+- (void)requestURL:(NSString *)url withMultipartBody:(NSData *)body withBoundary:(NSString *)boundary;
+
 /*
     파라미터 url과 values로 URL 요청을 한다.
     요청이 성공하면 httpSessionRequest:didFinishLodingData: 델리게이트 함수가 호출된다.
@@ -72,6 +75,16 @@
         jsonString : 보낼 json 데이터
  */
 - (void)requestURL:(NSString *)url withJsonString:(NSString *)jsonString;
+
+/*
+    파라미터 json 데이터를 서버에 보낸댜.
+    요청이 성공하면 httpSessionRequest:didFinishLodingData: 델리게이트 함수가 호출된다.
+    요청이 실패하면 httpSessionRequest:withError: 델리게이트 함수가 호출된다.
+    파라미터:
+        url : 요청할 URL
+        valueString : 보낼 value 데이터
+ */
+- (void)requestURL:(NSString *)url withValueString:(NSString *)valueString;
 
 /*
     헤더 정보를 요청한다.

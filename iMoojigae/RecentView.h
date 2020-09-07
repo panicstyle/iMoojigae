@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RecentData.h"
 
 @import GoogleMobileAds;
 
@@ -16,7 +15,4 @@
 @property(nonatomic, strong) IBOutlet GADBannerView *bannerView;
 @property (strong, nonatomic) NSString *m_strRecent;
 @property (strong, nonatomic) NSString *m_strType;
-
-@property (nonatomic, strong) RecentData *recentData;
-
 @end

@@ -49,6 +49,18 @@
 
 #define SCALE_SIZE		600
 
+#define READ_ARTICLE        1
+#define DELETE_ARTICLE      2
+#define DELETE_COMMENT      3
+
+#define POST_FILE       1
+#define POST_DATA       2
+
+#define LOGIN_TO_SERVER             1
+#define PUSH_REGISTER               2
+#define PUSH_UPDATER                3
+#define LOGOUT_TO_SERVER            4
+
 extern NSStringEncoding g_encodingOption;
 
 #endif

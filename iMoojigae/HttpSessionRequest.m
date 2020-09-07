@@ -117,6 +117,55 @@
     [_sessionDataTask resume];
 }
 
+- (void)requestURL:(NSString *)url withMultipartBody:(NSData *)body withBoundary:(NSString *)boundary
+{
+    _url = url;
+    
+    // sessionDataTask 가 작업중이면 작업종료
+    if (_sessionDataTask != nil && _sessionDataTask.state == NSURLSessionTaskStateRunning) {
+        [_sessionDataTask cancel];
+        [_session invalidateAndCancel];
+    }
+
+    // session 객체가 nil이면 session객체 생성
+    if (_session == nil)
+    {
+        NSOperationQueue *queue;
+        if (_queue == nil)
+            queue = [NSOperationQueue mainQueue];
+        
+        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
+                                                 delegate:self
+                                            delegateQueue:queue];
+    }
+
+    NSString *urlString;
+    
+    urlString = url;
+    
+    // Request 객체 생성
+    NSURL *dataURL = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:dataURL
+                                                           cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                       timeoutInterval:self.timeout];
+    [request setHTTPMethod:self.httpMethod];
+    
+    if ([self.httpMethod isEqualToString:@"POST"] == YES)
+    {
+        NSString *postLength = [NSString stringWithFormat:@"%ld",[body length]];
+        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+        [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+        [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:body];
+    }
+    
+    
+    // request 요청
+    _sessionDataTask = [self.session dataTaskWithRequest:request];
+    _sessionDataTask.taskDescription = @"task_data";
+    [_sessionDataTask resume];
+}
+
 
 - (void)requestURL:(NSString *)url withJsonString:(NSString *)jsonString
 {
@@ -229,6 +278,70 @@
                 value = [NSString stringWithFormat:@"&%@=%@", key, [values objectForKey:key]];
             
             postString = [postString stringByAppendingString:value];
+        }
+        
+        postData = [postString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
+        urlString = url;
+    }
+    
+    // Request 객체 생성
+    NSURL *dataURL = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:dataURL
+                                                           cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                       timeoutInterval:self.timeout];
+    [request setHTTPMethod:self.httpMethod];
+    
+    if ([self.httpMethod isEqualToString:@"POST"] == YES)
+    {
+        NSString *postLength = [NSString stringWithFormat:@"%ld",[postData length]];
+        [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+        [request setValue:@"Mozilla/4.0 (compatible;)" forHTTPHeaderField:@"User-Agent"];
+        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:postData];
+    }
+        
+    // request 요청
+    _sessionDataTask = [self.session dataTaskWithRequest:request];
+    _sessionDataTask.taskDescription = @"task_data";
+    [_sessionDataTask resume];
+}
+
+- (void)requestURL:(NSString *)url withValueString:(NSString *)valueString
+{
+    _url = url;
+    
+    // sessionDataTask 가 작업중이면 작업종료
+    if (_sessionDataTask != nil && _sessionDataTask.state == NSURLSessionTaskStateRunning) {
+        [_sessionDataTask cancel];
+        [_session invalidateAndCancel];
+    }
+
+    // session 객체가 nil이면 session객체 생성
+    if (_session == nil)
+    {
+        NSOperationQueue *queue;
+        if (_queue == nil)
+            queue = [NSOperationQueue mainQueue];
+        
+        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
+                                                 delegate:self
+                                            delegateQueue:queue];
+    }
+
+    NSData *postData;
+    NSString *urlString;
+    if ([self.httpMethod isEqualToString:@"GET"] == YES)
+    {
+        if (valueString == nil || valueString.length > 0) {
+            urlString = [NSString stringWithFormat:@"%@?%@", url, valueString];
+        } else {
+            urlString = [NSString stringWithFormat:@"%@", url];
+        }
+    }
+    else {      // POST
+        NSString *postString = @"";
+        if (valueString != nil) {
+            postString = [postString stringByAppendingString:valueString];
         }
         
         postData = [postString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];

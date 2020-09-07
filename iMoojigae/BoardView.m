@@ -11,15 +11,15 @@
 #import "ItemsView.h"
 #import "RecentView.h"
 #import "GoogleCalView.h"
-#import "BoardData.h"
+#import "HttpSessionRequest.h"
 @import GoogleMobileAds;
 
-@interface BoardView () <BoardDataDelegate>
+@interface BoardView () <HttpSessionRequestDelegate>
 {
     NSMutableArray *m_arrayItems;
-	BoardData *m_boardData;
 	NSString *m_strRecent;
 }
+@property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
 
 @implementation BoardView
@@ -48,9 +48,7 @@
     
 	m_arrayItems = [[NSMutableArray alloc] init];
 
-    self.boardData = [[BoardData alloc] init];
-    self.boardData.delegate = self;
-    [self.boardData fetchItemsWithCommNo:m_strCommNo];
+    [self fetchItemsWithCommNo:m_strCommNo];
 }
 
 - (void)dealloc {
@@ -164,13 +162,83 @@
 	}
 }
 
-#pragma mark - BoardDataDelegate
+#pragma mark - User Function
 
-- (void) boardData:(BoardData *)boardData didFinishLodingData:(NSArray *)arrayItems withRecent:(NSString *)strRecent;
+- (void)fetchItemsWithCommNo:(NSString *)strCommNo
 {
-	m_strRecent = strRecent;
-	m_arrayItems = [NSMutableArray arrayWithArray:arrayItems];
-	[self.tbView reloadData];
+    NSString *url = [NSString stringWithFormat:@"%@/board-api-menu.do", WWW_SERVER];
+    NSLog(@"query = [%@]", url);
+    
+    self.httpSessionRequest = [[HttpSessionRequest alloc] init];
+    self.httpSessionRequest.delegate = self;
+    self.httpSessionRequest.timeout = 30;
+    
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:strCommNo, @"comm", nil];
+    
+    NSString *escapedURL = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    [self.httpSessionRequest requestURL:escapedURL withValues:dic];
+}
+
+#pragma mark - HttpSessionRequestDelegate
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
+{
+}
+
+- (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
+{
+    NSError *localError = nil;
+    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+    
+    if (localError != nil) {
+        return;
+    }
+    
+    NSString *m_strRecent = [parsedObject valueForKey:@"recent"];
+    NSLog(@"strRecent %@", m_strRecent);
+    
+    NSString *strNew = [parsedObject valueForKey:@"new"];
+    NSLog(@"strNew %@", strNew);
+
+    NSArray *jsonItems = [parsedObject valueForKey:@"menu"];
+    
+    NSMutableDictionary *currItem;
+    
+    for (int i = 0; i < [jsonItems count]; i++) {
+        NSDictionary *jsonItem = [jsonItems objectAtIndex:i];
+        
+        currItem = [[NSMutableDictionary alloc] init];
+        
+        // title
+        NSString *strTitle = [jsonItem valueForKey:@"title"];
+        [currItem setValue:strTitle forKey:@"title"];
+
+        // type
+        NSString *strType = [jsonItem valueForKey:@"type"];
+        [currItem setValue:strType forKey:@"type"];
+
+        // boardId
+        NSString *strBoardId = [jsonItem valueForKey:@"boardId"];
+        [currItem setValue:strBoardId forKey:@"boardId"];
+        
+        [m_arrayItems addObject:currItem];
+    }
+    
+    // icon_new 찾기. 게시판 이름을 찾아서 그 다음에 icon_new가 있는지 확인
+    for (int i = 0; i < [m_arrayItems count]; i++) {
+        NSMutableDictionary *item = [m_arrayItems objectAtIndex:i];
+        NSString *link = [item valueForKey:@"boardId"];
+        link = [NSString stringWithFormat:@"[%@]", link];
+
+        if ([strNew rangeOfString:link].location != NSNotFound) {
+            // strNew 최근글이 포함된 게시판 목록 리스트에서 해당 게시판 아이가 있는지 찾고, 있으면 N 아이콘을 표시한다.
+            [item setValue:[NSNumber numberWithInt:1] forKey:@"isNew"];
+        } else {
+            [item setValue:[NSNumber numberWithInt:0] forKey:@"isNew"];
+        }
+    }
+        
+    [self.tbView reloadData];
 }
 @end
 

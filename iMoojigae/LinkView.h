@@ -11,7 +11,7 @@
 
 @import GoogleMobileAds;
 
-@interface GoogleCalView : UIViewController <UIWebViewDelegate>
+@interface LinkView : UIViewController <UIWebViewDelegate>
 
 @property (nonatomic, weak) IBOutlet WKWebView *webView;
 @property (strong, nonatomic) NSString *m_strLink;

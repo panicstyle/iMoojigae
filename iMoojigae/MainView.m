@@ -14,7 +14,7 @@
 #import "SetInfo.h"
 #import "LoginToService.h"
 #import "env.h"
-#import "GoogleCalView.h"
+#import "LinkView.h"
 #import "DBInterface.h"
 #import "HttpSessionRequest.h"
 
@@ -167,7 +167,7 @@
         viewController.m_strType = [item valueForKey:@"value"];
         viewController.m_strRecent = m_strRecent;
     } else if ([[segue identifier] isEqualToString:@"Link"]) {
-        GoogleCalView *viewController = [segue destinationViewController];
+        LinkView *viewController = [segue destinationViewController];
         NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
         long row = currentIndexPath.row;
         NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];

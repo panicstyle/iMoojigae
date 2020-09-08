@@ -10,7 +10,7 @@
 #import "env.h"
 #import "ItemsView.h"
 #import "RecentView.h"
-#import "GoogleCalView.h"
+#import "LinkView.h"
 #import "HttpSessionRequest.h"
 @import GoogleMobileAds;
 
@@ -84,7 +84,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifierRecent = @"Recent";
     static NSString *CellIdentifierBoard = @"Board";
-    static NSString *CellIdentifierCalendar = @"Calendar";
+    static NSString *CellIdentifierLink = @"Link";
 
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 	UITableViewCell *cell;
@@ -94,10 +94,10 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierRecent];
         }
         [cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
-    } else if ([[item valueForKey:@"type"] isEqualToString:@"calendar"]) {
-        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierCalendar];
+    } else if ([[item valueForKey:@"type"] isEqualToString:@"link"]) {
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierLink];
         if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierCalendar];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierLink];
         }
         [cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
     } else {
@@ -151,9 +151,8 @@
 		RecentView *view = [segue destinationViewController];
 		view.m_strRecent = m_strRecent;
 		view.m_strType = @"list";
-	}
-	if ([[segue identifier] isEqualToString:@"Calendar"]) {
-		GoogleCalView *view = [segue destinationViewController];
+	} else if ([[segue identifier] isEqualToString:@"Link"]) {
+		LinkView *view = [segue destinationViewController];
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];

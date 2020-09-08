@@ -29,7 +29,7 @@
 		ECC9F34124FB5255000E8F0E /* LoginToService.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F31D24FB5254000E8F0E /* LoginToService.m */; };
 		ECC9F34324FB5255000E8F0E /* AboutView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32024FB5254000E8F0E /* AboutView.m */; };
 		ECC9F34424FB5255000E8F0E /* ItemsView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32524FB5254000E8F0E /* ItemsView.m */; };
-		ECC9F34524FB5255000E8F0E /* GoogleCalView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32724FB5254000E8F0E /* GoogleCalView.m */; };
+		ECC9F34524FB5255000E8F0E /* LinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32724FB5254000E8F0E /* LinkView.m */; };
 		ECC9F34624FB5255000E8F0E /* WebLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32824FB5255000E8F0E /* WebLinkView.m */; };
 		ECC9F34824FB5255000E8F0E /* ArticleWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32B24FB5255000E8F0E /* ArticleWriteView.m */; };
 		ECC9F34924FB5255000E8F0E /* BoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC9F32C24FB5255000E8F0E /* BoardView.m */; };
@@ -74,7 +74,7 @@
 		ECC9F30624FB5253000E8F0E /* SetInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetInfo.h; sourceTree = "<group>"; };
 		ECC9F30724FB5253000E8F0E /* ItemsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemsView.h; sourceTree = "<group>"; };
 		ECC9F30824FB5253000E8F0E /* RecentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentView.m; sourceTree = "<group>"; };
-		ECC9F30924FB5253000E8F0E /* GoogleCalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleCalView.h; sourceTree = "<group>"; };
+		ECC9F30924FB5253000E8F0E /* LinkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkView.h; sourceTree = "<group>"; };
 		ECC9F30B24FB5253000E8F0E /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		ECC9F30C24FB5253000E8F0E /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
 		ECC9F30D24FB5253000E8F0E /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
@@ -98,7 +98,7 @@
 		ECC9F32324FB5254000E8F0E /* ArticleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleView.h; sourceTree = "<group>"; };
 		ECC9F32424FB5254000E8F0E /* SetStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetStorage.h; sourceTree = "<group>"; };
 		ECC9F32524FB5254000E8F0E /* ItemsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemsView.m; sourceTree = "<group>"; };
-		ECC9F32724FB5254000E8F0E /* GoogleCalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleCalView.m; sourceTree = "<group>"; };
+		ECC9F32724FB5254000E8F0E /* LinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkView.m; sourceTree = "<group>"; };
 		ECC9F32824FB5255000E8F0E /* WebLinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebLinkView.m; sourceTree = "<group>"; };
 		ECC9F32A24FB5255000E8F0E /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		ECC9F32B24FB5255000E8F0E /* ArticleWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleWriteView.m; sourceTree = "<group>"; };
@@ -197,8 +197,6 @@
 				ECC9F31324FB5253000E8F0E /* DBInterface.h */,
 				ECC9F31124FB5253000E8F0E /* DBInterface.m */,
 				ECC9F31624FB5254000E8F0E /* env.h */,
-				ECC9F30924FB5253000E8F0E /* GoogleCalView.h */,
-				ECC9F32724FB5254000E8F0E /* GoogleCalView.m */,
 				ECC9F32A24FB5255000E8F0E /* GTMNSString+HTML.h */,
 				ECC9F32E24FB5255000E8F0E /* GTMNSString+HTML.m */,
 				EC84505A24FF6A25007D27E4 /* HttpSessionRequest.h */,
@@ -208,6 +206,8 @@
 				ECC9F30724FB5253000E8F0E /* ItemsView.h */,
 				ECC9F32524FB5254000E8F0E /* ItemsView.m */,
 				ECC9F2E924FB48EF000E8F0E /* LaunchScreen.storyboard */,
+				ECC9F30924FB5253000E8F0E /* LinkView.h */,
+				ECC9F32724FB5254000E8F0E /* LinkView.m */,
 				ECC9F30F24FB5253000E8F0E /* LoginToService.h */,
 				ECC9F31D24FB5254000E8F0E /* LoginToService.m */,
 				ECC9F2ED24FB48EF000E8F0E /* main.m */,
@@ -414,7 +414,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECC9F34524FB5255000E8F0E /* GoogleCalView.m in Sources */,
+				ECC9F34524FB5255000E8F0E /* LinkView.m in Sources */,
 				ECC9F34824FB5255000E8F0E /* ArticleWriteView.m in Sources */,
 				ECC9F33524FB5255000E8F0E /* SetInfoStorage.m in Sources */,
 				ECC9F34424FB5255000E8F0E /* ItemsView.m in Sources */,

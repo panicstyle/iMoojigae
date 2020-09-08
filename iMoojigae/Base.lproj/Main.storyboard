@@ -186,7 +186,7 @@
                                             <segue destination="Ghp-aM-C2d" kind="show" identifier="Items" id="ITC-Vm-SsU"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Calendar" id="tKN-aa-NyH">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Link" id="tKN-aa-NyH">
                                         <rect key="frame" x="0.0" y="116" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tKN-aa-NyH" id="MhY-Ma-egv">
@@ -195,7 +195,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <connections>
-                                            <segue destination="V8Q-1l-Dir" kind="show" identifier="Calendar" id="gs0-5B-pXp"/>
+                                            <segue destination="V8Q-1l-Dir" kind="show" identifier="Link" id="gs0-5B-pXp"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -1019,10 +1019,10 @@
             </objects>
             <point key="canvasLocation" x="2188.4057971014495" y="-1458.4239130434785"/>
         </scene>
-        <!--Google Cal View-->
+        <!--Link View-->
         <scene sceneID="MXe-Bh-Txh">
             <objects>
-                <viewController id="V8Q-1l-Dir" customClass="GoogleCalView" sceneMemberID="viewController">
+                <viewController id="V8Q-1l-Dir" customClass="LinkView" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="UCt-M2-h0d"/>
                         <viewControllerLayoutGuide type="bottom" id="5vq-CP-9j4"/>
@@ -1092,7 +1092,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Rjb-1d-YSx"/>
+        <segue reference="gs0-5B-pXp"/>
         <segue reference="wxT-9d-wBW"/>
         <segue reference="zoG-b2-QE8"/>
     </inferredMetricsTieBreakers>

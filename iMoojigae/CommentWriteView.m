@@ -16,7 +16,7 @@
 	int m_bUpMode;
 	NSString *m_strErrorMsg;
 	long m_lContentHeight;
-    UIAlertController *alertWait;
+    UIActivityIndicatorView *spinner;
 }
 @property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
@@ -143,28 +143,15 @@
 
 - (void)AlertShow
 {
-    alertWait = [UIAlertController
-                                  alertControllerWithTitle:@"저장중입니다."
-                                  message:nil
-                                  preferredStyle:UIAlertControllerStyleAlert];
-
-
-    [self presentViewController:alertWait animated:YES completion:nil];
-
-    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    
-    // Adjust the indicator so it is up a few pixels from the bottom of the alert
-    indicator.center = CGPointMake(alertWait.view.bounds.size.width / 2, alertWait.view.bounds.size.height - 50);
-    [indicator startAnimating];
-    [alertWait.view addSubview:indicator];
-    
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [self.view addSubview:spinner];
+    [spinner startAnimating];
 }
 
 - (void)AlertDismiss
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    [alertWait dismissViewControllerAnimated:YES completion:nil];
+    [spinner stopAnimating];
+    [spinner removeFromSuperview];
 }
 
 - (void)doneEditing:(id)sender

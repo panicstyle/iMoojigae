@@ -368,12 +368,16 @@
     
     [m_arrayItems removeAllObjects];
     [self.tbView reloadData];
-    
-    m_nPage = 1;
-    [self fetchItemsWithBoardId:m_boardId withPage:m_nPage];
+    [self performSelector:@selector(refreshItems) withObject:nil afterDelay:0.1];
 }
 
 #pragma mark - User Function
+
+- (void)refreshItems
+{
+    m_nPage = 1;
+    [self fetchItemsWithBoardId:m_boardId withPage:m_nPage];
+}
 
 - (void)fetchItemsWithBoardId:(NSString *)boardId withPage:(int)nPage
 {

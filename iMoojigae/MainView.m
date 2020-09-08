@@ -287,7 +287,8 @@
 {
     [m_arrayItems removeAllObjects];
     [self.tbView reloadData];
-    [self fetchItems];
+    [self performSelector:@selector(fetchItems) withObject:nil afterDelay:0.1];
+//    [self fetchItems];
 }
 
 @end

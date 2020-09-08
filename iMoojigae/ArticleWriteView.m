@@ -14,8 +14,6 @@
 @interface ArticleWriteView () <HttpSessionRequestDelegate>
 {
 	int m_bUpMode;
-	long m_lContentHeight;
-	UIAlertController *alertWait;
 	int m_selectedImage;
 	int m_ImageStatus[5];
 	int m_nAttachCount;
@@ -24,6 +22,7 @@
 	NSString *m_strFileSize[5];
 	NSString *m_errorMsg;
 	NSString *m_strImageFileName[5];
+    UIActivityIndicatorView *spinner;
 }
 @property (nonatomic, strong) HttpSessionRequest *httpSessionRequest;
 @end
@@ -42,6 +41,8 @@
 @synthesize m_strTitle;
 @synthesize m_strContent;
 
+#pragma mark - ViewController
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	m_bUpMode = false;
@@ -59,9 +60,6 @@
 	[lblTitle sizeToFit];
 	self.navigationItem.titleView = lblTitle;	
 
-	CGRect rectScreen = [self getScreenFrameForCurrentOrientation];
-	m_lContentHeight = rectScreen.size.height;
-	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
 											   initWithTitle:@"완료"
 											   style:UIBarButtonItemStyleDone
@@ -167,54 +165,19 @@
 	m_bUpMode = up;
 }
 
-- (CGRect)getScreenFrameForCurrentOrientation {
-	return [self getScreenFrameForOrientation:[UIApplication sharedApplication].statusBarOrientation];
-}
-
-- (CGRect)getScreenFrameForOrientation:(UIInterfaceOrientation)orientation {
-	
-	CGRect fullScreenRect = [[UIScreen mainScreen] bounds];
-	
-	// implicitly in Portrait orientation.
-	if (UIInterfaceOrientationIsLandscape(orientation)) {
-		CGRect temp = CGRectZero;
-		temp.size.width = fullScreenRect.size.height;
-		temp.size.height = fullScreenRect.size.width;
-		fullScreenRect = temp;
-	}
-	
-	CGFloat statusBarHeight = 20; // Needs a better solution, FYI statusBarFrame reports wrong in some cases..
-	fullScreenRect.size.height -= statusBarHeight;
-	fullScreenRect.size.height -= self.navigationController.navigationBar.frame.size.height;
-	fullScreenRect.size.height -= 40 + 40;
-	
-	return fullScreenRect;
-}
+#pragma mark - User Functions
 
 - (void)AlertShow
 {
-	alertWait = [UIAlertController
-                                  alertControllerWithTitle:@"저장중입니다."
-                                  message:nil
-                                  preferredStyle:UIAlertControllerStyleAlert];
-
-
-	[self presentViewController:alertWait animated:YES completion:nil];
-
-	UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-	
-	// Adjust the indicator so it is up a few pixels from the bottom of the alert
-    indicator.center = CGPointMake(alertWait.view.bounds.size.width / 2, alertWait.view.bounds.size.height - 50);
-	[indicator startAnimating];
-    [alertWait.view addSubview:indicator];
-	
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [self.view addSubview:spinner];
+    [spinner startAnimating];
 }
 
 - (void)AlertDismiss
 {
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    [alertWait dismissViewControllerAnimated:YES completion:nil];
+    [spinner stopAnimating];
+    [spinner removeFromSuperview];
 }
 
 - (void) cancelEditing:(id)sender
@@ -558,14 +521,15 @@
 
 - (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
 {
+    [self AlertDismiss];
 }
 
 - (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
 {
+    [self AlertDismiss];
     if (httpSessionRequest.tag == POST_FILE) {
         NSString *str = [[NSString alloc] initWithData:data
                                               encoding:NSUTF8StringEncoding];
-        [self AlertDismiss];
 
         if ([Utils numberOfMatches:str regex:@"fileNameArray\\[0\\] ="] <= 0) {
             NSString *errmsg;
@@ -598,13 +562,14 @@
             [self presentViewController:alert animated:YES completion:nil];
             return;
         }
+        
+        // Post Do
         [self postDo];
+        
     } else if (httpSessionRequest.tag == POST_DATA) {
         NSString *returnString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         
         NSLog(@"returnString = [%@]", returnString);
-        
-        [self AlertDismiss];
         
         if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
             NSString *errmsg;
@@ -627,8 +592,8 @@
         NSLog(@"write article success");
         if ([self.delegate respondsToSelector:@selector(articleWrite:didWrite:)] == YES)
             [self.delegate articleWrite:self didWrite:self];
-        
-        [[self navigationController] popViewControllerAnimated:YES];
+
+        [[self navigationController] popViewControllerAnimated:YES];        
     }
 }
     

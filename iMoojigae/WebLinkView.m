@@ -11,8 +11,9 @@
 #import "Utils.h"
 #import "Photos/Photos.h"
 #import "HttpSessionRequest.h"
+#import <WebKit/WebKit.h>
 
-@interface WebLinkView () <UIScrollViewDelegate, HttpSessionRequestDelegate>  {
+@interface WebLinkView () <UIScrollViewDelegate, HttpSessionRequestDelegate, WKUIDelegate, WKNavigationDelegate>  {
 	NSMutableData *m_receiveData;
 	NSURLConnection *m_connection;
 }
@@ -64,22 +65,22 @@
         
 	} else {
         if ([[m_strLink substringToIndex:4] isEqualToString:@"http"]) {
-            UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
-            
+            WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.frame.size.width, mainView.frame.size.height)];
             [mainView addSubview:webView];
-            
-            webView.delegate = self;
-            webView.scalesPageToFit = TRUE;
-            webView.scrollView.scrollEnabled = YES;
+            [webView setUIDelegate:self];
+            [webView setNavigationDelegate:self];
+            [webView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+            webView.backgroundColor = [UIColor clearColor];
+            webView.opaque = NO;
             [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:m_strLink]]];
         } else {
-            UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
-            
+            WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.frame.size.width, mainView.frame.size.height)];
             [mainView addSubview:webView];
-            
-            webView.delegate = self;
-            webView.scalesPageToFit = TRUE;
-            webView.scrollView.scrollEnabled = YES;
+            [webView setUIDelegate:self];
+            [webView setNavigationDelegate:self];
+            [webView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+            webView.backgroundColor = [UIColor clearColor];
+            webView.opaque = NO;
             [webView loadHTMLString:m_strLink baseURL:nil];
         }
 	}

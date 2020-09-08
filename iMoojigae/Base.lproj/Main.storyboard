@@ -1031,23 +1031,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dHS-Ji-w3C">
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K8W-iG-2sQ">
                                 <rect key="frame" x="0.0" y="44" width="414" height="692"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES"/>
-                            </webView>
+                                <wkWebViewConfiguration key="configuration">
+                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                    <wkPreferences key="preferences"/>
+                                </wkWebViewConfiguration>
+                            </wkWebView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="5vq-CP-9j4" firstAttribute="top" secondItem="dHS-Ji-w3C" secondAttribute="bottom" id="3Hd-Y9-Ajm"/>
-                            <constraint firstItem="dHS-Ji-w3C" firstAttribute="leading" secondItem="G7K-UL-3Mn" secondAttribute="leading" id="TEG-0i-y13"/>
-                            <constraint firstItem="dHS-Ji-w3C" firstAttribute="top" secondItem="UCt-M2-h0d" secondAttribute="bottom" id="gmI-Xx-WjC"/>
-                            <constraint firstAttribute="trailing" secondItem="dHS-Ji-w3C" secondAttribute="trailing" id="wW4-rC-3NB"/>
+                            <constraint firstItem="5vq-CP-9j4" firstAttribute="top" secondItem="K8W-iG-2sQ" secondAttribute="bottom" id="9Yn-lk-hPS"/>
+                            <constraint firstItem="K8W-iG-2sQ" firstAttribute="top" secondItem="UCt-M2-h0d" secondAttribute="bottom" id="FfC-E5-jBP"/>
+                            <constraint firstAttribute="trailing" secondItem="K8W-iG-2sQ" secondAttribute="trailing" id="JKz-Yt-9Vv"/>
+                            <constraint firstItem="K8W-iG-2sQ" firstAttribute="leading" secondItem="G7K-UL-3Mn" secondAttribute="leading" id="cQ0-Qb-Atf"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Wl7-1z-Srk"/>
                     <connections>
-                        <outlet property="webView" destination="dHS-Ji-w3C" id="0PV-oI-VEW"/>
+                        <outlet property="webView" destination="K8W-iG-2sQ" id="sRu-a6-xiG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zly-lx-vIM" userLabel="First Responder" sceneMemberID="firstResponder"/>

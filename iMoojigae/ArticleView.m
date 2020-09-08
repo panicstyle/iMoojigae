@@ -16,9 +16,10 @@
 #import "NSString+HTML.h"
 #import "HttpSessionRequest.h"
 #import "LoginToService.h"
+#import <WebKit/WebKit.h>
 @import GoogleMobileAds;
 
-@interface ArticleView () <ArticleWriteDelegate, HttpSessionRequestDelegate, LoginToServiceDelegate>
+@interface ArticleView () <ArticleWriteDelegate, HttpSessionRequestDelegate, LoginToServiceDelegate, WKUIDelegate, WKNavigationDelegate>
 {
 	UITableViewCell *m_contentCell;
 	UITableViewCell *m_imageCell;
@@ -29,7 +30,7 @@
 	long m_lContentHeight;
 	float m_fTitleHeight;
 	
-	UIWebView *m_webView;
+	WKWebView *m_webView;
 	
 	NSMutableData *receiveData;
 	NSString *paramTitle;
@@ -327,106 +328,6 @@
 	return cell;
 }
 
-#pragma mark - WebView Delegate
-
-- (void) webViewDidFinishLoad:(UIWebView *)sender {
-    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    int pointSize = (titleFont.pointSize / 17.0f) * 100;
-    NSString *fontSize = [NSString stringWithFormat:@"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '%d%%'", pointSize];
-    NSString *padding = @"document.body.style.padding='0px 8px 0px 8px';";
-    [sender stringByEvaluatingJavaScriptFromString:padding];
-    [sender stringByEvaluatingJavaScriptFromString:fontSize];
-    [self performSelector:@selector(calculateWebViewSize) withObject:nil afterDelay:0.1];
-    [tbView beginUpdates];
-    [tbView endUpdates];
-}
-
--(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
-	
-	NSURL *url = request.URL;
-	NSString *urlString = url.absoluteString;
-	NSLog(@"request = %@", urlString);
-	NSString *key = [Utils findStringRegex:urlString regex:@"(?<=&c=).*?(?=&)"];
-	NSString *fileName = [m_dicAttach valueForKey:key];
-	
-	NSLog(@"fileName = %@", fileName);
-	NSString *loweredExtension = [[fileName pathExtension] lowercaseString];
-	NSLog(@"loweredExtension = %@", loweredExtension);
-	// Valid extensions may change.  Check the UIImage class reference for the most up to date list.
-	NSSet *validImageExtensions = [NSSet setWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"bmp", @"bmpf", @"ico", @"cur", @"xbm", nil];
-
-	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-		//	URLEncoding 되어 있지 않음.
-		//		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-		
-		if ([validImageExtensions containsObject:loweredExtension]) {
-			m_nFileType = FILE_TYPE_IMAGE;
-			m_strWebLink = urlString;
-			[self performSegueWithIdentifier:@"WebLink" sender:self];
-		} else if ([loweredExtension hasSuffix:@"hwp"]|| [loweredExtension hasSuffix:@"pdf"]) {
-			NSData	*tempData = [NSData dataWithContentsOfURL:url];
-			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
-			NSString *documentDirectory = [paths objectAtIndex:0];
-			NSString *filePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
-			BOOL isWrite = [tempData writeToFile:filePath atomically:YES];
-			NSString *tempFilePath;
-			
-			if (isWrite) {
-				tempFilePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
-			}
-			NSURL *resultURL = [NSURL fileURLWithPath:tempFilePath];
-			
-			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
-			self.doic.delegate = self;
-			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
-			return NO;
-		} else {
-            [[UIApplication sharedApplication] openURL:[request URL] options:@{} completionHandler:nil];
-		}
-			
-		return NO;
-	} else if (navigationType == UIWebViewNavigationTypeOther) {
-		
-		if ([[[request URL] absoluteString] hasPrefix:@"jscall:"]) {
-			
-			NSString *requestString = [[request URL] absoluteString];
-			NSArray *components = [requestString componentsSeparatedByString:@"://"];
-			NSString *functionName = [components objectAtIndex:1];
-
-			NSLog(@"requestString = [%@]", requestString);
-			NSLog(@"functionName = [%@]", functionName);
-			
-			NSString *fileName = [functionName stringByRemovingPercentEncoding];
-			NSLog(@"fileName = [%@]", fileName);
-			
-			m_nFileType = FILE_TYPE_IMAGE;
-			m_strWebLink = fileName;
-			[self performSegueWithIdentifier:@"WebLink" sender:self];
-			return NO;
-		} else if ([loweredExtension hasSuffix:@"hwp"]|| [loweredExtension hasSuffix:@"pdf"]) {
-			NSData	*tempData = [NSData dataWithContentsOfURL:url];
-			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
-			NSString *documentDirectory = [paths objectAtIndex:0];
-			NSString *filePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
-			BOOL isWrite = [tempData writeToFile:filePath atomically:YES];
-			NSString *tempFilePath;
-			
-			if (isWrite) {
-				tempFilePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
-			}
-			NSURL *resultURL = [NSURL fileURLWithPath:tempFilePath];
-			
-			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
-			self.doic.delegate = self;
-			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
-			return NO;
-		} else {
-			return YES;
-		}
-	}
-	return YES;
-}
-
 // Override to support row selection in the table view.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     long row = indexPath.row;
@@ -480,6 +381,116 @@
     [alert addAction:share];
     [alert addAction:cancelAction];
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark - WebView Delegate
+
+//- (void) webViewDidFinishLoad:(UIWebView *)sender {
+- (void) webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    int pointSize = (titleFont.pointSize / 17.0f) * 100;
+    NSString *fontSize = [NSString stringWithFormat:@"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '%d%%'", pointSize];
+    NSString *padding = @"document.body.style.padding='0px 8px 0px 8px';";
+    [webView evaluateJavaScript:padding completionHandler:^(NSString *result, NSError *error) {}];
+    [webView evaluateJavaScript:fontSize completionHandler:^(NSString *result, NSError *error) {}];
+//    [sender stringByEvaluatingJavaScriptFromString:padding];
+//    [sender stringByEvaluatingJavaScriptFromString:fontSize];
+    [self performSelector:@selector(calculateWebViewSize) withObject:nil afterDelay:0.1];
+    [tbView beginUpdates];
+    [tbView endUpdates];
+}
+
+//-(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
+- (void) webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSURL *url = navigationAction.request.URL;
+	NSString *urlString = url.absoluteString;
+	NSLog(@"request = %@", urlString);
+    urlString = [urlString stringByRemovingPercentEncoding];
+    NSLog(@"request after remove percent encoding = %@", urlString);
+	NSString *key = [Utils findStringRegex:urlString regex:@"(?<=&c=).*?(?=&)"];
+	NSString *fileName = [m_dicAttach valueForKey:key];
+	
+	NSLog(@"fileName = %@", fileName);
+	NSString *loweredExtension = [[fileName pathExtension] lowercaseString];
+	NSLog(@"loweredExtension = %@", loweredExtension);
+	// Valid extensions may change.  Check the UIImage class reference for the most up to date list.
+	NSSet *validImageExtensions = [NSSet setWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"bmp", @"bmpf", @"ico", @"cur", @"xbm", nil];
+
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+		//	URLEncoding 되어 있지 않음.
+		//		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		
+		if ([validImageExtensions containsObject:loweredExtension]) {
+			m_nFileType = FILE_TYPE_IMAGE;
+			m_strWebLink = urlString;
+			[self performSegueWithIdentifier:@"WebLink" sender:self];
+		} else if ([loweredExtension hasSuffix:@"hwp"]|| [loweredExtension hasSuffix:@"pdf"]) {
+			NSData	*tempData = [NSData dataWithContentsOfURL:url];
+			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
+			NSString *documentDirectory = [paths objectAtIndex:0];
+			NSString *filePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			BOOL isWrite = [tempData writeToFile:filePath atomically:YES];
+			NSString *tempFilePath;
+			
+			if (isWrite) {
+				tempFilePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			}
+			NSURL *resultURL = [NSURL fileURLWithPath:tempFilePath];
+			
+			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
+			self.doic.delegate = self;
+			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
+            decisionHandler(WKNavigationActionPolicyCancel);
+			return;
+		} else {
+            [[UIApplication sharedApplication] openURL:[navigationAction.request URL] options:@{} completionHandler:nil];
+		}
+		decisionHandler(WKNavigationActionPolicyCancel);
+		return;
+    } else if (navigationAction.navigationType == WKNavigationTypeOther) {
+		
+        if ([[[navigationAction.request URL] absoluteString] hasPrefix:@"jscall:"]) {
+			
+            NSString *requestString = [[navigationAction.request URL] absoluteString];
+			NSArray *components = [requestString componentsSeparatedByString:@"://"];
+			NSString *functionName = [components objectAtIndex:1];
+
+			NSLog(@"requestString = [%@]", requestString);
+			NSLog(@"functionName = [%@]", functionName);
+			
+			NSString *fileName = [functionName stringByRemovingPercentEncoding];
+			NSLog(@"fileName = [%@]", fileName);
+			
+			m_nFileType = FILE_TYPE_IMAGE;
+			m_strWebLink = fileName;
+			[self performSegueWithIdentifier:@"WebLink" sender:self];
+            decisionHandler(WKNavigationActionPolicyCancel);
+			return;
+		} else if ([loweredExtension hasSuffix:@"hwp"]|| [loweredExtension hasSuffix:@"pdf"]) {
+			NSData	*tempData = [NSData dataWithContentsOfURL:url];
+			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
+			NSString *documentDirectory = [paths objectAtIndex:0];
+			NSString *filePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			BOOL isWrite = [tempData writeToFile:filePath atomically:YES];
+			NSString *tempFilePath;
+			
+			if (isWrite) {
+				tempFilePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			}
+			NSURL *resultURL = [NSURL fileURLWithPath:tempFilePath];
+			
+			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
+			self.doic.delegate = self;
+			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
+            decisionHandler(WKNavigationActionPolicyCancel);
+			return;
+		} else {
+            decisionHandler(WKNavigationActionPolicyAllow);
+			return;
+		}
+	}
+    decisionHandler(WKNavigationActionPolicyAllow);
+	return;
 }
 
 #pragma mark - ArticleDataDelegate
@@ -592,6 +603,7 @@
 }
 
 - (void) calculateWebViewSize {
+/*
     NSUInteger contentHeight = [[m_webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.body.scrollHeight;"]] intValue];
     m_lContentHeight = contentHeight;
     
@@ -604,6 +616,21 @@
     m_webView.frame = webRect;
 
     [self.tbView reloadData];
+ */
+    [m_webView evaluateJavaScript:@"document.body.scrollHeight;" completionHandler:^(NSString *result, NSError *error) {
+        NSUInteger contentHeight = [result intValue];
+        self->m_lContentHeight = contentHeight;
+        
+        CGRect contentRect = self->m_contentCell.frame;
+        contentRect.size.height = self->m_lContentHeight;
+        self->m_contentCell.frame = contentRect;
+
+        CGRect webRect = self->m_webView.frame;
+        webRect.size.height = self->m_lContentHeight;
+        self->m_webView.frame = webRect;
+
+        [self.tbView reloadData];
+    }];
 }
 
 - (void)showOnBrowser {
@@ -979,14 +1006,22 @@
     htmlString = m_strContent;
     m_strEditableTitle = m_strTitle;
     NSLog(@"htmlString = [%@]", htmlString);
-    
+/*
     m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
     m_webView.delegate = self;
     m_webView.scrollView.scrollEnabled = YES;
     m_webView.scrollView.bounces = NO;
     m_webView.dataDetectorTypes = UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber;
     [m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
-
+*/
+    m_webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
+    [m_webView setUIDelegate:self];
+    [m_webView setNavigationDelegate:self];
+    [m_webView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+    m_webView.backgroundColor = [UIColor clearColor];
+    m_webView.opaque = NO;
+    [m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
+    
     [self.tbView reloadData];
 }
 

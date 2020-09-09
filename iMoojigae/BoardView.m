@@ -193,7 +193,7 @@
         return;
     }
     
-    NSString *m_strRecent = [parsedObject valueForKey:@"recent"];
+    m_strRecent = [parsedObject valueForKey:@"recent"];
     NSLog(@"strRecent %@", m_strRecent);
     
     NSString *strNew = [parsedObject valueForKey:@"new"];

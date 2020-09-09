@@ -58,7 +58,7 @@
 	SetInfo *setInfo = [[SetInfo alloc] init];
 
 	if (![setInfo CheckVersionInfo]) {
-
+/*
 		// 버전 업데이트 안내 다이얼로그 표시
 		NSString *NotiMessage = @"새글 알림을 설정했는데도 알림이 오지 않을 경우 설정->알림->무지개교육마을 에서 알림 허용을 재설정 하시거나, 앱을 다시 설치해 보시기 바랍니다.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
@@ -70,7 +70,7 @@
 		
 		[alert addAction:defaultAction];
 		[self presentViewController:alert animated:YES completion:nil];
-
+*/
 		[setInfo SaveVersionInfo];
 	}
 

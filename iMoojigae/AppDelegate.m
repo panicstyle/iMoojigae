@@ -174,6 +174,7 @@
 		viewController.m_boardId = boardId;
 		viewController.m_boardNo = boardNo;
 		viewController.m_boardName = boardName;
+        viewController.m_row = -1;
 		viewController.delegate = nil;
 	} else {
 		return;

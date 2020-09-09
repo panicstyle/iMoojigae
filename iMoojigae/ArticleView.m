@@ -268,10 +268,10 @@
                 [textSubject setFont:titleFont];
                 [labelName setFont:subFont];
 			} else if (row == 1){
-				m_contentCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierContent];
-				if (m_contentCell == nil) {
+//				m_contentCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierContent];
+//				if (m_contentCell == nil) {
 					m_contentCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierContent];
-				}
+//				}
 				cell = m_contentCell;
 				[cell addSubview:m_webView];
 			}
@@ -416,6 +416,8 @@
 	// Valid extensions may change.  Check the UIImage class reference for the most up to date list.
 	NSSet *validImageExtensions = [NSSet setWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"bmp", @"bmpf", @"ico", @"cur", @"xbm", nil];
 
+    NSLog(@"navigationAction.navigationType=%ld", navigationAction.navigationType);
+    
     if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
 		//	URLEncoding 되어 있지 않음.
 		//		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -466,6 +468,12 @@
 			[self performSegueWithIdentifier:@"WebLink" sender:self];
             decisionHandler(WKNavigationActionPolicyCancel);
 			return;
+        } else if ([validImageExtensions containsObject:loweredExtension]) {
+            m_nFileType = FILE_TYPE_IMAGE;
+            m_strWebLink = urlString;
+            [self performSegueWithIdentifier:@"WebLink" sender:self];
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
 		} else if ([loweredExtension hasSuffix:@"hwp"]|| [loweredExtension hasSuffix:@"pdf"]) {
 			NSData	*tempData = [NSData dataWithContentsOfURL:url];
 			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
@@ -593,7 +601,7 @@
     self.httpSessionRequest.delegate = self;
     self.httpSessionRequest.timeout = 30;
     self.httpSessionRequest.httpMethod = @"POST";
-    self.httpSessionRequest.tag = DELETE_ARTICLE;
+    self.httpSessionRequest.tag = DELETE_COMMENT;
     
     NSString *url = [NSString stringWithFormat:@"%@/memo-save.do", WWW_SERVER];
     NSLog(@"url = [%@]", url);
@@ -845,15 +853,15 @@
 - (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
 {
     if (httpSessionRequest.tag == READ_ARTICLE) {
-        [self readArticle:data];
+        [self didFinishReadArticle:data];
     } else if (httpSessionRequest.tag == DELETE_ARTICLE) {
-        [self deleteArticle:data];
+        [self didFinishDeleteArticle:data];
     } else if (httpSessionRequest.tag == DELETE_COMMENT) {
-        [self deleteComment:data];
+        [self didFinishDeleteComment:data];
     }
 }
 
-- (void) readArticle:(NSData *)data
+- (void) didFinishReadArticle:(NSData *)data
 {
     m_strHtml = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
@@ -936,7 +944,7 @@
         [m_dicAttach setValue:f forKey:n];
     }
     if ([attachItems count] > 0) {
-        [strAttach appendString:@"</tr></table>"];
+        [strAttach appendString:@"</table>"];
     }
 
     NSString *strProfile = [NSString stringWithFormat:@"<div class='profile'>%@</div>", [parsedObject valueForKey:@"userComment"]];
@@ -1020,7 +1028,8 @@
     m_webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
     [m_webView setUIDelegate:self];
     [m_webView setNavigationDelegate:self];
-    [m_webView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+    // 아래 옵션을 주면 WKWebView 가 화면 크기보다 크게 표시된다.
+//    [m_webView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
     m_webView.backgroundColor = [UIColor clearColor];
     m_webView.opaque = NO;
     [m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
@@ -1028,7 +1037,7 @@
     [self.tbView reloadData];
 }
 
-- (void) deleteArticle:(NSData *)data
+- (void) didFinishDeleteArticle:(NSData *)data
 {
     NSString *str = [[NSString alloc] initWithData:data
                                           encoding:NSUTF8StringEncoding];
@@ -1051,12 +1060,13 @@
     }
     
     NSLog(@"delete article success");
-    if ([self.delegate respondsToSelector:@selector(articleView:didWrite:)] == YES)
-        [self.delegate articleView:self didWrite:self];
+    if (self.delegate != nil)
+        if ([self.delegate respondsToSelector:@selector(articleView:didDelete:)] == YES)
+            [self.delegate articleView:self didDelete:self.m_row];
     [[self navigationController] popViewControllerAnimated:YES];
 }
 
-- (void) deleteComment:(NSData *)data
+- (void) didFinishDeleteComment:(NSData *)data
 {
     NSString *str = [[NSString alloc] initWithData:data
                                           encoding:NSUTF8StringEncoding];
@@ -1096,6 +1106,16 @@
 - (void) loginToService:(LoginToService *)loginToService withSuccess:(NSString *)result
 {
     m_isLogin = TRUE;
+    [self fetchItemsWithBoardId:m_boardId withBoardNo:m_boardNo];
+}
+
+#pragma mark - ArticleWriteDelegate
+
+- (void) articleWrite:(ArticleWriteView *)articleWrite didWrite:(id)sender
+{
+    NSLog(@"didModify");
+    [m_arrayItems removeAllObjects];
+    [self.tbView reloadData];
     [self fetchItemsWithBoardId:m_boardId withBoardNo:m_boardNo];
 }
 @end

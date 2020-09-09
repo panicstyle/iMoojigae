@@ -14,7 +14,7 @@
 @protocol ArticleViewDelegate <NSObject>
 @optional
 
-- (void) articleView:(ArticleView *)articleView didWrite:(id)sender;
+- (void) articleView:(ArticleView *)articleView didDelete:(long)row;
 
 @end
 
@@ -29,6 +29,7 @@
 @property (strong, nonatomic) NSString *m_boardId;
 @property (strong, nonatomic) NSString *m_boardNo;
 @property (strong, nonatomic) NSString *m_boardName;
+@property (assign, nonatomic) long m_row;
 @property (nonatomic, retain) UIDocumentInteractionController *doic;
 
 @property (nonatomic, assign) id <ArticleViewDelegate> delegate;

@@ -281,6 +281,7 @@
 		view.m_boardId = m_boardId;
 		view.m_boardNo = [item valueForKey:@"boardNo"];
 		view.m_boardName = m_boardName;
+        view.m_row = row;
 		view.delegate = self;
 	} else 	if ([[segue identifier] isEqualToString:@"ArticleWrite"]) {
 		ArticleWriteView *view = [segue destinationViewController];
@@ -349,15 +350,12 @@
 
 #pragma mark - ArticleViewDelegate
 
-- (void) articleView:(ArticleView *)articleView didWrite:(id)sender
+- (void) articleView:(ArticleView *)articleView didDelete:(long)row
 {
-	NSLog(@"didWrite");
+	NSLog(@"didDelete");
 	
-	[m_arrayItems removeAllObjects];
-	[self.tbView reloadData];
-	
-	m_nPage = 1;
-    [self fetchItemsWithBoardId:m_boardId withPage:m_nPage];
+    [m_arrayItems removeObjectAtIndex:row];
+    [self.tbView reloadData];
 }
 
 #pragma mark - ArticleWriteDelegate
@@ -368,16 +366,12 @@
     
     [m_arrayItems removeAllObjects];
     [self.tbView reloadData];
-    [self performSelector:@selector(refreshItems) withObject:nil afterDelay:0.1];
-}
-
-#pragma mark - User Function
-
-- (void)refreshItems
-{
+    
     m_nPage = 1;
     [self fetchItemsWithBoardId:m_boardId withPage:m_nPage];
 }
+
+#pragma mark - User Function
 
 - (void)fetchItemsWithBoardId:(NSString *)boardId withPage:(int)nPage
 {

@@ -16,11 +16,11 @@
 #import "NSString+HTML.h"
 #import "HttpSessionRequest.h"
 #import "LoginToService.h"
-//#import <WebKit/WebKit.h>
+#import <WebKit/WebKit.h>
 @import GoogleMobileAds;
 
-//@interface ArticleView () <ArticleWriteDelegate, HttpSessionRequestDelegate, LoginToServiceDelegate, WKUIDelegate, WKNavigationDelegate>
-@interface ArticleView () <ArticleWriteDelegate, HttpSessionRequestDelegate, LoginToServiceDelegate>
+@interface ArticleView () <ArticleWriteDelegate, HttpSessionRequestDelegate, LoginToServiceDelegate, WKUIDelegate, WKNavigationDelegate>
+//@interface ArticleView () <ArticleWriteDelegate, HttpSessionRequestDelegate, LoginToServiceDelegate>
 {
 	UITableViewCell *m_contentCell;
 	UITableViewCell *m_imageCell;
@@ -31,8 +31,8 @@
 	long m_lContentHeight;
 	float m_fTitleHeight;
 	
-//	WKWebView *m_webView;
-    UIWebView *m_webView;
+	WKWebView *m_webView;
+//    UIWebView *m_webView;
 	
 	NSMutableData *receiveData;
 	NSString *paramTitle;
@@ -386,7 +386,7 @@
 }
 
 #pragma mark - WebView Delegate
-/*
+
 - (void) webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     int pointSize = (titleFont.pointSize / 17.0f) * 100;
@@ -398,7 +398,8 @@
     [tbView beginUpdates];
     [tbView endUpdates];
 }
- */
+
+/*
 - (void) webViewDidFinishLoad:(UIWebView *)sender {
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     int pointSize = (titleFont.pointSize / 17.0f) * 100;
@@ -410,12 +411,12 @@
     [tbView beginUpdates];
     [tbView endUpdates];
 }
+*/
 
-
--(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
-//- (void) webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-//    NSURL *url = navigationAction.request.URL;
-    NSURL *url = request.URL;
+//-(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
+- (void) webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSURL *url = navigationAction.request.URL;
+//    NSURL *url = request.URL;
 	NSString *urlString = url.absoluteString;
 	NSLog(@"request = %@", urlString);
     urlString = [urlString stringByRemovingPercentEncoding];
@@ -429,10 +430,10 @@
 	// Valid extensions may change.  Check the UIImage class reference for the most up to date list.
 	NSSet *validImageExtensions = [NSSet setWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"bmp", @"bmpf", @"ico", @"cur", @"xbm", nil];
 
-//    NSLog(@"navigationAction.navigationType=%ld", navigationAction.navigationType);
+    NSLog(@"navigationAction.navigationType=%ld", navigationAction.navigationType);
     
-//    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
-        if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+//        if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		//	URLEncoding 되어 있지 않음.
 		//		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		
@@ -456,24 +457,24 @@
 			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
 			self.doic.delegate = self;
 			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
-//            decisionHandler(WKNavigationActionPolicyCancel);
-//			return;
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
+			return;
+//            return NO;
 		} else {
-//            [[UIApplication sharedApplication] openURL:[navigationAction.request URL] options:@{} completionHandler:nil];
-            [[UIApplication sharedApplication] openURL:[request URL] options:@{} completionHandler:nil];
+            [[UIApplication sharedApplication] openURL:[navigationAction.request URL] options:@{} completionHandler:nil];
+//            [[UIApplication sharedApplication] openURL:[request URL] options:@{} completionHandler:nil];
 		}
-//		decisionHandler(WKNavigationActionPolicyCancel);
-//		return;
-        return NO;
-//    } else if (navigationAction.navigationType == WKNavigationTypeOther) {
-    } else if (navigationType == UIWebViewNavigationTypeOther) {
+		decisionHandler(WKNavigationActionPolicyCancel);
+		return;
+//        return NO;
+    } else if (navigationAction.navigationType == WKNavigationTypeOther) {
+//    } else if (navigationType == UIWebViewNavigationTypeOther) {
 
-//        if ([[[navigationAction.request URL] absoluteString] hasPrefix:@"jscall:"]) {
-        if ([[[request URL] absoluteString] hasPrefix:@"jscall:"]) {
+        if ([[[navigationAction.request URL] absoluteString] hasPrefix:@"jscall:"]) {
+//        if ([[[request URL] absoluteString] hasPrefix:@"jscall:"]) {
 
-//            NSString *requestString = [[navigationAction.request URL] absoluteString];
-            NSString *requestString = [[request URL] absoluteString];
+            NSString *requestString = [[navigationAction.request URL] absoluteString];
+//            NSString *requestString = [[request URL] absoluteString];
 			NSArray *components = [requestString componentsSeparatedByString:@"://"];
 			NSString *functionName = [components objectAtIndex:1];
 
@@ -486,16 +487,16 @@
 			m_nFileType = FILE_TYPE_IMAGE;
 			m_strWebLink = fileName;
 			[self performSegueWithIdentifier:@"WebLink" sender:self];
-//            decisionHandler(WKNavigationActionPolicyCancel);
-//			return;
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
+			return;
+//            return NO;
         } else if ([validImageExtensions containsObject:loweredExtension]) {
             m_nFileType = FILE_TYPE_IMAGE;
             m_strWebLink = urlString;
             [self performSegueWithIdentifier:@"WebLink" sender:self];
-//            decisionHandler(WKNavigationActionPolicyCancel);
-//            return;
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+//            return NO;
 		} else if ([loweredExtension hasSuffix:@"hwp"]|| [loweredExtension hasSuffix:@"pdf"]) {
 			NSData	*tempData = [NSData dataWithContentsOfURL:url];
 			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
@@ -512,18 +513,18 @@
 			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
 			self.doic.delegate = self;
 			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
-//            decisionHandler(WKNavigationActionPolicyCancel);
-//			return;
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
+			return;
+//            return NO;
 		} else {
-//            decisionHandler(WKNavigationActionPolicyAllow);
-//			return;
-            return YES;
+            decisionHandler(WKNavigationActionPolicyAllow);
+			return;
+//            return YES;
 		}
 	}
-//    decisionHandler(WKNavigationActionPolicyAllow);
-//	return;
-    return YES;
+    decisionHandler(WKNavigationActionPolicyAllow);
+	return;
+//    return YES;
 }
 
 #pragma mark - ArticleDataDelegate
@@ -639,6 +640,7 @@
 }
 
 - (void) calculateWebViewSize {
+    /*
     NSUInteger contentHeight = [[m_webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.body.scrollHeight;"]] intValue];
     m_lContentHeight = contentHeight;
     
@@ -651,7 +653,8 @@
     m_webView.frame = webRect;
 
     [self.tbView reloadData];
-/*
+     */
+
     [m_webView evaluateJavaScript:@"document.body.scrollHeight;" completionHandler:^(NSString *result, NSError *error) {
         NSUInteger contentHeight = [result intValue];
         self->m_lContentHeight = contentHeight;
@@ -666,7 +669,6 @@
 
         [self.tbView reloadData];
     }];
- */
 }
 
 - (void)showOnBrowser {
@@ -878,7 +880,7 @@
 - (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
 {
     if (httpSessionRequest.tag == READ_ARTICLE) {
-        [self didFinishReadArticle:data];
+        [self didFinishReadArticle:data withHttpSessionRequest:httpSessionRequest];
     } else if (httpSessionRequest.tag == DELETE_ARTICLE) {
         [self didFinishDeleteArticle:data];
     } else if (httpSessionRequest.tag == DELETE_COMMENT) {
@@ -886,7 +888,7 @@
     }
 }
 
-- (void) didFinishReadArticle:(NSData *)data
+- (void) didFinishReadArticle:(NSData *)data withHttpSessionRequest:(HttpSessionRequest *)httpSessionRequest
 {
     m_strHtml = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
@@ -1042,24 +1044,34 @@
     htmlString = m_strContent;
     m_strEditableTitle = m_strTitle;
     NSLog(@"htmlString = [%@]", htmlString);
-
+/*
     m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
     m_webView.delegate = self;
     m_webView.scrollView.scrollEnabled = YES;
     m_webView.scrollView.bounces = NO;
     m_webView.dataDetectorTypes = UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber;
     [m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
-
-/*
-    m_webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
+*/
+    WKWebsiteDataStore *websiteDataStore = [WKWebsiteDataStore nonPersistentDataStore];
+    // Cookies 설정
+    if (httpSessionRequest.arrCookies != nil) {
+        for (NSHTTPCookie *cookie in httpSessionRequest.arrCookies) {
+            [websiteDataStore.httpCookieStore setCookie:cookie completionHandler:nil];
+        }
+    }
+    WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+    configuration.websiteDataStore = websiteDataStore;
+    
+    m_webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height) configuration:configuration];
     [m_webView setUIDelegate:self];
     [m_webView setNavigationDelegate:self];
     // 아래 옵션을 주면 WKWebView 가 화면 크기보다 크게 표시된다.
 //    [m_webView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
     m_webView.backgroundColor = [UIColor clearColor];
     m_webView.opaque = NO;
+    
     [m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];
-*/
+
     [self.tbView reloadData];
 }
 

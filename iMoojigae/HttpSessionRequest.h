@@ -112,4 +112,5 @@
 @property (nonatomic, strong) NSObject *data;                               // 사용자 정의 데이터
 @property (nonatomic, strong) NSOperationQueue *queue;
 @property (nonatomic, strong) NSString *httpMethod;                         // HTTP 메쏘드(GET, POST)
+@property (nonatomic, strong) NSArray *arrCookies;
 @end

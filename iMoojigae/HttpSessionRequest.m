@@ -487,6 +487,9 @@
             // delegate 함수 호출
             if ([task.taskDescription isEqualToString:@"task_head"] == NO)
             {
+                NSHTTPCookieStorage *cookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage;
+                self.arrCookies = [cookieStorage cookies];
+                
                 if ([self.delegate respondsToSelector:@selector(httpSessionRequest:didFinishLodingData:)] == YES)
                     [self.delegate httpSessionRequest:self didFinishLodingData:self.receiveDate];
             }

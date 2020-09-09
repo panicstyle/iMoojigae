@@ -1067,7 +1067,7 @@
     [m_webView setNavigationDelegate:self];
     // 아래 옵션을 주면 WKWebView 가 화면 크기보다 크게 표시된다.
 //    [m_webView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
-    m_webView.backgroundColor = [UIColor clearColor];
+    m_webView.backgroundColor = [UIColor whiteColor];
     m_webView.opaque = NO;
     
     [m_webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:WWW_SERVER]];

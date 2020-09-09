@@ -18,6 +18,7 @@
 	NSDictionary *dUserInfo; //To storage the push data
 }
 @property (nonatomic, strong) LoginToService *m_login;
+@property (nonatomic, strong) UNUserNotificationCenter *center;
 @end
 
 @implementation AppDelegate
@@ -38,9 +39,9 @@
 	}
 */
 	// 푸시 아이디를 달라고 폰에다가 요청하는 함수
-    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    center.delegate = self;
-    [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error) {
+    self.center = [UNUserNotificationCenter currentNotificationCenter];
+    self.center.delegate = self;
+    [self.center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error) {
       if ( !error ) {
           // required to get the app to do anything at all about push notifications
           dispatch_async(dispatch_get_main_queue(), ^{
@@ -122,18 +123,19 @@
 		NSLog(@"%@",userInfo);
 		dUserInfo = userInfo;
 	}
-*/
-/*	앱이 실행중일때 아래 코드를 추가하면 푸쉬 알림을 받아 바로 해당 글로 이동한다. 
-	중간에 새로운 글이 추가되었다고 해당 글을 보겠느냐는 알림을 보여준 뒤 	이동해야 할 것 같음.
-*/
-/*	if ([UIApplication sharedApplication].applicationState ==
-		UIApplicationStateActive) {
-		[self moveToViewController];
-	}
-*/
-/*
 }
 */
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+didReceiveNotificationResponse:(UNNotificationResponse *)response
+         withCompletionHandler:(void (^)(void))completionHandler
+   {
+    if (response.notification.request.content.userInfo) {
+        NSLog(@"%@", response.notification.request.content.userInfo);
+        dUserInfo = response.notification.request.content.userInfo;
+    }
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
 	NSLog(@"applicationDidBecomeActive");

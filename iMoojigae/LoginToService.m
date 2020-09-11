@@ -154,7 +154,7 @@
         tokenDevice = storage.token;
         getVar.strDevice = tokenDevice;
         if (tokenDevice == nil) {
-            NSLog(@"PushRegister fail. tokenDevice or userId is nil\n");
+            NSLog(@"PushRegister fail. tokenDevice is nil\n");
             return;
         }
     }

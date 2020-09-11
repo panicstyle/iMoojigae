@@ -280,15 +280,10 @@
 
 - (void) setView:(SetView *)setView withFail:(NSString *)result
 {
-    
 }
 
 - (void) setView:(SetView *)setView withSuccess:(NSString *)result
 {
-    [m_arrayItems removeAllObjects];
-    [self.tbView reloadData];
-    [self performSelector:@selector(fetchItems) withObject:nil afterDelay:0.1];
-//    [self fetchItems];
 }
 
 @end

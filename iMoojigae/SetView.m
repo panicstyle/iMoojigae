@@ -104,7 +104,7 @@
 - (void) loginToService:(LoginToService *)loginToService withFail:(NSString *)result
 {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
-                                                                   message:@"로그인 정보가 없거나 잘못되었습니다. 설정에서 로그인정보를 입력하세요."
+                                                                   message:@"아이디 혹은 비밀번호를 다시 확인하세요."
                                                             preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
@@ -112,11 +112,6 @@
     
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
-    
-    if ([self.delegate respondsToSelector:@selector(setView:withFail:)] == YES)
-        [self.delegate setView:self withFail:@""];
-
-    [[self navigationController] popViewControllerAnimated:YES];
 }
 
 - (void) loginToService:(LoginToService *)loginToService withSuccess:(NSString *)result

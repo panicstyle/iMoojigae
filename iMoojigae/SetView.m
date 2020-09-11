@@ -46,13 +46,19 @@
     
 	SetStorage *storage = (SetStorage *)[NSKeyedUnarchiver unarchiveObjectWithFile:myPath];
 	
-	idField.text = storage.userid;
-	pwdField.text = storage.userpwd;
-	if (storage.switchPush == nil) {
-		[switchPush setOn:true];
-	} else {
-		[switchPush setOn:[storage.switchPush intValue]];
-	}
+//    if (storage == nil) {
+//        idField.text = @"";
+//        pwdField.text = @"";
+//        [switchPush setOn:true];
+//    } else {
+        idField.text = storage.userid;
+        pwdField.text = storage.userpwd;
+        if (storage.switchPush == nil) {
+            [switchPush setOn:true];
+        } else {
+            [switchPush setOn:[storage.switchPush intValue]];
+        }
+//    }
     
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
 											   initWithTitle:@"완료" 
@@ -95,13 +101,13 @@
 	
     self.loginToService = [[LoginToService alloc] init];
     self.loginToService.delegate = self;
-    [self.loginToService LoginToService];
+    [self.loginToService Logout];
 }
 
 #pragma mark -
 #pragma mark SetViewDelegate
 
-- (void) loginToService:(LoginToService *)loginToService withFail:(NSString *)result
+- (void) loginToService:(LoginToService *)loginToService LoginWithFail:(NSString *)result
 {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
                                                                    message:@"아이디 혹은 비밀번호를 다시 확인하세요."
@@ -114,12 +120,37 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void) loginToService:(LoginToService *)loginToService withSuccess:(NSString *)result
+- (void) loginToService:(LoginToService *)loginToService LoginWithSuccess:(NSString *)result
 {
     self.loginToService = [[LoginToService alloc] init];
     self.loginToService.delegate = self;
     [self.loginToService PushUpdate];
+}
+
+- (void) loginToService:(LoginToService *)loginToService LogouthWithFail:(NSString *)result
+{
+    self.loginToService = [[LoginToService alloc] init];
+    self.loginToService.delegate = self;
+    [self.loginToService LoginToService];
+}
+
+- (void) loginToService:(LoginToService *)loginToService LogoutWithSuccess:(NSString *)result
+{
+    self.loginToService = [[LoginToService alloc] init];
+    self.loginToService.delegate = self;
+    [self.loginToService LoginToService];
+}
+
+- (void) loginToService:(LoginToService *)loginToService PushWithFail:(NSString *)result
+{
+    if ([self.delegate respondsToSelector:@selector(setView:withSuccess:)] == YES)
+        [self.delegate setView:self withSuccess:@""];
     
+    [[self navigationController] popViewControllerAnimated:YES];
+}
+
+- (void) loginToService:(LoginToService *)loginToService PushWithSuccess:(NSString *)result
+{
     if ([self.delegate respondsToSelector:@selector(setView:withSuccess:)] == YES)
         [self.delegate setView:self withSuccess:@""];
     

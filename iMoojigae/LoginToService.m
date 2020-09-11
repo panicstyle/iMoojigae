@@ -39,6 +39,8 @@
 	
 	if (userid == nil || [userid isEqualToString:@""] || userpwd == nil || [userpwd isEqualToString:@""]) {
         NSLog(@"userid and userpw is not set");
+        if ([self.delegate respondsToSelector:@selector(loginToService:LoginWithFail:)] == YES)
+            [self.delegate loginToService:self LoginWithFail:@""];
         return;
 	}
     
@@ -76,6 +78,8 @@
 
     if (userId == nil) {
         NSLog(@"PushRegister fail. userId is nil\n");
+        if ([self.delegate respondsToSelector:@selector(loginToService:PushWithFail:)] == YES)
+            [self.delegate loginToService:self PushWithFail:@""];
         return;
     }
     
@@ -95,6 +99,8 @@
         
         if (tokenDevice == nil) {
             NSLog(@"PushRegister fail. tokenDevice or userId is nil\n");
+            if ([self.delegate respondsToSelector:@selector(loginToService:PushWithFail:)] == YES)
+                [self.delegate loginToService:self PushWithFail:@""];
             return;
         }
     }
@@ -134,6 +140,8 @@
 	
     if (userId == nil) {
         NSLog(@"PushRegister fail. userId is nil\n");
+        if ([self.delegate respondsToSelector:@selector(loginToService:PushWithFail:)] == YES)
+            [self.delegate loginToService:self PushWithFail:@""];
         return;
     }
     
@@ -155,6 +163,8 @@
         getVar.strDevice = tokenDevice;
         if (tokenDevice == nil) {
             NSLog(@"PushRegister fail. tokenDevice is nil\n");
+            if ([self.delegate respondsToSelector:@selector(loginToService:PushWithFail:)] == YES)
+                [self.delegate loginToService:self PushWithFail:@""];
             return;
         }
     }
@@ -203,8 +213,16 @@
 
 - (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest withError:(NSError *)error
 {
-    if ([self.delegate respondsToSelector:@selector(loginToService:withFail:)] == YES)
-        [self.delegate loginToService:self withFail:@""];
+    if (httpSessionRequest.tag == LOGIN_TO_SERVER) {
+        if ([self.delegate respondsToSelector:@selector(loginToService:LoginWithFail:)] == YES)
+            [self.delegate loginToService:self LoginWithFail:@""];
+    } else if (httpSessionRequest.tag == LOGOUT_TO_SERVER) {
+        if ([self.delegate respondsToSelector:@selector(loginToService:LoginWithFail:)] == YES)
+            [self.delegate loginToService:self LogoutWithFail:@""];
+    } else {
+        if ([self.delegate respondsToSelector:@selector(loginToService:PushWithFail:)] == YES)
+            [self.delegate loginToService:self PushWithFail:@""];
+    }
 }
 
 - (void) httpSessionRequest:(HttpSessionRequest *)httpSessionRequest didFinishLodingData:(NSData *)data
@@ -224,21 +242,24 @@
             }
             getVar.switchPush = switchPush;
             
-            if ([self.delegate respondsToSelector:@selector(loginToService:withSuccess:)] == YES)
-                [self.delegate loginToService:self withSuccess:@""];
+            if ([self.delegate respondsToSelector:@selector(loginToService:LoginWithSuccess:)] == YES)
+                [self.delegate loginToService:self LoginWithSuccess:@""];
             return;
         } else {
             if ([Utils numberOfMatches:returnString regex:@"<b>시스템 메세지입니다</b>"] > 0) {
-                if ([self.delegate respondsToSelector:@selector(loginToService:withFail:)] == YES)
-                    [self.delegate loginToService:self withFail:@""];
+                if ([self.delegate respondsToSelector:@selector(loginToService:LoginWithFail:)] == YES)
+                    [self.delegate loginToService:self LoginWithFail:@""];
             } else {
-                if ([self.delegate respondsToSelector:@selector(loginToService:withSuccess:)] == YES)
-                    [self.delegate loginToService:self withSuccess:@""];
+                if ([self.delegate respondsToSelector:@selector(loginToService:LoginWithSuccess:)] == YES)
+                    [self.delegate loginToService:self LoginWithSuccess:@""];
             }
-            return;
         }
+    } else if (httpSessionRequest.tag == LOGOUT_TO_SERVER) {
+        if ([self.delegate respondsToSelector:@selector(loginToService:LoginWithSuccess:)] == YES)
+            [self.delegate loginToService:self LogoutWithSuccess:@""];
     } else if (httpSessionRequest.tag == PUSH_REGISTER) {
-        
+        if ([self.delegate respondsToSelector:@selector(loginToService:PushWithSuccess:)] == YES)
+            [self.delegate loginToService:self PushWithSuccess:@""];
     }
 }
 @end

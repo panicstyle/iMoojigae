@@ -12,9 +12,18 @@
 @protocol LoginToServiceDelegate <NSObject>
 @optional
 
-- (void) loginToService:(LoginToService *)loginToService withFail:(NSString *)result;
+- (void) loginToService:(LoginToService *)loginToService LoginWithFail:(NSString *)result;
 
-- (void) loginToService:(LoginToService *)loginToService withSuccess:(NSString *)result;
+- (void) loginToService:(LoginToService *)loginToService LoginWithSuccess:(NSString *)result;
+
+- (void) loginToService:(LoginToService *)loginToService LogoutWithFail:(NSString *)result;
+
+- (void) loginToService:(LoginToService *)loginToService LogoutWithSuccess:(NSString *)result;
+
+- (void) loginToService:(LoginToService *)loginToService PushWithFail:(NSString *)result;
+
+- (void) loginToService:(LoginToService *)loginToService PushWithSuccess:(NSString *)result;
+
 
 @end
 

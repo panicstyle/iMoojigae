@@ -21,11 +21,11 @@
 #endif
 
 #ifdef DEBUG
-	#define WWW_SERVER  @"http://jumin.moojigae.or.kr"
-	#define PUSH_SERVER  @"http://jumin.moojigae.or.kr"
+	#define WWW_SERVER  @"https://jumin.moojigae.or.kr"
+	#define PUSH_SERVER  @"https://jumin.moojigae.or.kr"
 #else
-	#define WWW_SERVER  @"http://jumin.moojigae.or.kr"
-	#define PUSH_SERVER  @"http://jumin.moojigae.or.kr"
+	#define WWW_SERVER  @"https://jumin.moojigae.or.kr"
+	#define PUSH_SERVER  @"https://jumin.moojigae.or.kr"
 #endif
 
 #define BOARD_LIST    @"/board-api-list.do?boardId="
